@@ -1,0 +1,641 @@
+{% load static %}
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+        <meta name="author" content="mediaministrydevelopers">
+        <title>Egerton University Njoro Campus Christian Union</title>
+		<link rel="shortcut icon" type="image/x-icon" href="{% static 'img/logo2.png' %}">
+
+        <!-- Font Awesome Icons CSS -->
+<!-- Removed local font-awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!-- Themify Icons CSS -->
+        <link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
+        <!-- Elegant Font Icons CSS -->
+        <link rel="stylesheet" href="{% static 'css/elegant-font-icons.css' %}">
+        <!-- Elegant Line Icons CSS -->
+        <link rel="stylesheet" href="{% static 'css/elegant-line-icons.css' %}">
+		<!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+		<!-- Venobox CSS -->
+        <link rel="stylesheet" href="{% static 'css/venobox/venobox.css' %}">
+		<!-- OWL-Carousel CSS -->
+        <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+        <!-- Slick Nav CSS -->
+        <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}">
+        <!-- Css Animation CSS -->
+        <link rel="stylesheet" href="{% static 'css/css-animation.min.css' %}">
+        <!-- Nivo Slider CSS -->
+        <link rel="stylesheet" href="{% static 'css/nivo-slider.css' %}">
+		<!-- Main CSS -->
+         <!-- me css for mini about section -->
+        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+		<!-- Responsive CSS -->
+        <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+
+        {% block extra_css %}{% endblock %}
+        <script>document.documentElement.classList.replace('no-js','js');</script>
+        <script src="{% static 'vendor/jquery/jquery-3.5.1.min.js' %}"></script>
+        
+        
+<style>
+
+      :root {
+      --black:   #0a0a0a;
+      --white:   #fafaf8;
+      --green:   #2c8e22;
+      --red:     #ff1500; /*union color too bright used this*/  
+      --ink:     #1a1a1a;
+      --rule:    1px solid var(--black);
+      --rule-thick: 3px solid var(--black);
+      --radius-sm: 4px;      
+      --radius-xs: 2px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: poppins, sans-serif;
+      font-weight: 400;
+      overflow-x: hidden;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .campaigns-section{
+	background-image: url("{% static 'img/Videosbg.webp'%}");
+	background-repeat: no-repeat;
+	background-attachment: scroll;
+	background-position: center center;
+	-webkit-background-size: cover;
+	background-size: cover;
+    padding: 150px 0;
+    }
+    
+    nav a,
+    .nav-menu a,
+    .footer-social a,
+    .social-icon a,
+    .default-btn,
+    .widget-content a {
+        text-decoration: none;
+    }
+  
+    a{
+        text-decoration: none;
+    }
+    .previous-devotionals .card {
+        transition: box-shadow 0.2s;
+        border-radius: 0.75rem;
+        background: #f9f9fb;
+    }
+    .previous-devotionals .card:hover {
+        box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        background: #fff;
+    }
+    .previous-devotionals .card-title a {
+        color: #2c8e22;
+        font-weight: 600;
+    }
+    .previous-devotionals .card-title a:hover {
+        text-decoration: underline;
+        color: #ff0019;
+    }
+    .previous-devotionals h4 {
+        font-weight: 700;
+        color: #22223b;
+        letter-spacing: 0.02em;
+    }
+
+    /* Event badges */
+    .event-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .event-badge.ongoing {
+        background: #2c8e22;
+        color: white;
+    }
+
+    .event-badge.upcoming {
+        background: #ff0019;
+        color: white;
+    }
+
+    /* Past events card */
+    .past-event-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+    }
+
+    .past-event-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .event-date-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0,0,0,0.7));
+        color: white;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .event-month {
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .event-day {
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .event-range {
+        font-size: 12px;
+        opacity: 0.9;
+        margin-left: auto;
+    }
+
+    .event-meta {
+        display: flex;
+        gap: 15px;
+        margin: 10px 0;
+        flex-wrap: wrap;
+    }
+
+    .event-meta span {
+        font-size: 13px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .event-excerpt {
+        color: #777;
+        font-size: 14px;
+        line-height: 1.5;
+        margin: 15px 0;
+    }
+
+    .event-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .view-details-btn {
+        color: #2c8e22;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .view-details-btn:hover {
+        color: #ff0019;
+    }
+
+    .time-ago {
+        font-size: 12px;
+        color: #999;
+    }
+
+    /* Pagination */
+    .pagination {
+        display: inline-flex;
+        gap: 5px;
+        align-items: center;
+    }
+
+    .page-link {
+        padding: 8px 15px;
+        background: white;
+        border: 1px solid #cccccc;
+        border-radius: 4px;
+        color: #333;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .page-link:hover {
+        background: #2c8322;
+        color: white;
+        border-color: #2c8e22;
+    }
+
+    .page-link.current {
+        background: #2c8e22;
+        color: white;
+        border-color: #2c8e22;
+    }
+
+    .page-link.prev,
+    .page-link.next {
+        padding: 8px 20px;
+    }
+
+    .event-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    .event-status {
+        font-size: 13px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .site-footer {
+        background: #0b2f1f;
+        color: #e7ebea;
+        padding: 80px 0 24px;
+    }
+
+    .site-footer a {
+        color: #e7ebea;
+        transition: color 0.25s ease, transform 0.25s ease;
+    }
+
+    .site-footer a:hover {
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .footer-main {
+        padding-bottom: 40px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .footer-logo-wrapper .footer-logo-img {
+        max-width: 140px;
+        margin-bottom: 18px;
+    }
+
+    .footer-logo-wrapper .footer-tagline {
+        color: rgba(255, 255, 255, 0.78);
+        line-height: 1.8;
+    }
+
+    .footer-heading {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 20px;
+    }
+
+    .footer-links,
+    .contact-list,
+    .bottom-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-links li,
+    .contact-list li,
+    .bottom-links li {
+        margin-bottom: 12px;
+        line-height: 1.7;
+    }
+
+    .footer-links li a,
+    .contact-list li a,
+    .bottom-links li a {
+        color: rgba(231, 235, 234, 0.82);
+    }
+
+    .footer-links li a:hover,
+    .contact-list li a:hover,
+    .bottom-links li a:hover {
+        color: #b8e0b4;
+    }
+
+    .social-icons {
+        display: flex;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .social-icons a {
+        width: 44px;
+        height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.04);
+        color: #fff;
+    }
+
+    .social-icons a:hover {
+        background: #1c7d3f;
+        border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    .footer-bottom {
+        padding-top: 18px;
+        font-size: 0.95rem;
+        color: rgba(231, 235, 234, 0.75);
+    }
+
+    .footer-bottom .bottom-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 18px;
+    }
+
+    .footer-bottom .copyright {
+        margin: 0;
+    }
+
+    .bottom-links li {
+        margin: 0;
+    }
+
+    #scroll-to-top {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        width: 45px;
+        height: 45px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #0a7a34;
+        color: #fff;
+        opacity: 0.95;
+        z-index: 999;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    #scroll-to-top:hover {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+</style>
+
+</head>
+    <body>
+
+        <header id="header" class="header-section">
+            <div class="top-header">
+                <div class="container">
+                    <div class="top-content-wrap row">
+                        <div class="col-sm-8">
+                            <ul class="left-info">
+                                
+                                {% comment %} <li><a href="#"><i class="ti-email"></i>Info@eunccu.org</a></li>
+                                <li><a href="#"><i class="ti-mobile"></i>+(254) 102 186205</a></li> {% endcomment %}
+                                {% if request.user.is_authenticated %}
+                                    <li><a href="#"><i class="fa fa-user"></i> Welcome {{ request.user.username }}</a></li>
+                                {% endif %}
+
+
+                            </ul>
+                        </div>
+                        <div class="col-sm-4 d-none d-md-block">
+                            <ul class="right-info">
+                                <li><a href="https://www.facebook.com/egertoncu.org" target="_blank" rel="noopener no-referrer"><i class="fa fa-facebook"></i></a></li>
+                                <li><a href="https://x.com/egertoncu/" target="_blank" rel="noopener no-referrer"><i class="fa fa-twitter"></i></a></li>
+                                <li><a href="https://www.instagram.com/cu_egerton/" target="_blank" rel="noopener no-referrer"><i class="fa fa-instagram"></i></a></li>
+                                <li><a href="https://wa.me/254102186205" target="_blank" rel="noopener no-referrer"><i class="fa fa-whatsapp"></i></a></li>
+                                <li><a href="https://www.youtube.com/channel/UCs2HaesrSHiaVbi_UhiylgA" target="_blank" rel="noopener no-referrer"><i class="fa fa-youtube"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-header">
+                <div class="container">
+                    <div class="bottom-content-wrap row">
+                        <div class="col-sm-4">
+                            <div class="site-branding">
+                                <a href="{% url 'website:home'%}"><img src="{% static 'img/logo2.png' %}" alt="Brand"></a> 
+                            </div>  
+                        </div>
+                       <div class="col-sm-8 text-right">
+                            <ul id="mainmenu" class="nav navbar-nav nav-menu">
+                                <li class="active"><a href="{% url 'website:home' %}">Home</a></li>
+                                <li>
+                                    About Us
+                                    <ul>
+                                        <li><a href="{% url 'website:about' %}">Who are we</a></li>
+                                        <li><a href="{% url 'website:leadership' %}">Leadership</a></li>
+                                        <li><a href="{% url 'website:ministries' %}">Ministries </a></li>
+                                        <li><a href="{% url 'website:ministries' %}#eteams">E‑Teams</a></li>
+                                        <li><a href="{% url 'website:ministries' %}#classes">Classes</a></li>
+                                        <li><a href="{% url 'website:ministries' %}#committees">Committees</a></li>
+                                    </ul>
+                                </li>       
+                                <li><a href="{% url 'website:events' %}">Events</a></li>
+                                <li><a href="{% url 'website:devotion_list' %}">Devotions</a></li>
+                                <li>
+                                    Pages
+                                    <ul>
+                                        <li><a href="{% url 'website:gallery' %}">Gallery</a></li>
+                                        <li><a href=" https://biblestudy.eunccu.org/ " target="_blank" rel="noopener no-referrer">Bible Study</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="{% url 'website:contact' %}">Contact</a></li>
+                                {% if request.user.is_authenticated %}
+                                <li><img src="{% if request.user.profile_picture %}{{ request.user.profile_picture.url }}{% else %}{% static 'img/default-profile.webp' %}{% endif %}"
+                                                alt="Profile"
+                                                class="rounded-circle"
+                                                style="width: 35px; height: 35px; object-fit: cover; border: 3px solid #fff;">
+                                    <ul>
+                                        <li><a href="{% url 'website:profile' %}">Profile</a></li>
+                                        <li><a href="{% url 'website:user_notifications' %}">Notifications</a></li>
+                                        {% for group in request.user.groups.all %}
+                                          {% if group.name == "User Manager" %}
+                                        <li><a href="{% url 'website:user_manager_dashboard' %}">User Manager</a></li>
+                                          {% endif %}
+                                        {% endfor %}
+                                        <li><a href="{% url 'website:logout' %}">Logout</a></li>
+                                {% else %}
+                                    <li><a href="{% url 'website:login' %}">Login</a></li>
+                                {% endif %}
+                                    </ul> 
+                                </li> 
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </header><!-- /Header Section -->
+
+        {% block content %} {% endblock %}
+
+       
+
+        <footer class="site-footer">
+            <div class="footer-main">
+                <div class="container">
+                    <div class="row gx-4 gy-4">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="footer-logo-wrapper">
+                                <a href="{% url 'website:home' %}" class="footer-logo-link">
+                                    <img src="{% static 'img/logo2.png' %}" alt="EUNCCU Logo" class="footer-logo-img" width="50">
+                                </a>
+                                <p class="footer-tagline">
+                                    Building a community of faith, leadership, and service at Egerton University Njoro Campus.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <h3 class="footer-heading">Quick Links</h3>
+                            <ul class="footer-links">
+                                <li><a href="{% url 'website:home' %}"><i class="fa fa-angle-right"></i> Home</a></li>
+                                <li><a href="{% url 'website:about' %}"><i class="fa fa-angle-right"></i> About Us</a></li>
+                                <li><a href="{% url 'website:events' %}"><i class="fa fa-angle-right"></i> Events</a></li>
+                                <li><a href="{% url 'website:devotion_list' %}"><i class="fa fa-angle-right"></i> Devotions</a></li>
+                                <li><a href="{% url 'website:gallery' %}"><i class="fa fa-angle-right"></i> Gallery</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <h3 class="footer-heading">Resources</h3>
+                            <ul class="footer-links">
+                                <li><a href="{% url 'website:constitution' %}"><i class="fa fa-angle-right"></i> Constitution</a></li>
+                                <li><a href="{% url 'website:privacy' %}"><i class="fa fa-angle-right"></i> Privacy Policy</a></li>
+                                <li><a href="{% url 'website:contact' %}"><i class="fa fa-angle-right"></i> Report Problem</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <h3 class="footer-heading">Contact Info</h3>
+                            <ul class="contact-list">
+                                <li><i class="fa fa-map-marker"></i> B1 Hall (FASS), Egerton University Njoro Campus, Kenya</li>
+                                <li><i class="fa fa-envelope"></i> <a href="mailto:websitemanager@eunccu.org">info@eunccu.org</a></li>
+                                <li><i class="fa fa-phone"></i> <a href="tel:+254102186205">+254 102 186205</a></li>
+                                <li><i class="fa fa-whatsapp"></i> <a href="https://wa.me/254102186205" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+                            </ul>
+                            <div class="social-icons">
+                                <a href="https://www.facebook.com/egertoncu.org" target="_blank" rel="noopener noreferrer"><i class="fa fa-facebook"></i></a>
+                                <a href="https://x.com/egertoncu/" target="_blank" rel="noopener noreferrer"><i class="fa fa-twitter"></i></a>
+                                <a href="https://www.instagram.com/cu_egerton/" target="_blank" rel="noopener noreferrer"><i class="fa fa-instagram"></i></a>
+                                <a href="https://www.youtube.com/channel/UCs2HaesrSHiaVbi_UhiylgA" target="_blank" rel="noopener noreferrer"><i class="fa fa-youtube-play"></i></a>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <p class="copyright">&copy; {% now "Y" %}  Powered by Media Ministry Developers.</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <ul class="bottom-links">
+                                <li><a href="#header">Back to Top</a></li>
+                                <li><a href="{% url 'website:privacy' %}">Privacy</a></li>
+                                <li><a href="{% url 'website:contact' %}">Support</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        
+        <a data-scroll href="#header" id="scroll-to-top"><i class="arrow_up"></i></a>
+        <!-- In base.html, before closing </head>: -->
+        
+        
+        <!-- Before closing </body>: -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        
+        
+        <!-- jQuery Lib -->
+        <script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
+        <!-- Bootstrap JS -->
+        <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
+        <!-- Tether JS -->
+        <script src="{% static 'js/vendor/tether.min.js' %}"></script>
+        <!-- Imagesloaded JS -->
+        <script src="{% static 'js/vendor/imagesloaded.pkgd.min.js' %}"></script>
+        <!-- OWL-Carousel JS -->
+        <script src="{% static 'js/vendor/owl.carousel.min.js' %}"></script>
+        <!-- isotope JS -->
+        <script src="{% static 'js/vendor/jquery.isotope.v3.0.2.js' %}"></script>
+        <!-- Smooth Scroll JS -->
+        <script src="{% static 'js/vendor/smooth-scroll.min.js' %}"></script>
+        <!-- venobox JS -->
+        <script src="{% static 'js/vendor/venobox.min.js' %}"></script>
+        <!-- ajaxchimp JS -->
+        <script src="{% static 'js/vendor/jquery.ajaxchimp.min.js' %}"></script>
+        <!-- Counterup JS -->
+        <script src="{% static 'js/vendor/jquery.counterup.min.js' %}"></script>
+        <!-- waypoints js -->
+        <script src="{% static 'js/vendor/jquery.waypoints.v2.0.3.min.js' %}"></script>
+        <!-- Slick Nav JS -->
+        <script src="{% static 'js/vendor/jquery.slicknav.min.js' %}"></script>
+        <!-- Nivo Slider JS -->
+        <script src="{% static 'js/vendor/jquery.nivo.slider.pack.js' %}"></script>
+        <!-- Letter Animation JS -->
+        <script src="{% static 'js/vendor/letteranimation.min.js' %}"></script>
+        <!-- Wow JS -->
+        <script src="{% static 'js/vendor/wow.min.js' %}"></script>
+        <!-- Contact JS -->
+        <script src="{% static 'js/contact.js' %}"></script>
+        <!-- Main JS -->
+        <script src="{% static 'js/main.js' %}"></script>
+        <script src="{% static 'js/tabs.js' %}"></script>
+
+
+        <!--Start of Tawk.to Script-->
+        {% comment %} <script type="text/javascript">
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/681132635ce49b19021839d0/1iq1ipm60';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+            })();
+        </script> {% endcomment %}
+            <!--End of Tawk.to Script-->
+        
+        {% block extra_js %}{% endblock %}
+
+</body>
+</html>

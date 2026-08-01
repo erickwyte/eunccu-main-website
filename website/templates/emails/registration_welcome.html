@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{{ subject }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #cccccc;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #2c8e22;
+    }
+    p {
+      margin-bottom: 15px;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>{{ subject }}</h1>
+    <p>Hello {{ user.full_name }},</p>
+    <p>{{ special_message }}</p>
+    <p>Blessings,<br>Egerton Christian Union {% now "Y" %}</p>
+    <div class="footer">
+      <p>If you have any questions, reply to this email or contact support.</p>
+    </div>
+  </div>
+</body>
+</html>

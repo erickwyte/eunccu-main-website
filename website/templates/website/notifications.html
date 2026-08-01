@@ -1,0 +1,28 @@
+{% extends 'website/base.html' %}
+
+{% block content %}
+<section class="padding" style="background:#f7f8f5; min-height: 60vh;">
+  <div class="container">
+    <div class="section-heading text-center mb-40">
+      <h2>Your Notifications</h2>
+      <span class="heading-border"></span>
+      <p>Updates that need your attention appear here.</p>
+    </div>
+
+    <div style="max-width: 820px; margin: 0 auto;">
+      {% for note in notifications %}
+      <div style="background:#fff; border-radius:16px; padding:20px 22px; margin-bottom:16px; box-shadow:0 12px 28px rgba(0,0,0,0.06); border:1px solid rgba(44,142,34,0.12);">
+        <div style="display:flex; justify-content:space-between; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+          <p style="margin:0; color:#1a1a1a; font-size:1rem;">{{ note.message }}</p>
+          <small style="color:#6b7280;">{{ note.timestamp|date:"M d, Y H:i" }}</small>
+        </div>
+      </div>
+      {% empty %}
+      <div style="background:#fff; border-radius:16px; padding:24px; text-align:center; box-shadow:0 12px 28px rgba(0,0,0,0.06);">
+        <p style="margin:0; color:#555;">No notifications yet.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,735 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --green-deep: #2c8e22;
+    --green-mid: #2c8e22;
+    --green-light: #2c8e22;
+    --green-pale: #e8f5ed;
+    --green-glow: rgba(26, 92, 42, 0.12);
+    --gold: #ff0019;
+    --text-dark: #000000;
+    --text-mid: #333333;
+    --text-muted: #555555;
+    --border: #cccccc;
+    --white: #ffffff;
+    --bg: #f5f5f5;
+    --card-bg: #ffffff;
+    --input-bg: #ffffff;
+    --radius: 12px;
+    --shadow: 0 8px 32px rgba(26, 92, 42, 0.10);
+    --shadow-sm: 0 2px 8px rgba(26, 92, 42, 0.07);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .reg-page {
+    min-height: 100vh;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(13, 118, 50, 0.07) 0%, transparent 55%),
+      radial-gradient(ellipse at 90% 80%, rgba(201, 168, 76, 0.06) 0%, transparent 50%);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-dark);
+    padding: 48px 20px 64px;
+    padding-top: 170px;
+    position: relative;
+  }
+
+  /* ── CARD ── */
+  .reg-card {
+    max-width: 860px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid rgba(13,118,50,0.08);
+    
+  }
+
+  /* ── HEADER ── */
+  .reg-header {
+    background: linear-gradient(135deg, var(--green-deep) 0%, var(--green-mid) 60%, var(--green-light) 100%);
+    padding: 44px 48px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .reg-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .reg-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 32px;
+    background: var(--card-bg);
+    border-radius: 32px 32px 0 0;
+  }
+  .reg-logo {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.3);
+    object-fit: contain;
+    background: rgba(255,255,255,0.1);
+    padding: 4px;
+    position: relative; z-index: 1;
+    margin-bottom: 16px;
+  }
+  .reg-header h2 {
+    font-family: Arial, Helvetica, sans-erif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #fff;
+    position: relative; z-index: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+  .reg-header p {
+    color: rgba(255,255,255,0.72);
+    font-size: 0.95rem;
+    font-weight: 300;
+    position: relative; z-index: 1;
+  }
+
+  /* ── ALERTS ── */
+  .reg-alerts { padding: 0 40px; margin-top: 8px; }
+  .alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .alert-danger, .alert-error {
+    background: #fff2f2; color: #c0392b;
+    border: 1px solid #fac5c5;
+  }
+  .alert-success {
+    background: var(--green-pale); color: var(--green-deep);
+    border: 1px solid #b8dfc6;
+  }
+  .alert-dismissible .btn-close { margin-left: auto; background: none; border: none; cursor: pointer; opacity: 0.5; font-size: 1rem; }
+
+  /* ── FORM BODY ── */
+  .reg-body { padding: 8px 40px 40px; }
+
+  /* ── SECTION LABELS ── */
+  .section-label {
+    display: flex; align-items: center; gap: 10px;
+    margin: 28px 0 18px;
+  }
+  .section-label-icon {
+    width: 32px; height: 32px;
+    background: var(--green-pale);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-label-icon svg { width: 16px; height: 16px; stroke: var(--green-mid); }
+  .section-label h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+  .section-divider {
+    flex: 1; height: 1px;
+    background: var(--border);
+  }
+
+  /* ── GRID ── */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .form-row.single { grid-template-columns: 1fr; }
+  .form-row.trio { grid-template-columns: 1fr 1fr 1fr; }
+
+  /* ── FIELD ── */
+  .field {
+    display: flex; flex-direction: column; gap: 6px;
+    margin-bottom: 4px;
+  }
+  .field.hidden { display: none; }
+  .field label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    letter-spacing: 0.01em;
+  }
+  .field label .req { color: var(--green-mid); margin-left: 2px; }
+  .field input,
+  .field select {
+    width: 100%;
+    padding: 11px 14px;
+    background: var(--input-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.93rem;
+    color: var(--text-dark);
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a8799' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+  .field select[size] { background-image: none; }
+  .field input:focus,
+  .field select:focus {
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px var(--green-glow);
+    background: #fff;
+  }
+  .field input::placeholder { color: #b0bac5; }
+  .field .hint {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .field .field-error {
+    font-size: 0.76rem;
+    color: #e53935;
+    margin-top: 2px;
+    display: none;
+  }
+  .field.has-error input,
+  .field.has-error select {
+    border-color: #e53935;
+    box-shadow: 0 0 0 3px rgba(229,57,53,0.09);
+  }
+  .field.has-error .field-error { display: block; }
+
+  /* ── FILE UPLOAD ── */
+  .file-field { position: relative; }
+  .file-field input[type="file"] {
+    position: absolute; inset: 0;
+    opacity: 0; cursor: pointer; z-index: 2;
+    width: 100%; height: 100%;
+  }
+  .file-trigger {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px;
+    background: var(--input-bg);
+    border: 1.5px dashed var(--border);
+    border-radius: 9px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .file-field:hover .file-trigger,
+  .file-field:focus-within .file-trigger {
+    border-color: var(--green-mid);
+    background: var(--green-pale);
+  }
+  .file-trigger-icon {
+    width: 32px; height: 32px;
+    background: var(--green-pale);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .file-trigger-icon svg { width: 15px; height: 15px; stroke: var(--green-mid); }
+  .file-trigger-text { font-size: 0.88rem; color: var(--text-muted); }
+  .file-trigger-text strong { display: block; font-size: 0.82rem; color: var(--text-mid); font-weight: 600; }
+
+  /* ── COUNTY SELECT ── */
+  .field select[size="3"] {
+    height: 110px;
+    background-image: none;
+    padding-right: 14px;
+    border-radius: 9px;
+    overflow-y: auto;
+  }
+  .field select[size="3"] option {
+    padding: 6px 10px;
+    border-radius: 4px;
+  }
+  .field select[size="3"] option:checked {
+    background: var(--green-mid);
+    color: white;
+  }
+
+  /* ── CONSENT ── */
+  .consent-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    margin: 28px 0 24px;
+    padding: 16px 18px;
+    background: var(--green-pale);
+    border-radius: 10px;
+    border: 1px solid rgba(13,118,50,0.12);
+  }
+  .consent-row input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--green-mid);
+    flex-shrink: 0;
+    margin-top: 2px;
+    cursor: pointer;
+  }
+  .consent-row label {
+    font-size: 0.86rem;
+    color: var(--text-mid);
+    line-height: 1.5;
+    cursor: pointer;
+  }
+  .consent-row a {
+    color: var(--green-mid);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .consent-row a:hover { text-decoration: underline; }
+
+  /* ── SUBMIT ── */
+  .reg-submit {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--green-deep), var(--green-mid));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(13,118,50,0.25);
+    position: relative;
+    overflow: hidden;
+  }
+  .reg-submit::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.08) 100%);
+  }
+  .reg-submit:hover {
+    opacity: 0.93;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(13,118,50,0.32);
+  }
+  .reg-submit:active { transform: translateY(0); }
+
+  /* ── FOOTER ── */
+  .reg-footer {
+    text-align: center;
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+  .reg-footer a {
+    color: var(--green-mid);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .reg-footer a:hover { text-decoration: underline; }
+
+  /* ── RESPONSE TIP ── */
+  #yearResponse {
+    font-size: 0.82rem;
+    margin-top: 6px;
+    padding: 8px 12px;
+    border-radius: 7px;
+    display: none;
+    font-weight: 500;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    .reg-header { padding: 36px 24px 28px; }
+    .reg-body { padding: 8px 20px 32px; }
+    .reg-alerts { padding: 0 20px; }
+    .form-row { grid-template-columns: 1fr; }
+    .form-row.trio { grid-template-columns: 1fr 1fr; }
+    .reg-header h2 { font-size: 1.6rem; }
+    .reg-card { border-radius: 16px; }
+  }
+  @media (max-width: 400px) {
+    .form-row.trio { grid-template-columns: 1fr; }
+    .reg-page { padding: 0 0 40px; }
+    .reg-card { border-radius: 0; }
+  }
+</style>
+
+<div class="reg-page">
+
+  {% if messages %}
+  <div class="reg-alerts" style="max-width:860px;margin:0 auto 12px;">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" onclick="this.parentElement.remove()" aria-label="Close">✕</button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="reg-card">
+
+    <!-- HEADER -->
+    <div class="reg-header">
+      <img src="{% static 'img/logo2.png' %}" alt="EUNCCU Logo" class="reg-logo" />
+      <h2>JOIN EUNCCU</h2>
+      <p>Create your account to access all features</p>
+    </div>
+
+    <!-- FORM -->
+    <div class="reg-body">
+      <form id="registrationForm" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- ── PERSONAL INFORMATION ── -->
+        <div class="section-label">
+          <div class="section-label-icon">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/></svg>
+          </div>
+          <h3>Personal Information</h3>
+          <div class="section-divider"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="full_name">Full Name <span class="req">*</span></label>
+            <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required />
+          </div>
+          <div class="field">
+            <label for="username">Username <span class="req">*</span></label>
+            <input type="text" id="username" name="username" pattern="[a-z0-9_@.-]+" placeholder="Choose a username" required />
+            <span class="hint">Lowercase letters, numbers, @ . - _ only</span>
+            <span class="field-error" id="username-error"></span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="email">Email Address <span class="req">*</span></label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required />
+            <span class="field-error" id="email-error"></span>
+          </div>
+          <div class="field">
+            <label for="phone">Phone Number <span class="req">*</span></label>
+            <input type="tel" id="phone" name="phone" placeholder="e.g. 07XXXXXXXX" required />
+          </div>
+        </div>
+
+        <div class="form-row single">
+          <div class="field">
+            <label for="homeCounty">Home County <span class="req">*</span></label>
+            <select id="homeCounty" name="homeCounty" size="3" required>
+              <option value="">Select your county</option>
+              <option value="Baringo">Baringo</option>
+              <option value="Bomet">Bomet</option>
+              <option value="Bungoma">Bungoma</option>
+              <option value="Busia">Busia</option>
+              <option value="Elgeyo-Marakwet">Elgeyo-Marakwet</option>
+              <option value="Embu">Embu</option>
+              <option value="Garissa">Garissa</option>
+              <option value="Homa Bay">Homa Bay</option>
+              <option value="Isiolo">Isiolo</option>
+              <option value="Kajiado">Kajiado</option>
+              <option value="Kakamega">Kakamega</option>
+              <option value="Kericho">Kericho</option>
+              <option value="Kiambu">Kiambu</option>
+              <option value="Kilifi">Kilifi</option>
+              <option value="Kirinyaga">Kirinyaga</option>
+              <option value="Kisii">Kisii</option>
+              <option value="Kisumu">Kisumu</option>
+              <option value="Kitui">Kitui</option>
+              <option value="Kwale">Kwale</option>
+              <option value="Laikipia">Laikipia</option>
+              <option value="Lamu">Lamu</option>
+              <option value="Machakos">Machakos</option>
+              <option value="Makueni">Makueni</option>
+              <option value="Mandera">Mandera</option>
+              <option value="Marsabit">Marsabit</option>
+              <option value="Meru">Meru</option>
+              <option value="Migori">Migori</option>
+              <option value="Mombasa">Mombasa</option>
+              <option value="Murang'a">Murang'a</option>
+              <option value="Nairobi">Nairobi</option>
+              <option value="Nakuru">Nakuru</option>
+              <option value="Nandi">Nandi</option>
+              <option value="Narok">Narok</option>
+              <option value="Nyamira">Nyamira</option>
+              <option value="Nyandarua">Nyandarua</option>
+              <option value="Nyeri">Nyeri</option>
+              <option value="Samburu">Samburu</option>
+              <option value="Siaya">Siaya</option>
+              <option value="Taita-Taveta">Taita-Taveta</option>
+              <option value="Tana River">Tana River</option>
+              <option value="Tharaka-Nithi">Tharaka-Nithi</option>
+              <option value="Trans Nzoia">Trans Nzoia</option>
+              <option value="Turkana">Turkana</option>
+              <option value="Uasin Gishu">Uasin Gishu</option>
+              <option value="Vihiga">Vihiga</option>
+              <option value="Wajir">Wajir</option>
+              <option value="West Pokot">West Pokot</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ── ACADEMIC INFORMATION ── -->
+        <div class="section-label">
+          <div class="section-label-icon">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.63 48.63 0 0112 20.904a48.63 48.63 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/></svg>
+          </div>
+          <h3>Academic Information</h3>
+          <div class="section-divider"></div>
+        </div>
+
+        <div class="form-row single">
+          <div class="field">
+            <label for="userType">I am a: <span class="req">*</span></label>
+            <select id="userType" name="userType" required onchange="toggleFields()">
+              <option value="">Select user type</option>
+              <option value="student">Current Student</option>
+              <option value="alumnus">Alumnus</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Student Fields -->
+        <div class="form-row" id="studentFields" style="display:none;">
+          <div class="field">
+            <label for="registrationNumber">Registration Number <span class="req">*</span></label>
+            <input type="text" id="registrationNumber" name="registrationNumber" placeholder="Enter your registration number" />
+          </div>
+          <div class="field">
+            <label for="yearOfStudy">Year of Study <span class="req">*</span></label>
+            <select id="yearOfStudy" name="yearOfStudy">
+              <option value="">Select year</option>
+              <option value="1">First Year</option>
+              <option value="2">Second Year</option>
+              <option value="3">Third Year</option>
+              <option value="4">Fourth Year</option>
+              <option value="5">Fifth Year</option>
+              <option value="6">Sixth Year</option>
+            </select>
+            <div id="yearResponse"></div>
+          </div>
+        </div>
+
+        <!-- Alumnus Fields -->
+        <div class="form-row" id="alumnusFields" style="display:none;">
+          <div class="field">
+            <label for="graduationYear">Year of Graduation <span class="req">*</span></label>
+            <input type="number" id="graduationYear" name="graduationYear" min="2000" max="2024" placeholder="e.g. 2020" />
+          </div>
+          <div class="field">
+            <label for="currentOccupation">Current Occupation <span class="req">*</span></label>
+            <input type="text" id="currentOccupation" name="currentOccupation" placeholder="Your current occupation" />
+          </div>
+        </div>
+        <div class="form-row single" id="alumnusFields2" style="display:none;">
+          <div class="field">
+            <label for="workplace">Workplace / Organization <span class="req">*</span></label>
+            <input type="text" id="workplace" name="workplace" placeholder="Your current workplace" />
+          </div>
+        </div>
+
+        <!-- ── ACCOUNT SECURITY ── -->
+        <div class="section-label">
+          <div class="section-label-icon">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+          </div>
+          <h3>Account Security</h3>
+          <div class="section-divider"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="password">Password <span class="req">*</span></label>
+            <input type="password" id="password" name="password" placeholder="Create a password" required />
+            <span class="hint">At least 8 characters</span>
+          </div>
+          <div class="field">
+            <label for="confirmPassword">Confirm Password <span class="req">*</span></label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required />
+            <span class="field-error" id="pw-error"></span>
+          </div>
+        </div>
+
+        <div class="form-row single">
+          <div class="field">
+            <label>Profile Picture</label>
+            <div class="file-field">
+              <input type="file" id="profilePic" name="profilePic" accept="image/*" />
+              <div class="file-trigger">
+                <div class="file-trigger-icon">
+                  <svg fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                </div>
+                <div class="file-trigger-text">
+                  <strong id="file-name">Click to upload</strong>
+                  PNG, JPG up to 5 MB
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CONSENT ── -->
+        <div class="consent-row">
+          <input type="checkbox" id="consentCheckbox" name="consentCheckbox" required />
+          <label for="consentCheckbox">
+            I agree to the <a href="{% url 'website:privacy' %}" target="_blank">terms and conditions</a>
+            and consent to the processing of my personal data in accordance with EUNCCU's privacy policy.
+          </label>
+        </div>
+
+        <!-- ── SUBMIT ── -->
+        <button type="submit" class="reg-submit">Create My Account</button>
+
+      </form>
+
+      <!-- FOOTER -->
+      <div class="reg-footer">
+        Already have an account? <a href="{% url 'website:login' %}">Sign in</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* ── Toggle student / alumnus fields ── */
+  function toggleFields() {
+    const userType = document.getElementById('userType').value;
+    const sF  = document.getElementById('studentFields');
+    const aF  = document.getElementById('alumnusFields');
+    const aF2 = document.getElementById('alumnusFields2');
+
+    sF.style.display  = userType === 'student'  ? 'grid' : 'none';
+    aF.style.display  = userType === 'alumnus'  ? 'grid' : 'none';
+    aF2.style.display = userType === 'alumnus'  ? 'grid' : 'none';
+
+    // required toggling
+    document.getElementById('registrationNumber').required = userType === 'student';
+    document.getElementById('yearOfStudy').required        = userType === 'student';
+    document.getElementById('graduationYear').required     = userType === 'alumnus';
+    document.getElementById('currentOccupation').required  = userType === 'alumnus';
+    document.getElementById('workplace').required          = userType === 'alumnus';
+  }
+
+  /* ── Year of study tip ── */
+  document.getElementById('yearOfStudy').addEventListener('change', function () {
+    const r = document.getElementById('yearResponse');
+    if (this.value === '1') {
+      r.style.cssText = 'display:block;background:#e8f5ed;color:#1a5c2a;padding:8px 12px;border-radius:7px;margin-top:6px;font-size:.82rem;font-weight:500;';
+      r.textContent = ' Welcome to your first year! Check out the student orientation guide.';
+    } else if (this.value) {
+      r.style.cssText = 'display:block;background:#eef3ff;color:#3451b2;padding:8px 12px;border-radius:7px;margin-top:6px;font-size:.82rem;font-weight:500;';
+      r.textContent = 'Keep up the great work on your academic journey!';
+    } else {
+      r.style.display = 'none';
+    }
+  });
+
+  /* ── Username auto-lowercase + validation ── */
+  document.getElementById('username').addEventListener('input', function () {
+    this.value = this.value.toLowerCase();
+    const err = document.getElementById('username-error');
+    const field = this.closest('.field');
+    if (this.value && !/^[a-z0-9_@.-]+$/.test(this.value)) {
+      err.textContent = 'Only lowercase letters, numbers, and @ . - _ allowed';
+      field.classList.add('has-error');
+    } else {
+      err.textContent = '';
+      field.classList.remove('has-error');
+    }
+  });
+
+  /* ── Password match ── */
+  ['password','confirmPassword'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      const pw  = document.getElementById('password').value;
+      const cpw = document.getElementById('confirmPassword').value;
+      const err = document.getElementById('pw-error');
+      const field = document.getElementById('confirmPassword').closest('.field');
+      if (cpw && pw !== cpw) {
+        err.textContent = 'Passwords do not match';
+        field.classList.add('has-error');
+      } else {
+        err.textContent = '';
+        field.classList.remove('has-error');
+      }
+    });
+  });
+
+  /* ── Email AJAX check ── */
+  document.getElementById('email').addEventListener('blur', function () {
+    const email = this.value;
+    const errEl = document.getElementById('email-error');
+    const field = this.closest('.field');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (email) { errEl.textContent = 'Invalid email format'; field.classList.add('has-error'); }
+      return;
+    }
+    fetch(`/check-email/?email=${encodeURIComponent(email)}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.exists) {
+          errEl.textContent = 'Email already registered';
+          field.classList.add('has-error');
+        } else {
+          errEl.textContent = '';
+          field.classList.remove('has-error');
+        }
+      }).catch(() => {});
+  });
+
+  /* ── File name display ── */
+  document.getElementById('profilePic').addEventListener('change', function () {
+    const label = document.getElementById('file-name');
+    label.textContent = this.files[0] ? this.files[0].name : 'Click to upload';
+  });
+
+  /* ── Form submit validation ── */
+  document.getElementById('registrationForm').addEventListener('submit', function (e) {
+    const errors = [];
+    const username = document.getElementById('username').value;
+    const pw  = document.getElementById('password').value;
+    const cpw = document.getElementById('confirmPassword').value;
+    const uType = document.getElementById('userType').value;
+
+    if (!/^[a-z0-9_@.-]+$/.test(username))
+      errors.push('Username contains invalid characters.');
+    if (pw.length < 8)
+      errors.push('Password must be at least 8 characters.');
+    if (pw !== cpw)
+      errors.push('Passwords do not match.');
+    if (uType === 'student') {
+      if (!document.getElementById('registrationNumber').value)
+        errors.push('Registration number is required.');
+      if (!document.getElementById('yearOfStudy').value)
+        errors.push('Year of study is required.');
+    } else if (uType === 'alumnus') {
+      if (!document.getElementById('graduationYear').value)
+        errors.push('Graduation year is required.');
+      if (!document.getElementById('currentOccupation').value)
+        errors.push('Current occupation is required.');
+    }
+
+    if (errors.length) {
+      e.preventDefault();
+      alert('Please fix the following:\n\n' + errors.join('\n'));
+    }
+  });
+</script>
+
+{% endblock %}

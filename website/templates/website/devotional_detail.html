@@ -1,0 +1,52 @@
+{% extends 'website/base.html' %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 mt-5">
+            {% if devotional %}
+            <article class="card shadow p-4 mb-4 border-0 mt-5">
+                <h1 class="mb-2" style="font-weight:700;">{{ devotional.title }}</h1>
+                <p class="text-muted mb-4" style="font-size:1.1em;">
+                    <i class="bi bi-calendar-event"></i> {{ devotional.date|date:"F j, Y" }}
+                </p>
+                {% if devotional.image %}
+                <div class="mb-4 text-center">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#devotionalImageModal">
+                        <img src="{{ devotional.image.url }}"
+                             class="img-fluid rounded shadow"
+                             alt="{{ devotional.title }}"
+                             style="max-height: 400px; object-fit: cover;">
+                    </a>
+                    <div class="small text-muted mt-2">Click to enlarge</div>
+                </div>
+                {% endif %}
+                <div class="devotional-content bg-light p-4 rounded">
+                    {{ devotional.content|linebreaks }}
+                </div>
+                <a href="{% url 'website:home' %}" class="btn btn-outline-primary mt-4">
+                    &larr; Back to Devotionals
+                </a>
+            </article>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if show_modal %}
+<!-- Modal -->
+<div class="modal fade" id="devotionalImageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+            <button type="button" class="btn-close position-absolute top-0 end-0 m-2 bg-white rounded-circle"
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-body p-0">
+                <img src="{{ devotional.image.url }}"
+                     alt="{{ devotional.title }}"
+                     class="img-fluid w-100 rounded shadow">
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

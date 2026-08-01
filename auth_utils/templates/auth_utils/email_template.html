@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Segoe UI, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { color: #2c8e22; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #bbbbbb; }
+        .content { margin: 20px 0; }
+        .credentials { background: #f5f5f5; padding: 15px; border-radius: 5px; }
+        .footer { margin-top: 20px; font-size: 0.9em; color: #969090;  }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Welcome to EUNCCU</h2>
+        </div>
+        
+        <div class="content">
+            <p>Dear {{ member.get_full_name }},</p>
+            <p>Thank you for registering with Egerton University Njoro Campus Christian Union.</p>
+            
+            <div class="credentials">
+                <h3>Your Login Details:</h3>
+                <p><strong>member ID:</strong> {{ member_id }}</p>
+            </div>
+            
+            <p>You can login using either:</p>
+            <ul>
+                <li>Your Email: <strong>{{ member.email }}</strong> OR</li>
+                <li>Your Phone: <strong>{{ member.phone }}</strong></li>
+            </ul>
+            <p>with the Member ID above as your password login paswword. <br>
+                Then you'll be prompted to set your password, which you'll use to access your portal hence fourth!</p>
+            
+            <p>Please keep these details secure and don't share them with anyone.
+                use them to login at <a href="{{ site_url }}">EUNCCU</a> to 
+                access your member portal.</p> <!--site url badae-->
+        </div>
+        
+        <div class="footer">
+            <p>Blessings!<br>Regards, EUNCCU Pastoral Committee {% now "Y" %}</p>
+        </div>
+    </div>
+</body>
+</html>

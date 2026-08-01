@@ -1,0 +1,1471 @@
+{% extends 'website/base.html' %} 
+{% load static %} 
+{% block content %}
+
+<style>
+
+  /* ============================================================
+     ROOT TOKENS 
+  ============================================================ */
+  :root {
+    --black:   #0a0a0a;
+    --white:   #fafaf8;
+    --green:   #2c8e22;
+    --red:     #ff1500;
+    --ink:     #1a1a1a;
+    --rule:    1px solid var(--black);
+    --rule-thick: 0px solid var(--black);
+    --radius-sm: 4px;
+    --radius-xs: 2px;
+  }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── Utility ── */
+  .u-red   { color: var(--red); }
+  .u-green { color: var(--green); }
+  .u-white { color: var(--white); }
+  .u-bg-black { background: var(--black); }
+  .u-bg-green { background: var(--green); }
+  .u-uppercase { text-transform: uppercase; letter-spacing: .12em; }
+  .u-center { text-align: center; }
+
+  /* ── Cross icon  ── */
+  .cross {
+    display: inline-block;
+    position: relative;
+    width: 1em; height: 1em;
+  }
+
+
+  .cross::before, .cross::after {
+    content: '';
+    position: absolute;
+    background: currentColor;
+  }
+  .cross::before { width: 30%; height: 100%; top: 0; left: 35%; }
+  .cross::after  { width: 100%; height: 30%; top: 28%; left: 0; }
+
+  /* ── Reveal animations (mirrored from about.html) ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity .7s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform .7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal-left.visible { opacity: 1; transform: none; }
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal-right.visible { opacity: 1; transform: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.35; transform: scale(0.7); }
+  }
+  @keyframes ken-burns {
+    from { transform: scale(1); }
+    to   { transform: scale(1.06); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important; transition: none !important;
+      opacity: 1 !important; transform: none !important;
+    }
+  }
+
+  /* ── Section commons  ── */
+  .home-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 90px 60px;
+  }
+  @media (max-width: 768px) { .home-section { padding: 60px 24px; } }
+
+  .section-label {
+    font-family: 'poppins', sans-serif;
+    font-weight: 700;
+    font-size: .75rem;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: currentColor;
+    max-width: 60px;
+  }
+
+  .section-title {
+    font-family: 'Georgia', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    color: var(--black);
+    letter-spacing: -0.01em;
+  }
+  .section-title em { font-style: italic; color: var(--green); }
+
+
+  /* ============================================================
+     MINI-ABOUT SECTION
+  ============================================================ */
+  .mini-about-section {
+    background: var(--white);
+    border-bottom: var(--rule-thick);
+    overflow: hidden;
+  }
+
+  .mini-about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: var(--rule-thick);
+  }
+  @media (max-width: 768px) { .mini-about-grid { grid-template-columns: 1fr; } }
+
+  /* Left text column */
+  .mini-about-text {
+    padding: 80px 60px;
+    border-right: var(--rule);
+  }
+  @media (max-width: 768px) { .mini-about-text { padding: 50px 24px; border-right: none; border-bottom: var(--rule); } }
+
+  .mini-about-eyebrow {
+    font-family: 'poppins', sans-serif;
+    font-weight: 700;
+    font-size: .72rem;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .mini-about-eyebrow::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 2px;
+    background: var(--red);
+  }
+
+  .mini-about-title {
+    font-family: 'Georgia', serif;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 800;
+    line-height: .97;
+    margin-bottom: 28px;
+    color: var(--black);
+    letter-spacing: -0.02em;
+  }
+  .mini-about-title em { font-style: italic; color: var(--green); }
+
+  .mini-about-verse-block {
+    border-left: 4px solid var(--green);
+    padding-left: 22px;
+    margin-bottom: 36px;
+  }
+  .mini-about-verse-block p {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: #2d2a24;
+    font-family: 'Georgia', serif;
+    font-style: italic;
+  }
+  .mini-about-verse-block cite {
+    display: block;
+    margin-top: 8px;
+    font-family: 'poppins', sans-serif;
+    font-size: .7rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--green);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .mini-about-body {
+    font-size: .95rem;
+    line-height: 1.85;
+    color: #3a3a34;
+    max-width: 500px;
+    margin-bottom: 36px;
+  }
+
+  .btn {
+    font-family: 'poppins', sans-serif;
+    font-weight: 700;
+    font-size: .75rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    padding: 13px 32px;
+    border: 2px solid var(--black);
+    cursor: pointer;
+    transition: background .2s, color .2s, border-color .2s;
+    display: inline-block;
+    border-radius: var(--radius-sm);
+  }
+  .btn-primary { background: var(--black); color: var(--white); }
+  .btn-primary:hover { background: var(--green); border-color: var(--green); }
+  .btn-outline { background: transparent; color: var(--black); }
+  .btn-outline:hover { background: var(--black); color: var(--white); }
+
+  /* Right image column */
+  .mini-about-image-side {
+    background: var(--black);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 50px;
+    min-height: 500px;
+    position: relative;
+    overflow: hidden;
+  }
+  .mini-about-image-side img {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: .55;
+    animation: ken-burns 14s ease-in-out infinite alternate;
+  }
+  .mini-about-image-side::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(255,255,255,.025) 3px, rgba(255,255,255,.025) 4px
+    );
+    z-index: 1;
+  }
+  /* big cross watermark */
+  .mini-big-cross {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 150px; height: 150px;
+    opacity: .1;
+    z-index: 1;
+  }
+  .mini-big-cross::before, .mini-big-cross::after {
+    content: '';
+    position: absolute;
+    background: var(--white);
+  }
+  .mini-big-cross::before { width: 28%; height: 100%; top: 0; left: 36%; }
+  .mini-big-cross::after  { width: 100%; height: 28%; top: 33%; left: 0; }
+
+  .mini-about-pullquote {
+    position: relative;
+    z-index: 2;
+    color: var(--white);
+    font-family: 'Georgia', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.45;
+    border-left: 3px solid var(--green);
+    padding-left: 22px;
+  }
+  .mini-about-pullquote cite {
+    display: block;
+    margin-top: 10px;
+    font-style: normal;
+    font-family: 'poppins', sans-serif;
+    font-size: .65rem;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+
+  .mini-about-badge {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    background: var(--green);
+    color: var(--white);
+    font-family: 'poppins', sans-serif;
+    font-size: .65rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: var(--radius-xs);
+    z-index: 2;
+  }
+
+
+  /* ============================================================
+     SERVICES / SCHEDULE SECTION
+  ============================================================ */
+  .services-section {
+    background: #f5f5f0;
+    border-top: var(--rule);
+    border-bottom: var(--rule-thick);
+  }
+
+  .services-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 90px 60px;
+  }
+  @media (max-width: 768px) { .services-inner { padding: 60px 24px; } }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: var(--rule-thick);
+    margin-top: 50px;
+  }
+  @media (max-width: 768px) { .services-grid { grid-template-columns: 1fr; } }
+
+  .service-card {
+    padding: 48px 38px;
+    border-right: var(--rule);
+    background: var(--white);
+    transition: background .25s;
+  }
+  .service-card:last-child { border-right: none; }
+  .service-card:hover { background: #f0faf0; }
+
+  .service-card-num {
+    font-family: 'Georgia', serif;
+    font-weight: 900;
+    font-size: 3rem;
+    color: #e8e8e4;
+    line-height: 1;
+    margin-bottom: 14px;
+  }
+
+  .service-card-icon {
+    width: 36px; height: 36px;
+    margin-bottom: 18px;
+    color: var(--green);
+    position: relative;
+  }
+  /* inline cross icon for service cards */
+  .service-card-icon.icon-cross { font-size: 1.8rem; }
+
+  .service-card h3 {
+    font-family: 'Georgia', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--black);
+  }
+
+  .service-card p {
+    font-size: .88rem;
+    line-height: 1.75;
+    color: #4a4a44;
+    margin-bottom: 18px;
+  }
+
+  .service-time {
+    font-family: 'poppins', sans-serif;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .service-time::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: pulse-dot 1.6s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  /* Live row below the service grid */
+  .services-live-row {
+    margin-top: 0;
+    border: var(--rule-thick);
+    border-top: none;
+    background: var(--black);
+    color: var(--white);
+    padding: 28px 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .services-live-row p {
+    font-family: 'poppins', sans-serif;
+    font-size: .8rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,.7);
+  }
+  .services-live-row p strong {
+    color: var(--white);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    font-size: .72rem;
+  }
+
+  .services-live-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'poppins', sans-serif;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--red);
+    white-space: nowrap;
+  }
+  .services-live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+
+  .services-watch-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'poppins', sans-serif;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--green);
+    border: 2px solid var(--green);
+    padding: 11px 26px;
+    border-radius: var(--radius-sm);
+    transition: background .2s, border-color .2s;
+    white-space: nowrap;
+  }
+  .services-watch-btn:hover { background: transparent; color: var(--white); }
+  .services-watch-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; flex-shrink: 0; }
+
+
+  /* ============================================================
+     SEMESTER THEME SECTION
+  ============================================================ */
+  .semester-section {
+    background: var(--black);
+    border-bottom: var(--rule-thick);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Decorative watermark cross */
+  .semester-watermark {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .semester-watermark svg {
+    width: 40vw; height: 40vw;
+    opacity: .04;
+    color: var(--white);
+  }
+
+  .semester-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 100px 60px;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    align-items: center;
+  }
+  @media (max-width: 768px) {
+    .semester-inner { grid-template-columns: 1fr; padding: 60px 24px; }
+  }
+
+  .semester-left {
+    padding-right: 70px;
+    border-right: 1px solid #2a2a2a;
+  }
+  @media (max-width: 768px) { .semester-left { padding-right: 0; border-right: none; border-bottom: 1px solid #2a2a2a; padding-bottom: 50px; margin-bottom: 50px; } }
+
+  .semester-label {
+    font-family: 'poppins', sans-serif;
+    font-weight: 700;
+    font-size: .72rem;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .semester-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: currentColor;
+    max-width: 60px;
+    opacity: .5;
+  }
+
+  .semester-theme-title {
+    font-family: 'Georgia', serif;
+    font-size: clamp(2.4rem, 5vw, 4.2rem);
+    font-weight: 800;
+    line-height: .95;
+    margin-bottom: 36px;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .semester-theme-title em {
+    font-style: italic;
+    color: var(--green);
+  }
+
+  .semester-desc {
+    font-size: .95rem;
+    line-height: 1.85;
+    color: rgba(255,255,255,.65);
+    max-width: 440px;
+  }
+
+  /* Right: verse */
+  .semester-right {
+    padding-left: 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  @media (max-width: 768px) { .semester-right { padding-left: 0; } }
+
+  .semester-verse-block {
+    border-left: 4px solid var(--red);
+    padding-left: 28px;
+  }
+  .semester-verse-text {
+    font-family: 'Georgia', serif;
+    font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--white);
+    margin-bottom: 14px;
+  }
+  .semester-verse-ref {
+    font-family: 'poppins', sans-serif;
+    font-weight: 700;
+    font-size: .7rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+
+  .semester-meta {
+    display: flex;
+    gap: 0;
+    border: 1px solid #2a2a2a;
+  }
+  .semester-meta-item {
+    flex: 1;
+    padding: 22px 24px;
+    border-right: 1px solid #2a2a2a;
+  }
+  .semester-meta-item:last-child { border-right: none; }
+  .semester-meta-num {
+    font-family: 'Georgia', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .semester-meta-num span { color: var(--green); }
+  .semester-meta-label {
+    font-family: 'poppins', sans-serif;
+    font-size: .62rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.4);
+  }
+
+  /* Django template placeholder note */
+  .semester-dynamic {
+    background: rgba(44,142,34,.08);
+    border: 1px solid rgba(44,142,34,.2);
+    border-radius: var(--radius-sm);
+    padding: 18px 22px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .semester-dynamic-icon { color: var(--green); flex-shrink: 0; margin-top: 2px; }
+  .semester-dynamic p {
+    font-size: .82rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,.55);
+  }
+  .semester-dynamic p strong { color: rgba(255,255,255,.85); }
+
+
+  /* ============================================================
+     EVENTS SECTION — 
+  ============================================================ */
+  .events-section {
+    background: var(--white);
+    border-bottom: var(--rule);
+  }
+  .events-header {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 60px 40px;
+  }
+  @media (max-width: 768px) { .events-header { padding: 60px 24px 30px; } }
+
+  .events-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 60px 80px;
+  }
+  @media (max-width: 768px) { .events-container { padding: 0 24px 60px; } }
+
+  /* (event card styles remain untouched below) */
+
+  /* ============================================================
+     TOP HERO SLIDER (NIVO SLIDER IMPROVEMENTS)
+  ============================================================ */
+  .slider-section {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Modern Dark Overlay for text legibility */
+  .slider-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .nivoSlider {
+    height: 85vh !important;
+    box-shadow: none;
+    background: var(--black);
+  }
+
+  .nivoSlider img {
+    height: 100% !important;
+    width: 100% !important;
+    object-fit: cover;
+    /* Subtle Ken Burns effect */
+    animation: hero-ken-burns 20s infinite alternate;
+  }
+
+  @keyframes hero-ken-burns {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+  }
+
+  .slider-caption {
+    z-index: 10;
+    background: transparent !important;
+    width: 100%;
+  }
+
+  .slider-text h3 {
+    font-family: 'Georgia', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem) !important;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+
+  .slider-text h3 em {
+    font-style: italic;
+    color: var(--green);
+  }
+
+  .slider-text h4 {
+    font-family: 'poppins', sans-serif;
+    font-size: 1.2rem !important;
+    color: rgba(255,255,255,0.9);
+    max-width: 650px;
+    margin: 0 auto 30px;
+  }
+
+  /* ============================================================
+     DEVOTIONS CAROUSEL IMPROVEMENTS
+  ============================================================ */
+  #churchCarousel {
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+  }
+
+  #churchCarousel .carousel-item {
+    height: 65vh;
+    min-height: 450px;
+  }
+
+  #churchCarousel .overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 80%, transparent 100%) !important;
+    z-index: 1;
+  }
+
+  .scripture-tag {
+    background: var(--green);
+    color: white;
+    padding: 5px 14px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    border-radius: var(--radius-sm);
+    margin-bottom: 15px;
+    display: inline-block;
+  }
+
+  /* ============================================================
+     YOUTUBE THUMBNAIL (1920x1080 FIT)
+  ============================================================ */
+  .video-thumbnail {
+    position: relative;
+    width: 100%;
+    /* Forces 16:9 ratio for the 1920x1080 image */
+    aspect-ratio: 16 / 9; 
+    overflow: hidden;
+    border-radius: 12px;
+    background: var(--black);
+    cursor: pointer;
+  }
+
+  .video-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+  }
+
+  .video-thumbnail:hover .video-img {
+    transform: scale(1.05);
+  }
+
+  .play-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.7);
+    border-radius: 50%;
+    padding: 22px;
+    transition: all 0.3s ease;
+    z-index: 2;
+  }
+
+  .video-thumbnail:hover .play-overlay {
+    background: var(--red);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  /* Reveal Animations */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+</style>
+
+
+<!-- Header Height Spacer -->
+<div class="header-height"></div>
+
+
+<!-- ============================================================
+     HERO SLIDER 
+============================================================ -->
+<section class="slider-section">
+  <div class="slider-wrapper">
+    <div id="main-slider" class="nivoSlider">
+      <img src="{% static 'img/Slider1.webp' %}" alt="" title="#slider-caption-1" />
+      <img src="{% static 'img/Slider2.webp' %}" alt="" title="#slider-caption-2" />
+    </div>
+
+    <div id="slider-caption-1" class="nivo-html-caption slider-caption">
+      <div class="container h-100 d-flex align-items-center justify-content-center">
+        <div class="slider-text u-center">
+          <h3 class="wow fadeInDown" data-wow-delay="0.2s">This is where. <br/><em>You Belong.</em></h3>
+          <h4 class="wow fadeInUp" data-wow-delay="0.4s">Join a community dedicated to worship, growth, and service.</h4>
+          <div class="wow fadeInUp" data-wow-delay="0.6s">
+            <a href="{% url 'website:ministries' %}" class="default-btn">Explore Ministries</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="slider-caption-2" class="nivo-html-caption slider-caption">
+      <div class="container h-100 d-flex align-items-center justify-content-center">
+        <div class="slider-text u-center">
+          <h3 class="wow fadeInDown" data-wow-delay="0.2s">Worship <em>with</em> us today.</h3>
+          <h4 class="wow fadeInUp" data-wow-delay="0.4s">"But as for me and my house, we will serve the Lord."</h4>
+          <div class="wow fadeInUp" data-wow-delay="0.6s">
+            <a href="{% url 'website:about' %}" class="default-btn">Our Story</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     MINI-ABOUT SECTION  (redesigned to match about.html feel)
+============================================================ -->
+<section class="mini-about-section">
+  <div class="mini-about-grid">
+
+    <!-- Left: Text -->
+    <div class="mini-about-text">
+      <div class="mini-about-eyebrow reveal">
+        Egerton University Njoro Campus Christian Union
+      </div>
+
+      <h2 class="mini-about-title reveal">
+        Our God <em>Reigns</em>
+      </h2>
+
+      <div class="mini-about-verse-block reveal">
+        <p>"How beautiful upon the mountains are the feet of him who brings good news, who publishes peace, who brings good news of happiness…"</p>
+        <cite>Isaiah 52 : 7</cite>
+      </div>
+
+      <p class="mini-about-body reveal">
+        The Egerton University Njoro Campus Christian Union (EUNCCU) is a union of Christian students bound together in common faith in the one and only true God, committed to living according to the Holy Biblical Scriptures — exclusively non-political and non-denominational.
+      </p>
+
+      <div class="reveal" style="display:flex; gap:14px; flex-wrap:wrap;">
+        <a href="{% url 'website:about' %}" class="btn btn-primary">Who We Are</a>
+        <a href="{% url 'website:ministries' %}" class="btn btn-outline">Our Ministries</a>
+      </div>
+    </div>
+
+    <!-- Right: Image / Pullquote -->
+    <div class="mini-about-image-side">
+      <img src="{% static 'img/img407.jpg' %}" alt="Students gathered in worship" />
+      <div class="mini-big-cross"></div>
+      <div class="mini-about-pullquote">
+        "A community where faith ignites and lives are transformed."
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SEMESTER THEME SECTION  (new — views & models by you)
+============================================================ -->
+<section class="semester-section" id="semester-theme">
+
+  <!-- Watermark -->
+  <div class="semester-watermark" aria-hidden="true">
+    <svg viewBox="0 0 200 200" fill="currentColor">
+      <rect x="80" y="0" width="40" height="200"/>
+      <rect x="0" y="75" width="200" height="50"/>
+    </svg>
+  </div>
+
+  <div class="semester-inner">
+
+    <!-- LEFT -->
+    <div class="semester-left">
+      <div class="semester-label reveal">Semester Theme</div>
+
+      <h2 class="semester-theme-title reveal">
+        {{ semester_theme.title|default:"Rooted &amp; <em>Built Up</em>"|safe }}
+      </h2>
+
+      <p class="semester-desc reveal">
+        {{ semester_theme.description|default:"This semester we anchor ourselves in Christ — growing in the Word, building community, and bearing lasting fruit." }}
+      </p>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="semester-right">
+
+      <div class="semester-verse-block reveal">
+        <p class="semester-verse-text">
+          "{{ semester_theme.verse_text|default:"Therefore, as you received Christ Jesus the Lord, so walk in Him..." }}"
+        </p>
+        <span class="semester-verse-ref">
+          {{ semester_theme.verse_reference|default:"Colossians 2:6–7" }}
+        </span>
+      </div>
+
+      <div class="semester-meta reveal">
+
+        <!-- Semester Number -->
+        <div class="semester-meta-item">
+          <div class="semester-meta-num">
+            {% with num=semester_theme.semester_number|default:"1" %}
+              {{ num }}
+              <span>
+                {% if num == "1" %}st
+                {% elif num == "2" %}nd
+                {% elif num == "3" %}rd
+                {% else %}th
+                {% endif %}
+              </span>
+            {% endwith %}
+          </div>
+          <div class="semester-meta-label">Semester</div>
+        </div>
+
+        <!-- Spiritual Year -->
+        <div class="semester-meta-item">
+          <div class="semester-meta-num">
+            {{ semester_theme.spiritual_year|default:"2025/2026" }}
+          </div>
+          <div class="semester-meta-label">Spiritual Year</div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SERVICES / SCHEDULE SECTION  
+============================================================ -->
+<section class="services-section">
+  <div class="services-inner">
+
+    <div class="section-label reveal">Services Schedule</div>
+    <h2 class="section-title reveal">Join Us in <em> Worship</em></h2>
+
+    <!-- Three service cards -->
+    <div class="services-grid">
+
+      <div class="service-card reveal">
+        <div class="service-card-num">01</div>
+        <h3>Fellowship Service</h3>
+        <p>Gather with us every Saturday evening for a time of deep worship, prayer, the Word, and fellowship with your brothers and sisters in Christ.</p>
+        <span class="service-time">Saturday · 7:00 PM – 9:00 PM</span>
+      </div>
+
+      <div class="service-card reveal" style="transition-delay:.1s">
+        <div class="service-card-num">02</div>
+        <h3>First Sunday Service</h3>
+        <p>Start your Sunday in God's presence. This early gathering sets the tone for the week with Spirit-filled worship and the preaching of the Word.</p>
+        <span class="service-time">Sunday · 6:50 AM – 10:00 AM</span>
+      </div>
+
+      <div class="service-card reveal" style="transition-delay:.2s">
+        <div class="service-card-num">03</div>
+        <h3>Second Sunday Service</h3>
+        <p>A second opportunity to encounter God each Sunday. All are welcome — whether you're a first-time visitor or a faithful member of the union.</p>
+        <span class="service-time">Sunday · 10:00 AM – 12:15 PM</span>
+      </div>
+
+    </div>
+
+    <!-- Live stream bar -->
+    <div class="services-live-row reveal">
+      <div>
+        <div class="services-live-badge">
+          <span class="services-live-dot"></span>
+          Livestream Available
+        </div>
+        <p style="margin-top:8px;"><strong>Saturday</strong> — 7:00 PM · <strong>Sunday</strong> — 6:50 AM</p>
+        <p>Watch our services live from anywhere on YouTube.</p>
+      </div>
+      <a href="https://www.youtube.com/@EgertonUniversityCU" target="_blank" rel="noopener" class="services-watch-btn">
+        Watch Live Service
+        <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================ 
+              Devotions Section 
+============================================================ -->
+<section id="devotion-slider" class="py-5 bg-light">
+  <div class="container">
+    <div class="section-header u-center mb-5 reveal">
+      <span class="u-red u-uppercase fw-bold small">We have materials for you?</span>
+      <h2 class="display-5 font-georgia mt-2"><em>Latest Devotions</em></h2>
+    </div>
+
+    <div id="churchCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        {% for devotion in slider_devotions %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="6000">
+          <div class="overlay"></div>
+          <img src="{{ devotion.image.url|default:'/static/img/default-devotion.jpg' }}" class="d-block w-100 h-100" style="object-fit: cover;" alt="{{ devotion.title }}">
+          
+          <div class="carousel-caption d-md-block u-center" style="z-index: 2; bottom: 12%;">
+            <span class="scripture-tag">{{ devotion.scripture_reference }}</span>
+            <h1 class="display-4 fw-bold text-white mb-3">{{ devotion.title }}</h1>
+            <p class="lead d-none d-md-block text-white-50 px-5 mb-4">
+              {{ devotion.content|striptags|truncatewords:22 }}
+            </p>
+            <a href="{% url 'website:devotion_detail' devotion.slug %}" class="btn btn-primary btn-lg px-4">Read Material</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#churchCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#churchCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     EVENTS SECTION — header restyled; cards kept exactly as-is
+============================================================ -->
+<section class="events-section" id="events">
+
+  <!-- Restyled header to match about.html sections -->
+  <div class="events-header">
+    <div class="section-label reveal">What's Happening</div>
+    <h2 class="section-title reveal">
+      {% if upcoming_events %}Upcoming <em>Events</em>{% else %}No Events <em>Yet</em>{% endif %}
+    </h2>
+    {% if upcoming_events %}
+    <p class="reveal" style="font-size:.95rem; color:#4a4a44; line-height:1.7; max-width:560px;">Be part of moments that build faith, community, and purpose — mark your calendar and come with expectation.</p>
+    {% else %}
+    <p class="reveal" style="font-size:.95rem; color:#4a4a44; line-height:1.7;">No events are currently scheduled. Please check back soon!</p>
+    {% endif %}
+  </div>
+
+  <div class="events-container">
+
+    <!-- ── Event card styles (completely unchanged) ── -->
+    <style>
+      .ev-card {
+        background: #fff;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .ev-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.13); }
+      .ev-thumb { position: relative; height: 200px; overflow: hidden; background: #e8f5e9; }
+      .ev-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+      .ev-card:hover .ev-thumb img { transform: scale(1.06); }
+      .ev-date-ribbon { position: absolute; top: 12px; left: 12px; background: #2c8e22; color: #fff; border-radius: 8px; padding: 6px 10px; text-align: center; min-width: 46px; line-height: 1.1; z-index: 2; }
+      .ev-date-ribbon .ev-day { font-size: 1.3rem; font-weight: 700; display: block; }
+      .ev-date-ribbon .ev-month { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+      .ev-status { position: absolute; top: 12px; right: 12px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 10px; border-radius: 20px; z-index: 2; }
+      .ev-status.ongoing  { background: #2c8e22; color: #fff; }
+      .ev-status.upcoming { background: #ff0019; color: #fff; }
+      .ev-thumb-placeholder { height: 185px; background: linear-gradient(135deg, #e8f5e9, #c8e6c9); display: flex; align-items: center; justify-content: center; font-size: 2.8rem; color: #2c8e22; opacity: 0.5; position: relative; }
+      .ev-body { padding: 18px 18px 10px; flex: 1; }
+      .ev-title { font-size: 1rem; font-weight: 700; color: #1a1a2e; margin-bottom: 10px; line-height: 1.4; }
+      .ev-meta { list-style: none; padding: 0; margin: 0 0 10px; }
+      .ev-meta li { font-size: 0.8rem; color: #666; display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+      .ev-meta li i { color: #2c8e22; font-size: 0.85rem; }
+      .ev-excerpt { font-size: 0.82rem; color: #888; line-height: 1.55; margin-bottom: 0; }
+      .ev-footer { padding: 12px 18px 16px; border-top: 1px solid #f0f0f0; text-align: center; }
+      .ev-btn { display: inline-block; background: #2c8e22; color: #fff !important; font-size: 0.82rem; font-weight: 600; padding: 7px 20px; border-radius: 20px; text-decoration: none; transition: background 0.2s ease; }
+      .ev-btn:hover { background: #dc3545; color: #fff !important; }
+      .ev-view-all { display: inline-block; margin-top: 30px; padding: 10px 30px; border: 2px solid #2c8e22; border-radius: 25px; color: #2c8e22; font-weight: 600; text-decoration: none; transition: all 0.25s ease; }
+      .ev-view-all:hover { background: #2c8e22; color: #fff !important; }
+    </style>
+
+    {% if upcoming_events %}
+    <div class="row g-4">
+      {% for event in upcoming_events %}
+      <div class="col-lg-4 col-md-6">
+        <div class="ev-card">
+
+          {% if event.event_image %}
+          <div class="ev-thumb">
+            <img src="{{ event.event_image.url }}" alt="{{ event.event_name }}" loading="lazy">
+            <div class="ev-date-ribbon">
+              <span class="ev-day">{{ event.start_date|date:"j" }}</span>
+              <span class="ev-month">{{ event.start_date|date:"M" }}</span>
+            </div>
+            {% if event.is_ongoing %}
+            <span class="ev-status ongoing">Ongoing</span>
+            {% elif event.is_upcoming %}
+            <span class="ev-status upcoming">Upcoming</span>
+            {% endif %}
+          </div>
+          {% else %}
+          <div class="ev-thumb-placeholder">
+            &#128197;
+            <div class="ev-date-ribbon" style="position:absolute; top:12px; left:12px;">
+              <span class="ev-day">{{ event.start_date|date:"j" }}</span>
+              <span class="ev-month">{{ event.start_date|date:"M" }}</span>
+            </div>
+            {% if event.is_ongoing %}
+            <span class="ev-status ongoing" style="position:absolute; top:12px; right:12px;">Ongoing</span>
+            {% elif event.is_upcoming %}
+            <span class="ev-status upcoming" style="position:absolute; top:12px; right:12px;">Upcoming</span>
+            {% endif %}
+          </div>
+          {% endif %}
+
+          <div class="ev-body">
+            <h3 class="ev-title">{{ event.event_name|truncatewords:6 }}</h3>
+            <ul class="ev-meta">
+              <li>
+                <i class="ti-calendar"></i>
+                <span>{{ event.start_date|date:"M j" }}{% if event.end_date != event.start_date %} – {{ event.end_date|date:"M j" }}{% endif %}</span>
+              </li>
+              {% if event.start_time or event.end_time %}
+              <li>
+                <i class="ti-time"></i>
+                <span>{% if event.start_time %}{{ event.start_time|time:"g:i A" }}{% else %}TBA{% endif %}{% if event.end_time %} – {{ event.end_time|time:"g:i A" }}{% endif %}</span>
+              </li>
+              {% endif %}
+              <li>
+                <i class="ti-location-pin"></i>
+                <span>{{ event.event_venue|truncatewords:3 }}</span>
+              </li>
+            </ul>
+            <p class="ev-excerpt">{{ event.event_description|striptags|truncatewords:12 }}</p>
+          </div>
+
+          <div class="ev-footer">
+            <a href="{% url 'website:event_detail' event.id %}" class="ev-btn">More Details</a>
+          </div>
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center">
+      <a href="{% url 'website:events' %}" class="ev-view-all">View All Events &rarr;</a>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- ==========================================
+       U-Point Video SEction 
+========================================== -->
+
+<section class="campaigns-section bd-bottom">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 xs-padding">
+        <div class="campaigns-wrap">
+          <h4>U-POINT SERIES</h4>
+          <h2>Explore our U-Point Series content</h2>
+          <p>
+            
+            
+            Catch up on our U-POINT series Episodes designed to bring the word of God into your life and beyond. <br />
+            Tap the video to watch, or hit the button below for more.
+          </p>
+          {% if video_id %}
+          <a href="https://www.youtube.com/watch?v={{ video_id }}" target="_blank" class="default-btn">Visit Our Channel
+          </a>
+          {% else %}
+          <a href="https://www.youtube.com/playlist?list={{ playlist_id }}" target="_blank" class="default-btn">View
+            Full Playlist</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="video-wrap position-relative">
+          {% if video_id %}
+          <!-- Thumbnail that triggers the modal -->
+           
+          <div class="video-thumbnail reveal" data-bs-toggle="modal" data-bs-target="#youtubeModal"
+            style="cursor: pointer; position: relative;">
+            <!-- Automatically fetches the high-quality thumbnail from YouTube -->
+            <img src="https://img.youtube.com/vi/{{ video_id }}/maxresdefault.jpg" alt="U-Point Video" class="video-img">
+
+            <!-- Play Button Overlay -->
+            <div class="play-overlay"
+              style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.6); border-radius: 50%; padding: 20px;">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="white">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </div>
+          {% else %}
+          <!-- Fallback if API fails or quota exceeded -->
+          <div class="alert alert-warning">
+            <p>Unable to load the latest video right now. {{ video_error }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Bootstrap Modal for Video Playback -->
+{% if video_id %}
+<div class="modal fade" id="youtubeModal" tabindex="-1" aria-labelledby="youtubeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0 pb-0">
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <!-- 16:9 Aspect Ratio Container -->
+        <div class="ratio ratio-16x9">
+          <iframe id="youtube-iframe" src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1"
+            title="YouTube video player" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Bootstrap Modal for Video Playback -->
+{% if video_id %}
+<div class="modal fade" id="youtubeModal" tabindex="-1" aria-labelledby="youtubeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0">
+      <div class="modal-header border-0 pb-0">
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <!-- 16:9 Aspect Ratio Container -->
+        <div class="ratio ratio-16x9">
+          <iframe id="youtube-iframe" src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+<!-- ============================================================
+     TESTIMONIES SECTION 
+============================================================ -->
+<style>
+  .testimony-submit-card {
+    margin: 42px auto 0;
+    max-width: 760px;
+    background: #fff;
+    border: 1px solid rgba(44, 142, 34, 0.14);
+    border-radius: 18px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
+    padding: 32px;
+  }
+
+  .testimony-submit-card h3 {
+    margin-bottom: 10px;
+    color: #111;
+  }
+
+  .testimony-submit-card p {
+    margin-bottom: 20px;
+    color: #555;
+  }
+
+  .testimony-submit-card .form-group {
+    margin-bottom: 18px;
+  }
+
+  .testimony-submit-card label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #222;
+  }
+
+  .testimony-submit-card textarea,
+  .testimony-submit-card input[type="file"] {
+    width: 100%;
+  }
+
+  .testimony-submit-card .default-btn {
+    border: 0;
+    cursor: pointer;
+  }
+
+  .testimony-submit-card .errorlist {
+    margin-top: 8px;
+    color: #b42318;
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .testimony-login-prompt a {
+    color: #2c8e22;
+    font-weight: 700;
+  }
+</style>
+<section class="testimonial-section bd-bottom padding">
+  <div class="container">
+    <div class="section-heading text-center mb-40">
+      <h2>Our Members' Testimonies</h2>
+      <span class="heading-border"></span>
+      <p>These are the testimonies of our members <br />about the goodness of God in their lives.</p>
+    </div>
+    {% if testimonies %}
+    <div id="testimonial-carousel" class="testimonial-carousel owl-carousel">
+      {% for testimony in testimonies %}
+      <div class="testimonial-item">
+        <p>{{ testimony.testimony|truncatewords:30 }}</p>
+        <div class="testi-footer">
+          {% if testimony.image %}
+          <img src="{{ testimony.image.url }}" alt="{{ testimony.testimony_giver }}" />
+          {% endif %}
+          <h4>{{ testimony.testimony_giver }}<span>{{ testimony.position }}</span></h4>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-4">
+      <p>No testimonies available yet</p>
+    </div>
+    {% endif %}
+
+    <div class="testimony-submit-card">
+      <h3>Share Your Testimony</h3>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} mb-3">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      {% if request.user.is_authenticated %}
+      <form method="post" action="{% url 'website:submit_testimony' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ testimony_form.non_field_errors }}
+        <div class="form-group">
+          {{ testimony_form.testimony.label_tag }}
+          {{ testimony_form.testimony }}
+          {{ testimony_form.testimony.errors }}
+        </div>
+        <div class="form-group">
+          {{ testimony_form.image.label_tag }}
+          {{ testimony_form.image }}
+          {{ testimony_form.image.errors }}
+        </div>
+        <button type="submit" class="default-btn">Submit Testimony</button>
+      </form>
+      {% else %}
+      <p class="testimony-login-prompt mb-0">
+        <a href="{% url 'website:login' %}">Sign in</a> to share your testimony.
+      </p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+
+<!-- Blog Section -->
+<section class="blog-section bg-grey bd-bottom padding">
+  <div class="container"></div>
+</section>
+
+
+<!-- ============================================================
+     REVEAL SCRIPT (same pattern as about.html)
+============================================================ -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+<!-- Script to stop YouTube video when modal closes -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Target the modal we created
+      var youtubeModal = document.getElementById('youtubeModal');
+      
+      if (youtubeModal) {
+          // Listen for the Bootstrap 'hidden' event (fires when the modal finishes closing)
+          youtubeModal.addEventListener('hidden.bs.modal', function (e) {
+              // Target the iframe inside the modal
+              var iframe = document.getElementById('youtube-iframe');
+              if (iframe) {
+                  // Capture the current source URL
+                  var iframeSrc = iframe.src;
+                  // Resetting the src attribute forces the iframe to reload, stopping the playback
+                  iframe.src = iframeSrc; 
+              }
+          });
+      }
+  });
+</script>
+
+{% endblock %}

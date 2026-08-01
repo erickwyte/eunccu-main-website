@@ -1,0 +1,1192 @@
+{% extends 'website/base.html'%}
+{% load static %}
+
+
+{% block content %}
+
+        
+<style>
+  :root {
+      --black:   #0a0a0a;
+      --white:   #fafaf8;
+      --green:   #2c8e22;
+      --red:     #ff1500; /*union color too bright used this*/  
+      --ink:     #1a1a1a;
+      --rule:    0px solid var(--black);
+      --rule-thick: 0px solid var(--black);
+      --radius-sm: 4px;      
+      --radius-xs: 2px;
+    }
+
+    /* ----GENERALZ ------- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: poppins, sans-serif;
+      font-weight: 400
+      overflow-x: hidden;
+      font-weight: 400;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ----------------------------- COLORS RE------------------------------ */
+    .u-red   { color: var(--red); }
+    .u-green { color: var(--green); }
+    .u-white { color: var(--white); }
+    .u-bg-black  { background: var(--black); }
+    .u-bg-green  { background: var(--green); }
+    .u-bg-red    { background: var(--red); }
+    .u-uppercase { text-transform: uppercase; letter-spacing: .12em; }
+    .u-center { text-align: center; }
+
+    /* ----------------------------- CROSS ICON BUIDING --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+    .cross {
+      display: inline-block;
+      position: relative;
+      width: 1em; height: 1em;
+    }
+    .cross::before, .cross::after {
+      content: '';
+      position: absolute;
+      background: currentColor;
+    }
+    .cross::before { width: 30%; height: 100%; top: 0; left: 35%; }
+    .cross::after  { width: 100%; height: 30%; top: 28%; left: 0; }
+
+    /* ----------------------------- ANIMATED REVEAL AND TRIFFERS VIEW POING------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity .7s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform .7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal-left.visible { opacity: 1; transform: none; }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal-right.visible { opacity: 1; transform: none; }
+
+    /* ----------------------------- HERO SECTION ---------------------------------------------------------- */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      background: var(--white);
+      border-bottom: var(--rule-thick);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-watermark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-watermark svg {
+      width: 60vw; height: 60vw;
+      opacity: .04;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 100px 60px 60px;
+      position: relative; z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .hero-eyebrow {
+      font-family: 'poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 2px;
+      background: var(--red);
+    }
+
+    .hero-title h1 {
+      font-family: 'Georgia', serif;
+      font-size: clamp(3.5rem, 8vw, 8rem);
+      font-weight: 800;
+      line-height: .95;
+      margin-bottom: 40px;
+      color: var(--black);
+      letter-spacing: -0.02em;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--green);
+    }
+
+    .hero-verse {
+      max-width: 520px;
+      border-left: 4px solid var(--green);
+      padding-left: 24px;
+      margin-bottom: 52px;
+    }
+    .hero-verse p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: #2d2a24;
+    }
+    .hero-verse cite {
+      display: block;
+      margin-top: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--green);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font-family: 'poppins', sans-serif;
+      font-weight: 700;
+      font-size: .8rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      padding: 14px 34px;
+      border: 2px solid var(--black);
+      cursor: pointer;
+      transition: background .2s, color .2s, border-color .2s, border-radius .2s;
+      display: inline-block;
+      border-radius: var(--radius-sm);
+    }
+    .btn-primary { background: var(--black); color: var(--white); border-radius: var(--radius-sm); }
+    .btn-primary:hover { background: var(--green); border-color: var(--green); border-radius: var(--radius-sm); }
+    .btn-outline { background: transparent; color: var(--black); border-radius: var(--radius-sm); }
+    .btn-outline:hover { background: var(--black); color: var(--white); border-radius: var(--radius-sm); }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: var(--rule);
+      position: relative; z-index: 1;
+    }
+    .stat {
+      padding: 28px 40px;
+      border-right: var(--rule);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Georgia', serif;
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--black);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-num span { color: var(--red); }
+    .stat-label {
+      font-family: 'Inter', sans-serif;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #5a5a55;
+    }
+
+    /* ----------------------------- SECTION COMMONS --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 60px;
+    }
+    .section-full { padding: 100px 0; }
+
+    .section-label {
+      font-family: 'poppins', sans-serif;
+      font-weight: 700;
+      font-size: 1.45rem;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: currentColor;
+      max-width: 60px;
+    }
+
+    .section-title {
+      font-family: 'Georgia', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      color: var(--black);
+      letter-spacing: -0.01em;
+    }
+    .section-title em { font-style: italic; color: var(--green); }
+
+    .section-body {
+      font-size: 1rem;
+      line-height: 1.85;
+      color: #2b2b26;
+      max-width: 620px;
+    }
+
+    /* ----------------------------- DIVIDER ------------------------------ */
+    .divider {
+      border: none;
+      border-top: var(--rule);
+      margin: 0 60px;
+    }
+    .divider-cross {
+      text-align: center;
+      margin: 0;
+      padding: 30px 0;
+      font-size: 1.8rem;
+      color: var(--black);
+      border-top: var(--rule);
+      border-bottom: var(--rule);
+      background: var(--white);
+      position: relative;
+    }
+    .divider-cross span {
+      display: inline-block;
+      background: var(--white);
+      padding: 0 20px;
+      position: relative;
+    }
+
+    /* ----------------------------- WHO ARE WE  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+    .who-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: var(--rule-thick);
+      border-bottom: var(--rule);
+    }
+    .who-text { padding: 80px 60px; border-right: var(--rule); }
+    .who-image-side {
+      background: var(--black);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 60px;
+      min-height: 520px;
+      position: relative;
+      overflow: hidden;
+    }
+    .who-image-side::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(255,255,255,.03) 3px,
+        rgba(255,255,255,.03) 4px
+      );
+    }
+    .who-big-cross {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 180px; height: 180px;
+      opacity: .12;
+    }
+    .who-big-cross::before, .who-big-cross::after {
+      content: '';
+      position: absolute;
+      background: var(--white);
+    }
+    .who-big-cross::before { width: 28%; height: 100%; top: 0; left: 36%; }
+    .who-big-cross::after  { width: 100%; height: 28%; top: 33%; left: 0; }
+
+    .who-pullquote {
+      position: relative; z-index: 1;
+      color: var(--white);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1.4;
+      border-left: 3px solid var(--green);
+      padding-left: 24px;
+    }
+    .who-pullquote cite {
+      display: block;
+      margin-top: 12px;
+      font-style: normal;
+      font-family: 'Inter', sans-serif;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+
+    /* ----------------------------- P ILLARS ----------------------------- */
+    .pillars-strip {
+      background: var(--black);
+      color: var(--white);
+    }
+    .pillars-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 60px;
+    }
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-top: 60px;
+      border-top: 1px solid #333;
+    }
+    .pillar {
+      padding: 50px 40px;
+      border-right: 1px solid #333;
+      border-bottom: 1px solid #333;
+    }
+    .pillar:nth-child(3n) { border-right: none; }
+    .pillar:nth-child(4), .pillar:nth-child(5), .pillar:nth-child(6) { border-bottom: none; }
+    .pillar-icon {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pillar-icon .cross { font-size: 1.6rem; }
+    .pillar-num {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 3.5rem;
+      color: #222;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .pillar h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--white);
+    }
+    .pillar p {
+      font-size: .9rem;
+      line-height: 1.75;
+      color: #bbb;
+    }
+
+    /* ----------------------------- MISSION ANDD VISION ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+    .mv-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: var(--rule-thick);
+    }
+    .mv-panel {
+      padding: 70px 60px;
+      border-right: var(--rule);
+    }
+    .mv-panel:last-child { border-right: none; }
+    .mv-panel.green-panel { background: var(--green); color: var(--white); }
+    .mv-panel.green-panel .section-label { color: var(--white); }
+    .mv-panel.green-panel .section-title { color: var(--white); }
+    .mv-panel.green-panel .section-body  { color: rgba(255,255,255,.88); }
+
+    /* ----------------------------- VALUES ------------------------------ */
+    .values-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: var(--rule);
+      margin-top: 50px;
+    }
+    .value-item {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      padding: 36px 0;
+      border-bottom: var(--rule);
+      border-right: var(--rule);
+    }
+    .value-item:nth-child(2n) { padding-left: 40px; border-right: none; }
+    .value-item:nth-child(2n-1) { padding-right: 40px; }
+    .value-num {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--red);
+      min-width: 30px;
+      line-height: 1;
+      padding-top: 4px;
+    }
+    .value-item h4 {
+      font-family: 'Georgia', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .value-item p {
+      font-size: .88rem;
+      line-height: 1.7;
+      color: #4a4a44;
+    }
+
+    .scripture-band {
+      background: var(--red);
+      color: var(--white);
+      padding: 70px 60px;
+      text-align: center;
+    }
+    .scripture-text {
+      font-family: 'Georgia', serif;
+      font-size: clamp(1.5rem, 3vw, 2.6rem);
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1.5;
+      max-width: 820px;
+      margin: 0 auto 20px;
+    }
+    .scripture-ref {
+      font-family: 'poppins', sans-serif;
+      font-weight: 700;
+      font-size: .75rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      opacity: .85;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 60px;
+      margin-top: 60px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: var(--black);
+    }
+    .timeline-event {
+      position: relative;
+      margin-bottom: 50px;
+    }
+    .timeline-event::before {
+      content: '';
+      position: absolute;
+      left: -48px;
+      top: 6px;
+      width: 16px; height: 16px;
+      border: 3px solid var(--green);
+      background: var(--white);
+      border-radius: 50%;
+    }
+    .timeline-event.red::before { border-color: var(--red); }
+    .timeline-year {
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: .9rem;
+      letter-spacing: .1em;
+      color: var(--green);
+      margin-bottom: 8px;
+    }
+    .timeline-event.red .timeline-year { color: var(--red); }
+    .timeline-event h4 {
+      font-family: 'Georgia', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .timeline-event p {
+      font-size: .9rem;
+      line-height: 1.75;
+      color: #4a4a44;
+      max-width: 500px;
+    }
+
+   .leaders-section {
+      background: var(--white);
+      border-top: var(--rule-thick);
+      border-bottom: var(--rule);
+    }
+    .leaders-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 60px;
+    }
+    .leaders-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-top: 60px;
+      border-top: var(--rule);
+      border-left: var(--rule);
+    }
+    .leader-card {
+      border-right: var(--rule);
+      border-bottom: var(--rule);
+      padding: 0;
+      overflow: hidden;
+      transition: background .2s;
+    }
+    .leader-card:hover { background: #f4f4f0; }
+    .leader-avatar {
+      height: 200px;
+      background: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      color: rgba(255,255,255,.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .leader-avatar .cross {
+      font-size: 60px;
+      color: rgba(255,255,255,.08);
+    }
+    .leader-avatar-initials {
+      position: absolute;
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -.02em;
+    }
+    .leader-accent {
+      height: 4px;
+    }
+    .leader-info { padding: 22px 22px 28px; }
+    .leader-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .leader-role {
+      font-family: 'Inter', sans-serif;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+    .leader-bio {
+      font-size: .82rem;
+      line-height: 1.65;
+      color: #5e5e58;
+    }
+    .activities-band {
+      background: var(--white);
+    }
+    .activities-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 60px;
+    }
+    .activities-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      margin-top: 60px;
+      border: var(--rule);
+    }
+    .activity {
+      display: flex;
+      gap: 24px;
+      padding: 36px;
+      border-bottom: var(--rule);
+      border-right: var(--rule);
+      transition: background .2s;
+    }
+    .activity:hover { background: #f6f6f2; }
+    .activity:nth-child(2n) { border-right: none; }
+    .activity:nth-last-child(-n+2) { border-bottom: none; }
+    .activity-icon {
+      min-width: 48px; height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      border: 2px solid var(--black);
+      flex-shrink: 0;
+      border-radius: var(--radius-xs);
+    }
+    .activity h4 {
+      font-family: 'Georgia', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .activity p {
+      font-size: .85rem;
+      line-height: 1.7;
+      color: #4a4a44;
+    }
+    .faith-section {
+      background: var(--black);
+      color: var(--white);
+    }
+    .faith-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 60px;
+    }
+    .faith-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin-top: 60px;
+      border-top: 1px solid #333;
+    }
+    .faith-item {
+      padding: 36px 40px 36px 0;
+      border-bottom: 1px solid #2a2a2a;
+      border-right: 1px solid #2a2a2a;
+    }
+    .faith-item:nth-child(2n) { padding-left: 40px; padding-right: 0; border-right: none; }
+    .faith-item h4 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: .68rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 12px;
+    }
+    .faith-item p {
+      font-size: .9rem;
+      line-height: 1.8;
+      color: #bbb;
+    }
+    .join-band {
+      background: var(--green);
+      color: var(--white);
+      padding: 100px 60px;
+      text-align: center;
+    }
+    .join-title {
+      font-family: 'Georgia', serif;
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+    .join-sub {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin: 0 auto 44px;
+      max-width: 600px;
+      opacity: .9;
+    }
+    .btn-white {
+      background: var(--white);
+      color: var(--green);
+      border: 2px solid var(--white);
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: .85rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      padding: 16px 44px;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+      display: inline-block;
+      border-radius: var(--radius-sm);
+    }
+    .btn-white:hover { background: var(--black); border-color: var(--black); color: var(--white); border-radius: var(--radius-sm); }
+
+    /* ----------------------------- FOOTER- ------------------------------ */
+    footer {
+      background: var(--black);
+      color: var(--white);
+      border-top: 4px solid var(--red);
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 70px 60px 40px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 60px;
+      padding-bottom: 50px;
+      border-bottom: 1px solid #2a2a2a;
+      margin-bottom: 30px;
+    }
+    .footer-brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .footer-brand-name .cross { font-size: 1.3rem; color: var(--red); }
+    .footer-brand-desc {
+      font-size: .85rem;
+      line-height: 1.75;
+      color: #888;
+    }
+    .footer-col h5 {
+      font-family: 'poppins', sans-serif;
+      font-weight: 700;
+      font-size: .68rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 18px;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li {
+      font-size: .85rem;
+      color: #aaa;
+      margin-bottom: 10px;
+      transition: color .2s;
+      cursor: pointer;
+    }
+    .footer-col ul li:hover { color: var(--white); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      font-size: .65rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    /* SCREEN ADJUSTMENTS*/
+    @media (max-width: 900px) {
+      .topbar-nav { display: none; }
+      .hero-content { padding: 80px 30px 40px; }
+      .hero-stats { grid-template-columns: 1fr 1fr; }
+      .section { padding: 60px 30px; }
+      .who-grid { grid-template-columns: 1fr; }
+      .who-text { border-right: none; border-bottom: var(--rule); padding: 50px 30px; }
+      .pillars-grid { grid-template-columns: 1fr; }
+      .pillar { border-right: none; }
+      .mv-grid { grid-template-columns: 1fr; }
+      .mv-panel { border-right: none; border-bottom: var(--rule); }
+      .values-list { grid-template-columns: 1fr; }
+      .value-item:nth-child(2n) { padding-left: 0; border-right: none; }
+      .value-item { border-right: none; }
+      .leaders-grid { grid-template-columns: 1fr 1fr; }
+      .activities-grid { grid-template-columns: 1fr; } 
+      .activity:nth-child(2n) { border-right: none; }
+      .activity { border-right: none; }
+      .faith-grid { grid-template-columns: 1fr; }
+      .faith-item { border-right: none; padding-right: 0; }
+      .faith-item:nth-child(2n) { padding-left: 0; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 30px; }
+      .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+      .join-band { padding: 70px 30px; }
+      .pillars-inner, .leaders-inner, .activities-inner, .faith-inner { padding: 60px 30px; }
+    }
+</style>
+
+
+<div class="header-height"></div>
+
+<!-----  HERO SEC  -->
+<section class="hero">
+  <div class="hero-watermark">
+    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="85" y="0" width="30" height="200" fill="black"/>
+      <rect x="0" y="60" width="200" height="30" fill="black"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow reveal">About Us</div>
+    <h1 class="hero-title reveal">
+      <em>One Body.</em><br/>
+      <em>One Spirit.</em><br/>
+      <em>One Purpose.</em>
+    </h1>
+    <div class="hero-verse reveal">
+      <p>"For where two or three gather in my name, there am I with them."</p>
+      <cite>Matthew 18:20</cite>
+    </div>
+    <div class="hero-cta reveal">
+      <a href="#join" class="btn btn-primary">Join the Union</a>
+      <a href="{% url 'website:constitution' %}" class="btn btn-outline">Our Constitution</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat reveal">
+      <div class="stat-num">63<span>+</span></div>
+      <div class="stat-label">Years of Ministry</div>
+    </div>
+    <div class="stat reveal" style="transition-delay:.1s">
+      <div class="stat-num">1653<span>+</span></div>
+      <div class="stat-label">Active Members</div>
+    </div>
+    <div class="stat reveal" style="transition-delay:.2s">
+      <div class="stat-num">10<span>+</span></div>
+      <div class="stat-label">Weekly Fellowships</div>
+    </div>
+    <div class="stat reveal" style="transition-delay:.3s">
+      <div class="stat-num">12<span></span></div>
+      <div class="stat-label">Ministry Departments</div>
+    </div>
+  </div>
+</section>
+
+<!-----  WHO WE ARE  -->
+<section id="who" class="who-grid">
+  <div class="who-text">
+    <div class="section-label reveal">Who We Are</div>
+    <h2 class="section-title reveal">A Community<br/><em>Rooted in Christ</em></h2>
+    <p class="section-body reveal" style="margin-bottom:24px">
+      The Eunccu is a vibrant, interdenominational fellowship of believers united by a shared love for Jesus Christ and a passion to see lives transformed by the Gospel. We are students, staff, and community members who walk together in faith, accountability, and joy.
+    </p>
+    <p class="section-body reveal">
+      Founded on the bedrock of Scripture, we exist to glorify God in every sphere of life — in our studies, our relationships, our service, and our witness to the world around us. We believe the local church and campus communities are powerful arenas for the Kingdom of God.
+    </p>
+  </div>
+  <div class="who-image-side">
+    <div class="who-big-cross"></div>
+    <div class="who-pullquote reveal-right">
+      "We are not a religion. We are a relationship — with God, with each other, and with the world He calls us to love."
+      <cite>— CU Founding Charter</cite>
+    </div>
+  </div>
+</section>
+
+<!-----  PILLARS  -->
+<section id="pillars" class="pillars-strip">
+  <div class="pillars-inner">
+    <div class="section-label reveal" style="color:#888"><span style="color:var(--red)">Our Pillars</span></div>
+    <h2 class="section-title reveal" style="color:var(--white)">What Holds<br/><em>Us Together</em></h2>
+    <div class="pillars-grid">
+      <div class="pillar reveal">
+        <div class="pillar-num">01</div>
+        <div class="pillar-icon"></span></div>
+        <h3>The Word of God</h3>
+        <p>We believe the Bible is the inspired, authoritative Word of God — our final standard for faith and life. We study it together, meditate on it daily, and seek to live it out faithfully.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:.1s">
+        <div class="pillar-num">02</div>
+        <div class="pillar-icon"></div>
+        <h3>Prayer & Worship</h3>
+        <p>Prayer is the lifeblood of our union. We gather regularly to seek God's face, worship in spirit and truth, and intercede for our campus, our nation, and the nations of the world.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:.2s">
+        <div class="pillar-num">03</div>
+        <div class="pillar-icon"></div>
+        <h3>Fellowship & Discipleship</h3>
+        <p>We are intentional about walking together in authentic Christian community — mentoring, accountability, care, and the kind of love that the watching world will take notice of.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:.3s">
+        <div class="pillar-num">04</div>
+        <div class="pillar-icon"></div>
+        <h3>Evangelism</h3>
+        <p>The Gospel is good news too good to keep to ourselves. We equip members to share their faith naturally, boldly, and compassionately — on campus and beyond.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:.4s">
+        <div class="pillar-num">05</div>
+        <div class="pillar-icon"></div>
+        <h3>Mission & Outreach</h3>
+        <p>From local community service to international mission trips, we believe every Christian is called to be a light wherever God has placed them.</p>
+      </div>
+      <div class="pillar reveal" style="transition-delay:.5s">
+        <div class="pillar-num">06</div>
+        <div class="pillar-icon"></div>
+        <h3>Faith & Learning</h3>
+        <p>We believe faith and scholarship are not at odds. We cultivate a community where intellectual questions are welcomed and faith is deepened through honest inquiry.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--  SCRIPTURE BAND  -->
+<div class="scripture-band">
+  <p class="scripture-text reveal">"I am the way, and the truth, and the life. No one comes to the Father except through me."</p>
+  <p class="scripture-ref reveal">John 14:6 — ESV</p>
+</div>
+
+<!--  MISSION & VISION  -->
+<section id="mission">
+  <div class="mv-grid" style="margin:0; max-width:100%;">
+    <div class="mv-panel">
+      <div class="section-label reveal">Our Mission</div>
+      <h2 class="section-title reveal">Why We Exist</h2>
+      <p class="section-body reveal">
+        We are committed to cultivating a fellowship of Christian believers, equipped for eternal life and every good work, in the body of Christ and the society, through nurturing and training in God's word.
+      </p>
+      <br/>
+      <p class="section-body reveal">
+        We do this by providing a space where faith is authentic, questions are welcome, relationships are deep, and service is a way of life. Our mission is not a programme — it is a life lived together in the name of Jesus.
+      </p>
+    </div>
+    <div class="mv-panel green-panel">
+      <div class="section-label reveal">Our Vision</div>
+      <h2 class="section-title reveal">Where We're Going</h2>
+      <p class="section-body reveal">
+        We envision to be Christian believers, holistically equipped for service and holy living.
+      </p>
+      <br/>
+      <p class="section-body reveal">
+        We envision campuses and communities where the name of Jesus is honoured, where the lost are found, the broken are healed, and the hungry are fed — spirit, soul, and body.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="values">
+  <div class="section-label reveal">Core Values</div>
+  <h2 class="section-title reveal">What We <em>Live By</em></h2>
+  <ul class="values-list">
+    <li class="value-item reveal">
+      <span class="value-num">01</span>
+      <div>
+        <h4>Holiness</h4>
+        <p>We are called to a life of consecration and moral purity, reflecting the character of God in our thoughts, words, and actions as we serve His purpose.</p>
+      </div>
+    </li>
+    <li class="value-item reveal" style="transition-delay:.1s">
+      <span class="value-num">02</span>
+      <div>
+        <h4>Faithfulness to the Holy Biblical Scriptures</h4>
+        <p>We uphold the absolute authority and sufficiency of the Bible, committing ourselves to the diligent study and application of God's Word in all matters of life.</p>
+      </div>
+    </li>
+    <li class="value-item reveal">
+      <span class="value-num">03</span>
+      <div>
+        <h4>Unity</h4>
+        <p>We foster a spirit of togetherness and mutual support, standing as one body in Christ to achieve our shared mission despite our diverse backgrounds.</p>
+      </div>
+    </li>
+    <li class="value-item reveal" style="transition-delay:.1s">
+      <span class="value-num">04</span>
+      <div>
+        <h4>Integrity</h4>
+        <p>We practice honesty, transparency, and consistency in our private and public lives, ensuring our conduct always aligns with our Christian convictions.</p>
+      </div>
+    </li>
+    <li class="value-item reveal">
+      <span class="value-num">05</span>
+      <div>
+        <h4>Excellence</h4>
+        <p>We strive to do everything to the best of our ability and for the glory of God, maintaining high standards in our leadership, service, and academic pursuits.</p>
+      </div>
+    </li>
+  </ul>
+</section>
+
+<!--  HISTORY  -->
+<section style="background:#f8f8f4; border-top:var(--rule); border-bottom:var(--rule);">
+  <div class="section">
+    <div class="section-label reveal">Our History</div>
+    <h2 class="section-title reveal">Pillars <em>Remembrance</em></h2>
+    <div class="timeline">
+      <div class="timeline-event reveal">
+        <div class="timeline-year">FOUNDED</div>
+        <h4>A Handful of Believers, One Big Vision</h4>
+        <p>The Eunccu was founded by a small group of students who gathered in hostels like CBD, Maringo, Tatton, and Buruburu And lower field to pray and study the Word together. From that small beginning, something great was born.</p>
+      </div>
+      <div class="timeline-event red reveal">
+        <div class="timeline-year">YEAR 3</div>
+        <h4>First Interdenominational Crusade</h4>
+        <p>We hosted our first campus-wide evangelistic crusade, drawing hundreds of students and resulting in scores of decisions for Christ. This became an annual tradition.</p>
+      </div>
+      <div class="timeline-event reveal">
+        <div class="timeline-year">YEAR 6</div>
+        <h4>Formal Registration & Constitution</h4>
+        <p>The CU was formally registered as an official campus organisation, establishing a constitution, governance structure, and accountability to the broader Christian community.</p>
+      </div>
+      <div class="timeline-event red reveal">
+        <div class="timeline-year">YEAR 9</div>
+        <h4>Missions Department Launched</h4>
+        <p>We launched a dedicated missions arm, sending our first teams to neighbouring communities and partnering with international mission networks to reach unreached peoples.</p>
+      </div>
+      <div class="timeline-event reveal">
+        <div class="timeline-year">TODAY</div>
+        <h4>A Movement Still Growing</h4>
+        <p>With over 1500 +  active members, 12 ministry departments, and a passion that burns as bright as ever, the eunccu continues to be a transformative force on campus and beyond.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--  STATEMENT OF FAITH  -->
+<section id="faith" class="faith-section">
+  <div class="faith-inner">
+    <div class="section-label reveal" style="color:#666"><span style="color:var(--red)">Statement of Faith</span></div>
+    <h2 class="section-title reveal" style="color:var(--white)">What We <em>Believe</em></h2>
+    <div class="faith-grid">
+      <div class="faith-item reveal">
+        <h4>The Bible</h4>
+        <p>We believe the Bible, both Old and New Testaments — is the inspired, infallible, and authoritative Word of God, the supreme standard for Christian life and doctrine.</p>
+      </div>
+      <div class="faith-item reveal" style="transition-delay:.1s">
+        <h4>The Trinity</h4>
+        <p>We believe in one God — eternally existing in three persons: Father, Son, and Holy Spirit — co-equal, co-eternal, and working in perfect unity for our salvation and the glory of His name.</p>
+      </div>
+      <div class="faith-item reveal">
+        <h4>Jesus Christ</h4>
+        <p>We believe in the deity and humanity of Jesus Christ — His virgin birth, sinless life, atoning death, bodily resurrection, ascension, and personal return in glory and power.</p>
+      </div>
+      <div class="faith-item reveal" style="transition-delay:.1s">
+        <h4>Salvation by Grace</h4>
+        <p>We believe salvation is by grace alone, through faith alone, in Christ alone. No human effort, merit, or religious observance can add to the finished work of Jesus at Calvary.</p>
+      </div>
+      <div class="faith-item reveal">
+        <h4>The Holy Spirit</h4>
+        <p>We believe in the present work of the Holy Spirit who convicts, regenerates, indwells, sanctifies, and empowers believers for holy living and effective witness.</p>
+      </div>
+      <div class="faith-item reveal" style="transition-delay:.1s">
+        <h4>The Church & Eternity</h4>
+        <p>We believe in the universal Church as the body of Christ, the bodily resurrection of the dead, and eternal life for the redeemed through Jesus Christ our Lord.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!--  ACTIVITIES  -->
+<section class="activities-band">
+  <div class="activities-inner">
+    <div class="section-label reveal">What We Do</div>
+    <h2 class="section-title reveal">Our <em>Activities</em></h2>
+    <div class="activities-grid">
+      <div class="activity reveal">
+        <div class="activity-icon"></div>
+        <div>
+          <h4>Weekly Bible Study</h4>
+          <p>Every week we dig deep into Scripture in small groups exploring hard questions, discovering timeless truths, and applying God's Word to our daily lives.</p>
+        </div>
+      </div>
+      <div class="activity reveal" style="transition-delay:.1s">
+        <div class="activity-icon"></div>
+        <div>
+          <h4>Worship Nights & Worship Experiences </h4>
+          <p>Gatherings of extended worship, prayer, and the presence of God. These are the heartbeat of our community — undivided attention given to the Lord.</p>
+        </div>
+      </div>
+      <div class="activity reveal">
+        <div class="activity-icon"></div>
+        <div>
+          <h4> Crusades</h4>
+          <p>Our flagship evangelistic event that brings the whole campus together. With speakers, music, testimonies, and an altar call. </p>
+        </div>
+      </div>
+      <div class="activity reveal" style="transition-delay:.1s">
+        <div class="activity-icon"></div>
+        <div>
+          <h4> Retreats</h4>
+          <p>Moments of bonding and experiencing the love of Christ .</p>
+        </div>
+      </div>
+      <div class="activity reveal">
+        <div class="activity-icon"></div>
+        <div>
+          <h4>Community and wellfare Service</h4>
+          <p>Faith without works is dead. We roll up our sleeves to serve fellow comrades, local orphanages, hospitals, and underserved communities — putting the love of Christ into action.</p>
+        </div>
+      </div>
+      <div class="activity reveal" style="transition-delay:.1s">
+        <div class="activity-icon"></div>
+        <div>
+          <h4>Mentorship Programs</h4>
+          <p>Regular forums where we engage faith-and-scholarship questions with Christian academics, exploring how a biblical worldview intersects every discipline.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--  JOIN BAND  -->
+<section id="join" class="join-band">
+  <div class="u-center">
+    <p class="section-label reveal" style="justify-content:center; color:rgba(255,255,255,.7)">Ready?</p>
+    <h2 class="join-title reveal">Come<br/> See.</h2>
+    <p class="join-sub reveal">
+      You don't have to have it all together. You just need to show up. Come as you are  searching, questioning, or already convinced. Find a community that will walk the journey of faith with you.
+    </p>
+    <a href=" {% url 'website:contact' %}" class="btn btn-white reveal">Get in Touch</a>
+  </div>
+</section>
+
+
+
+<script>
+  // Intersection Observer for reveal animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+    observer.observe(el);
+  });
+
+  // Smooth active nav highlighting
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.topbar-nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--green)' : '';
+    });
+  });
+</script>
+
+{% endblock content %}

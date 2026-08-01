@@ -1,0 +1,1161 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  .um-page {
+    background: var(--white);
+    min-height: 80vh;
+    padding: 150px 0 60px;
+  }
+
+  .um-heading-strip {
+    border-bottom: var(--rule-thick);
+    padding-bottom: 18px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .um-heading-strip h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  .um-heading-strip .sub {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  .um-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 36px;
+  }
+
+  .stat-card {
+    background: #fff;
+    border: var(--rule);
+    border-top: 3px solid var(--green);
+    border-radius: var(--radius-sm);
+    padding: 22px 24px;
+  }
+
+  .stat-card.red-top {
+    border-top-color: var(--red);
+  }
+
+  .stat-card.black-top {
+    border-top-color: var(--black);
+  }
+
+  .stat-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #666;
+    margin-top: 6px;
+  }
+
+  .um-action-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .um-search {
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    gap: 0;
+  }
+
+  .um-search input {
+    flex: 1;
+    height: 40px;
+    padding: 0 14px;
+    border: var(--rule);
+    border-right: none;
+    border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    font-size: 0.88rem;
+    font-family: poppins, sans-serif;
+    color: var(--ink);
+    background: #fff;
+    outline: none;
+  }
+
+  .um-search input:focus {
+    border-color: var(--green);
+  }
+
+  .um-search button {
+    height: 40px;
+    width: 44px;
+    border: var(--rule);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    background: var(--ink);
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .um-search button:hover {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .btn-clear {
+    height: 40px;
+    padding: 0 14px;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: #666;
+    font-size: 0.85rem;
+    font-family: poppins, sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-clear:hover {
+    background: #f5f5f5;
+    color: var(--ink);
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .btn-create {
+    height: 40px;
+    padding: 0 18px;
+    background: var(--green);
+    color: #fff;
+    border: 2px solid var(--green);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: poppins, sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: background 0.2s;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .btn-create:hover {
+    background: #236a1a;
+    color: #fff;
+  }
+
+  .btn-bulk {
+    height: 40px;
+    padding: 0 18px;
+    background: transparent;
+    color: var(--ink);
+    border: var(--rule-thick);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: poppins, sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-bulk:hover {
+    background: #f0f0f0;
+  }
+
+  .um-card {
+    background: #fff;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .um-card-header {
+    padding: 14px 20px;
+    border-bottom: var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .um-card-header h2 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0;
+  }
+
+  .um-card-header span {
+    font-size: 0.82rem;
+    color: #888;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #666;
+    border-bottom: var(--rule);
+    background: #f8f8f8;
+  }
+
+  td {
+    padding: 13px 16px;
+    font-size: 0.86rem;
+    border-bottom: var(--rule);
+    vertical-align: middle;
+    color: var(--ink);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover td {
+    background: #fafaf8;
+  }
+
+  .um-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-name {
+    font-weight: 600;
+  }
+
+  .user-email {
+    font-size: 0.78rem;
+    color: #777;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .badge-green {
+    background: #e6f4e5;
+    color: var(--green);
+    border: 1px solid #b5d9b2;
+  }
+
+  .badge-amber {
+    background: #fff8e1;
+    color: #a16207;
+    border: 1px solid #fde68a;
+  }
+
+  .badge-ink {
+    background: #f0f0f0;
+    color: var(--ink);
+    border: 1px solid #ddd;
+  }
+
+  .badge-red {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+  }
+
+  .um-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-top: var(--rule);
+    font-size: 0.82rem;
+    color: #888;
+  }
+
+  .page-links {
+    display: flex;
+    gap: 4px;
+  }
+
+  .page-links a,
+  .page-links span {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-xs);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    text-decoration: none;
+    color: var(--ink);
+    border: var(--rule);
+    transition: all 0.15s;
+  }
+
+  .page-links a:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .page-links .current {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  .um-empty {
+    text-align: center;
+    padding: 56px 24px;
+    color: #999;
+  }
+
+  .um-empty i {
+    font-size: 36px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .um-empty p {
+    font-size: 0.88rem;
+  }
+
+  .um-messages {
+    margin-bottom: 22px;
+  }
+
+  .um-alert {
+    padding: 11px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.86rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .um-alert-success {
+    background: #e6f4e5;
+    color: #166534;
+    border-left: 3px solid var(--green);
+  }
+
+  .um-alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border-left: 3px solid var(--red);
+  }
+
+  .um-alert-warning {
+    background: #fff8e1;
+    color: #854d0e;
+    border-left: 3px solid #d97706;
+  }
+
+  .um-alert-info {
+    background: #eff6ff;
+    color: #1e40af;
+    border-left: 3px solid #3b82f6;
+  }
+
+  /* ── Shared Modal Base ── */
+  .um-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .5);
+    z-index: 1050;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .um-modal-overlay.open {
+    display: flex;
+  }
+
+  .um-modal {
+    background: #fff;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, .18);
+    animation: umModalIn .22s ease;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .um-modal.wide {
+    max-width: 780px;
+  }
+
+  @keyframes umModalIn {
+    from {
+      transform: translateY(16px);
+      opacity: 0;
+    }
+
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .um-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+    border-bottom: var(--rule);
+    flex-shrink: 0;
+  }
+
+  .um-modal-header h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+  }
+
+  .um-modal-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #999;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: var(--radius-xs);
+  }
+
+  .um-modal-close:hover {
+    color: var(--red);
+    background: #fee2e2;
+  }
+
+  .um-modal-body {
+    padding: 22px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .um-modal-footer {
+    padding: 14px 22px;
+    border-top: var(--rule);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .um-form-group {
+    margin-bottom: 16px;
+  }
+
+  .um-form-label {
+    display: block;
+    font-size: 0.80rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .um-form-label .req {
+    color: var(--red);
+    margin-left: 2px;
+  }
+
+  .form-control {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-family: poppins, sans-serif;
+    color: var(--ink);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+  }
+
+  .form-control:focus {
+    border-color: var(--green);
+  }
+
+  .um-form-help {
+    font-size: 0.76rem;
+    color: #888;
+    margin-top: 4px;
+  }
+
+  .um-field-error {
+    font-size: 0.76rem;
+    color: var(--red);
+    margin-top: 4px;
+  }
+
+  .btn-cancel {
+    height: 38px;
+    padding: 0 16px;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: #666;
+    font-size: 0.86rem;
+    font-family: poppins, sans-serif;
+    cursor: pointer;
+  }
+
+  .btn-cancel:hover {
+    background: #f0f0f0;
+  }
+
+  .btn-submit {
+    height: 38px;
+    padding: 0 20px;
+    background: var(--green);
+    color: #fff;
+    border: 2px solid var(--green);
+    border-radius: var(--radius-sm);
+    font-size: 0.86rem;
+    font-weight: 600;
+    font-family: poppins, sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-submit:hover {
+    background: #236a1a;
+  }
+
+  .btn-submit:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+  }
+
+  /* ── Bulk modal specific ── */
+  .bulk-rows-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .bulk-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 36px;
+    gap: 8px;
+    align-items: start;
+  }
+
+  .bulk-row input {
+    height: 38px;
+    padding: 0 10px;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    font-size: 0.84rem;
+    font-family: poppins, sans-serif;
+    color: var(--ink);
+    background: #fff;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .bulk-row input:focus {
+    border-color: var(--green);
+  }
+
+  .bulk-row-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 36px;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .bulk-row-header span {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #777;
+  }
+
+  .btn-remove-row {
+    width: 36px;
+    height: 38px;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: #aaa;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .btn-remove-row:hover {
+    background: #fee2e2;
+    color: var(--red);
+    border-color: var(--red);
+  }
+
+  .btn-add-row {
+    height: 36px;
+    padding: 0 14px;
+    border: 1px dashed #aaa;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: #555;
+    font-size: 0.83rem;
+    font-family: poppins, sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    transition: border-color .2s;
+  }
+
+  .btn-add-row:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  /* Results table inside modal */
+  .bulk-results {
+    margin-top: 16px;
+  }
+
+  .bulk-results table {
+    font-size: 0.82rem;
+  }
+
+  .bulk-results th {
+    padding: 7px 10px;
+  }
+
+  .bulk-results td {
+    padding: 7px 10px;
+  }
+
+  @media (max-width: 768px) {
+    .um-stats {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .um-heading-strip {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .bulk-row {
+      grid-template-columns: 1fr 1fr 36px;
+    }
+
+    .bulk-row input:nth-child(2) {
+      display: none;
+    }
+
+    .bulk-row-header span:nth-child(2) {
+      display: none;
+    }
+
+    .um-modal.wide {
+      max-width: 98vw;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .um-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .btn-group {
+      width: 100%;
+    }
+
+    .btn-create,
+    .btn-bulk {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="um-page">
+  <div class="container">
+
+    <div class="um-heading-strip">
+      <div>
+        <h1>User Manager Dashboard</h1>
+        <p class="sub">Manage member accounts &mdash; pending registrations only.</p>
+      </div>
+      <div class="btn-group">
+        <button class="btn-create" id="openSingleModal">
+          <i class="fa fa-user-plus"></i> Add One
+        </button>
+        <button class="btn-bulk" id="openBulkModal">
+          <i class="fa fa-users"></i> Add Multiple
+        </button>
+      </div>
+    </div>
+
+    {% if messages %}
+    <div class="um-messages">
+      {% for message in messages %}
+      <div class="um-alert um-alert-{{ message.tags|default:'info' }}">
+        <i
+          class="fa fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}times-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="um-stats">
+      <div class="stat-card">
+        <div class="stat-value">{{ total_users }}</div>
+        <div class="stat-label">Total Members</div>
+      </div>
+      <div class="stat-card red-top">
+        <div class="stat-value">{{ new_this_month }}</div>
+        <div class="stat-label">New Pending This Month</div>
+      </div>
+      <div class="stat-card black-top">
+        <div class="stat-value">{{ incomplete_profiles }}</div>
+        <div class="stat-label">Pending Registration</div>
+      </div>
+    </div>
+
+    <div class="um-action-bar">
+      <form class="um-search" method="get" action="">
+        <input type="search" name="q" id="searchInput" value="{{ search_query }}"
+          placeholder="Search by name, email or reg. number..." autocomplete="off">
+        <button type="submit"><i class="fa fa-search"></i></button>
+      </form>
+      {% if search_query %}
+      <a href="{% url 'website:user_manager_dashboard' %}" class="btn-clear">
+        <i class="fa fa-times"></i>&nbsp; Clear
+      </a>
+      {% endif %}
+    </div>
+
+    <div class="um-card">
+      <div class="um-card-header">
+        <h2>Pending Members</h2>
+        <span>
+          {% if search_query %}Results for &ldquo;{{ search_query }}&rdquo; &mdash; {% endif %}
+          {{ page_obj.paginator.count }} found
+        </span>
+      </div>
+
+      {% if page_obj.object_list %}
+      <table>
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Reg. Number</th>
+            <th>Type</th>
+            <th>Profile</th>
+            <th>Joined</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in page_obj %}
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="um-avatar">{{ u.full_name|slice:":1"|upper }}</div>
+                <div>
+                  <div class="user-name">{{ u.full_name }}</div>
+                  <div class="user-email">{{ u.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ u.registrationNumber|default:"&mdash;" }}</td>
+            <td>
+              <span class="badge badge-ink">{{ u.get_userType_display|default:u.userType }}</span>
+            </td>
+            <td>
+              {% if u.completed %}
+              <span class="badge badge-green"><i class="fa fa-check"></i> Complete</span>
+              {% else %}
+              <span class="badge badge-amber"><i class="fa fa-clock-o"></i> Pending</span>
+              {% endif %}
+            </td>
+            <td>{{ u.date_joined|date:"M d, Y" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% if page_obj.paginator.num_pages > 1 %}
+      <div class="um-pagination">
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        <div class="page-links">
+          {% if page_obj.has_previous %}
+          <a href="?{% if search_query %}q={{ search_query }}&{% endif %}page={{ page_obj.previous_page_number }}"><i
+              class="fa fa-chevron-left"></i></a>
+          {% endif %}
+          {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+          <span class="current">{{ num }}</span>
+          {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %} <a
+            href="?{% if search_query %}q={{ search_query }}&{% endif %}page={{ num }}">{{ num }}</a>
+            {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <a href="?{% if search_query %}q={{ search_query }}&{% endif %}page={{ page_obj.next_page_number }}"><i
+                class="fa fa-chevron-right"></i></a>
+            {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% else %}
+      <div class="um-empty">
+        <i class="fa fa-users"></i>
+        <p>
+          {% if search_query %}
+          No pending members match your search.
+          <a href="{% url 'website:user_manager_dashboard' %}">Clear search</a>
+          {% else %}
+          No pending members. Use <strong>Add One</strong> or <strong>Add Multiple</strong> above to create accounts.
+          {% endif %}
+        </p>
+      </div>
+      {% endif %}
+
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     Modal 1 — Add One
+════════════════════════════════════════════ -->
+<div class="um-modal-overlay" id="singleUserModal">
+  <div class="um-modal" role="dialog" aria-modal="true" aria-labelledby="singleModalTitle">
+    <div class="um-modal-header">
+      <h3 id="singleModalTitle"><i class="fa fa-user-plus"></i>&ensp;Add One Member</h3>
+      <button class="um-modal-close" data-close="singleUserModal" aria-label="Close">&times;</button>
+    </div>
+    <form method="post" action="{% url 'website:user_manager_create' %}" novalidate>
+      {% csrf_token %}
+      <div class="um-modal-body">
+        <p style="font-size:.82rem;color:#666;margin-bottom:18px;">
+          A temporary password will be emailed to the new member with login instructions.
+        </p>
+
+        <div class="um-form-group">
+          <label class="um-form-label" for="id_full_name">Full Name <span class="req">*</span></label>
+          {{ create_form.full_name }}
+          {% if create_form.full_name.errors %}
+          {% for e in create_form.full_name.errors %}<div class="um-field-error">{{ e }}</div>{% endfor %}
+          {% endif %}
+        </div>
+
+        <div class="um-form-group">
+          <label class="um-form-label" for="id_registrationNumber">Registration Number</label>
+          {{ create_form.registrationNumber }}
+          <div class="um-form-help">{{ create_form.registrationNumber.help_text }}</div>
+          {% if create_form.registrationNumber.errors %}
+          {% for e in create_form.registrationNumber.errors %}<div class="um-field-error">{{ e }}</div>{% endfor %}
+          {% endif %}
+        </div>
+
+        <div class="um-form-group">
+          <label class="um-form-label" for="id_email">Email Address <span class="req">*</span></label>
+          {{ create_form.email }}
+          {% if create_form.email.errors %}
+          {% for e in create_form.email.errors %}<div class="um-field-error">{{ e }}</div>{% endfor %}
+          {% endif %}
+        </div>
+
+        {% if create_form.non_field_errors %}
+        <div class="um-alert um-alert-error">{{ create_form.non_field_errors }}</div>
+        {% endif %}
+      </div>
+
+      <div class="um-modal-footer">
+        <button type="button" class="btn-cancel" data-close="singleUserModal">Cancel</button>
+        <button type="submit" class="btn-submit">
+          <i class="fa fa-user-plus"></i> Create Account
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     Modal 2 — Add Multiple
+════════════════════════════════════════════ -->
+<div class="um-modal-overlay" id="bulkUserModal">
+  <div class="um-modal wide" role="dialog" aria-modal="true" aria-labelledby="bulkModalTitle">
+    <div class="um-modal-header">
+      <h3 id="bulkModalTitle"><i class="fa fa-users"></i>&ensp;Add Multiple Members</h3>
+      <button class="um-modal-close" data-close="bulkUserModal" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="um-modal-body" id="bulkModalBody">
+      <p style="font-size:.82rem;color:#666;margin-bottom:14px;">
+        Fill in as many rows as you need. Each member will receive a welcome email with their temporary password.
+        Fields marked <span style="color:var(--red)">*</span> are required per row.
+      </p>
+
+      <div class="bulk-row-header">
+        <span>Full Name <span style="color:var(--red)">*</span></span>
+        <span>Email Address <span style="color:var(--red)">*</span></span>
+        <span>Reg. Number (optional)</span>
+        <span></span>
+      </div>
+
+      <div class="bulk-rows-wrap" id="bulkRowsWrap">
+        <div class="bulk-row">
+          <input type="text" placeholder="e.g. Uncle P" class="br-name">
+          <input type="email" placeholder="e.g. student@egerton.ac.ke" class="br-email">
+          <input type="text" placeholder="e.g. A11/0000/24" class="br-reg">
+          <button type="button" class="btn-remove-row" title="Remove row"><i class="fa fa-times"></i></button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-add-row" id="addBulkRow">
+        <i class="fa fa-plus"></i> Add another row
+      </button>
+
+      <div id="bulkResultsWrap" class="bulk-results" style="display:none;"></div>
+    </div>
+
+    <div class="um-modal-footer">
+      <button type="button" class="btn-cancel" data-close="bulkUserModal" id="bulkCancelBtn">Cancel</button>
+      <button type="button" class="btn-submit" id="bulkSubmitBtn">
+        <i class="fa fa-cloud-upload"></i> Create All Accounts
+      </button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+  var BULK_URL = "{% url 'website:user_manager_bulk_create' %}";
+  var CSRF_TOKEN = "{{ csrf_token }}";
+
+  // ── Generic modal helpers ──────────────────────────────────────────────
+  function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow = ''; }
+
+  document.getElementById('openSingleModal').addEventListener('click', function () { openModal('singleUserModal'); });
+  document.getElementById('openBulkModal').addEventListener('click', function () { openModal('bulkUserModal'); });
+
+  document.querySelectorAll('[data-close]').forEach(function (btn) {
+    btn.addEventListener('click', function () { closeModal(btn.dataset.close); });
+  });
+  document.querySelectorAll('.um-modal-overlay').forEach(function (overlay) {
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) closeModal(overlay.id);
+    });
+  });
+
+  {% if create_form.errors %}
+  document.addEventListener('DOMContentLoaded', function () { openModal('singleUserModal'); });
+  {% endif %}
+
+  // ── Add / Remove bulk rows ─────────────────────────────────────────────
+  var wrap = document.getElementById('bulkRowsWrap');
+
+  function makeRow() {
+    var row = document.createElement('div');
+    row.className = 'bulk-row';
+    row.innerHTML =
+      '<input type="text"  placeholder="e.g. Uncle p"            class="br-name">' +
+      '<input type="email" placeholder="e.g. student@egerton.ac.ke"  class="br-email">' +
+      '<input type="text"  placeholder="e.g. A11/0000/24"         class="br-reg">' +
+      '<button type="button" class="btn-remove-row" title="Remove row"><i class="fa fa-times"></i></button>';
+    row.querySelector('.btn-remove-row').addEventListener('click', function () { removeRow(row); });
+    return row;
+  }
+
+  function removeRow(row) {
+    if (wrap.children.length > 1) {
+      wrap.removeChild(row);
+    } else {
+      row.querySelectorAll('input').forEach(function (i) { i.value = ''; });
+    }
+  }
+
+  wrap.querySelector('.btn-remove-row').addEventListener('click', function (e) {
+    removeRow(e.currentTarget.closest('.bulk-row'));
+  });
+
+  document.getElementById('addBulkRow').addEventListener('click', function () {
+    wrap.appendChild(makeRow());
+  });
+
+  // ── Bulk submit ────────────────────────────────────────────────────────
+  document.getElementById('bulkSubmitBtn').addEventListener('click', function () {
+    var rows = Array.from(wrap.querySelectorAll('.bulk-row'));
+    var payload = rows.map(function (row) {
+      return {
+        full_name: row.querySelector('.br-name').value.trim(),
+        email: row.querySelector('.br-email').value.trim(),
+        registrationNumber: row.querySelector('.br-reg').value.trim(),
+      };
+    }).filter(function (r) { return r.full_name || r.email; });
+
+    if (!payload.length) {
+      alert('Please fill in at least one row.');
+      return;
+    }
+
+    var btn = document.getElementById('bulkSubmitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing...';
+
+    fetch(BULK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF_TOKEN },
+      body: JSON.stringify(payload),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa fa-cloud-upload"></i> Create All Accounts';
+
+        var resultsWrap = document.getElementById('bulkResultsWrap');
+        var created = data.results.filter(function (r) { return r.status === 'created'; });
+        var skipped = data.results.filter(function (r) { return r.status === 'skipped'; });
+        var errors = data.results.filter(function (r) { return r.status === 'error'; });
+
+        var summaryHtml =
+          '<p style="font-size:.85rem;margin-bottom:10px;">' +
+          '<strong>' + created.length + '</strong> created, ' +
+          '<strong>' + skipped.length + '</strong> skipped, ' +
+          '<strong>' + errors.length + '</strong> failed.' +
+          '</p>' +
+          '<table>' +
+          '<thead><tr><th>#</th><th>Email</th><th>Status</th><th>Note</th></tr></thead>' +
+          '<tbody>';
+
+        data.results.forEach(function (r) {
+          var statusBadge = '';
+          if (r.status === 'created') {
+            var emailNote = r.email_sent ? '' : ' (email not sent)';
+            statusBadge = '<span class="badge badge-green">Created' + emailNote + '</span>';
+          } else if (r.status === 'skipped') {
+            statusBadge = '<span class="badge badge-amber">Skipped</span>';
+          } else {
+            statusBadge = '<span class="badge badge-red">Error</span>';
+          }
+          summaryHtml +=
+            '<tr>' +
+            '<td>' + r.row + '</td>' +
+            '<td>' + (r.email || '—') + '</td>' +
+            '<td>' + statusBadge + '</td>' +
+            '<td style="color:#888;font-size:.78rem">' + (r.reason || '') + '</td>' +
+            '</tr>';
+        });
+
+        summaryHtml += '</tbody></table>';
+        resultsWrap.innerHTML = summaryHtml;
+        resultsWrap.style.display = 'block';
+
+        document.getElementById('addBulkRow').style.display = 'none';
+        document.getElementById('bulkCancelBtn').textContent = 'Close';
+        if (created.length > 0) {
+          wrap.innerHTML = '';
+          var newRow = makeRow();
+          wrap.appendChild(newRow);
+          document.getElementById('addBulkRow').style.display = 'inline-flex';
+          document.getElementById('bulkCancelBtn').textContent = 'Cancel';
+          setTimeout(function () { location.reload(); }, 2500);
+        }
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa fa-cloud-upload"></i> Create All Accounts';
+        alert('A network error occurred. Please try again.');
+      });
+  });
+
+  // ── Auto-dismiss flash alerts ──────────────────────────────────────────
+  document.querySelectorAll('.um-alert').forEach(function (el) {
+    setTimeout(function () {
+      el.style.transition = 'opacity .4s';
+      el.style.opacity = '0';
+      setTimeout(function () { el.remove(); }, 400);
+    }, 5000);
+  });
+</script>
+{% endblock %}

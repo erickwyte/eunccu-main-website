@@ -1,0 +1,370 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/gallery.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="header-height"></div>
+
+<!-- Google Photos Style Gallery -->
+<section class="gallery-section" id="gallerySection">
+    <div class="container-fluid px-3 px-md-4">
+        
+        <!-- Hero - Google Photos Style -->
+        <div class="gallery-hero-modern mb-4">
+            <div class="hero-content">
+                <div class="hero-stats">
+                    <h1 class="hero-title">Welcome to the Gallery</h1>
+                    <p class="hero-description">
+                        Explore the collection of photos from our community. Use the source switch to view local uploads or Google Drive content, and tap any image to preview and download.
+                        {% if active_source == 'google-drive' %}You are currently browsing shared Drive photos.{% else %}You are currently browsing local event photos.{% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Source Switch - Enhanced -->
+        <div class="source-switch-modern mb-4">
+            <div class="source-switch-inner">
+                <a href="?source=local" class="source-link {% if active_source != 'google-drive' %}active{% endif %}">
+                    <i class="fa fa-images"></i>
+                    <span>Local Gallery</span>
+                    <span class="source-badge">📁</span>
+                </a>
+                <a href="?source=google-drive" class="source-link {% if active_source == 'google-drive' %}active{% endif %}">
+                    <i class="fa fa-cloud"></i>
+                    <span>Google Drive</span>
+                    <span class="source-badge">☁️</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sticky Filter Bar - Local Only -->
+        {% if active_source != 'google-drive' %}
+        <div class="filter-bar-sticky" id="filterBar">
+            <div class="filter-bar-inner">
+                <ul class="filter-list" id="filterList">
+                    <li class="filter-item active" data-filter="*">All Photos</li>
+                    <li class="filter-item" data-filter=".event">🎉 Events</li>
+                    <li class="filter-item" data-filter=".service">🙏 Services</li>
+                    <li class="filter-item" data-filter=".fellowship">🤝 Fellowship</li>
+                    <li class="filter-item" data-filter=".outdoors">🌳 Outdoors</li>
+                </ul>
+                <div class="filter-actions">
+                    <button class="filter-action-btn" id="sortBtn">
+                        <i class="fa fa-sort-amount-desc"></i>
+                        <span>Latest</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Local Gallery -->
+        <div id="local-gallery" class="gallery-content {% if active_source == 'google-drive' %}d-none{% endif %}">
+            
+            <!-- Skeleton Loading State -->
+            <div class="skeleton-grid" id="skeletonGrid">
+                {% for i in "123456789"|make_list %}
+                <div class="skeleton-card">
+                    <div class="skeleton-image"></div>
+                    <div class="skeleton-text"></div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Masonry/Grid Container -->
+            <div class="photo-grid" id="photoGrid">
+                {% for image in page_obj %}
+                <div class="photo-card {{ image.image_category }}" data-id="{{ image.id }}" data-category="{{ image.image_category }}">
+                    <div class="photo-card-inner">
+                        <img 
+                            class="photo-img" 
+                            src="{{ image.image.url }}" 
+                            alt="{{ image.image_category|title }}"
+                            loading="lazy"
+                            decoding="async"
+                            fetchpriority="{% if forloop.counter < 4 %}high{% else %}low{% endif %}"
+                        >
+                        <div class="photo-card-overlay">
+                            <div class="photo-meta">
+                                <span class="photo-category">{{ image.image_category|title }}</span>
+                                <span class="photo-date">Today</span>
+                            </div>
+                            <div class="photo-actions-overlay">
+                                <button class="photo-action-btn preview-btn" 
+                                        data-image="{{ image.image.url }}"
+                                        data-title="{{ image.image_category|title }}"
+                                        data-index="{{ forloop.counter0 }}">
+                                    <i class="fa fa-expand"></i>
+                                </button>
+                                <button class="photo-action-btn like-btn" data-id="{{ image.id }}">
+                                    <i class="fa fa-heart-o"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <i class="fa fa-images"></i>
+                    <p>No photos yet</p>
+                    <span>Check back soon for new memories</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-controls" id="paginationControls">
+                <div class="pagination-info">
+                    <span>Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+                </div>
+            </div>
+
+            <!-- Intersection Observer Sentinel -->
+            <div class="sentinel" id="sentinel"></div>
+
+            <!-- Load More Indicator -->
+            <div class="load-more-indicator" id="loadMoreIndicator" style="display:none;">
+                <div class="load-more-spinner"></div>
+                <span>Loading more...</span>
+            </div>
+
+            <div class="end-of-content" id="endOfContent" style="display:none;">
+                <span>🎉 You've seen all photos</span>
+            </div>
+        </div>
+
+        <!-- Google Drive Gallery - Separated UI -->
+        <div id="google-drive-gallery" class="gallery-content {% if active_source != 'google-drive' %}d-none{% endif %}">
+            {% if not drive_enabled %}
+                <div class="alert-modern">
+                    <i class="fa fa-info-circle"></i>
+                    <span>Google Drive integration is not enabled.</span>
+                </div>
+            {% else %}
+                {% if drive_error %}
+                    <div class="alert-modern alert-error">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <span>{{ drive_error }}</span>
+                    </div>
+                {% else %}
+                    <!-- Drive Header -->
+                    <div class="drive-header">
+                        <div class="drive-header-content">
+                            <div class="drive-title">
+                                <i class="fa fa-google-drive"></i>
+                                <h2>Google Drive</h2>
+                            </div>
+                            {% if active_folder_id %}
+                            <a href="?source=google-drive" class="drive-back-btn">
+                                <i class="fa fa-arrow-left"></i>
+                                Back to root
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Drive Breadcrumb -->
+                    {% if breadcrumb_path %}
+                    <nav class="drive-breadcrumb">
+                        <a href="?source=google-drive" class="crumb-link">
+                            <i class="fa fa-home"></i>
+                        </a>
+                        {% for crumb in breadcrumb_path %}
+                        <span class="crumb-separator">/</span>
+                        {% if forloop.last %}
+                        <span class="crumb-current">{{ crumb.name }}</span>
+                        {% else %}
+                        <a href="?source=google-drive&folder={{ crumb.id }}" class="crumb-link">{{ crumb.name }}</a>
+                        {% endif %}
+                        {% endfor %}
+                    </nav>
+                    {% endif %}
+
+                    <!-- Drive Folders Section - ALWAYS SHOW FIRST -->
+                    {% if drive_folders %}
+                    <div class="drive-section">
+                        <div class="drive-section-header">
+                            <h3><i class="fa fa-folder-open"></i> Folders</h3>
+                            <span class="drive-count">{{ drive_folders|length }} folders</span>
+                        </div>
+                        <div class="drive-folders">
+                            {% for folder in drive_folders %}
+                            <a href="?source=google-drive&folder={{ folder.id }}" class="folder-card">
+                                <div class="folder-icon">
+                                    <i class="fa fa-folder"></i>
+                                </div>
+                                <div class="folder-info">
+                                    <span class="folder-name">{{ folder.name }}</span>
+                                    <span class="folder-sub">
+                                        {% if folder.folder_count %}
+                                            {{ folder.folder_count }} folders
+                                        {% endif %}
+                                        {% if folder.file_count %}
+                                            • {{ folder.file_count }} files
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <i class="fa fa-chevron-right folder-arrow"></i>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Drive Photos Section - ONLY SHOW WHEN IN A FOLDER AND THERE ARE NO SUBFOLDERS -->
+                    {% if drive_photos and active_folder_id and not drive_folders %}
+                    <div class="drive-section">
+                        <div class="drive-section-header">
+                            <h3><i class="fa fa-image"></i> Photos in this folder</h3>
+                            <span class="drive-count">{{ drive_photos|length }} images</span>
+                        </div>
+                        <div class="photo-grid drive-grid" id="drivePhotoGrid">
+                            {% for photo in drive_photos %}
+                            <div class="photo-card drive-photo-card" data-index="{{ forloop.counter0 }}">
+                                <div class="photo-card-inner">
+                                    <img 
+                                        class="photo-img" 
+                                        src="{{ photo.thumbnail|default:'#' }}" 
+                                        alt="{{ photo.name }}"
+                                        loading="lazy"
+                                        decoding="async"
+                                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect width=%22300%22 height=%22300%22 fill=%22%23e8edf5%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%235f6b7a%22 font-family=%22sans-serif%22 font-size=%2220%22%3E📷%3C/text%3E%3C/svg%3E'"
+                                    >
+                                    <div class="photo-card-overlay">
+                                        <div class="photo-meta">
+                                            <span class="photo-category">📁 Drive</span>
+                                            <span class="photo-date">{{ photo.name|truncatechars:20 }}</span>
+                                        </div>
+                                        <div class="photo-actions-overlay">
+                                            <button class="photo-action-btn preview-btn" 
+                                                    data-image="{{ photo.preview_url|default:photo.thumbnail|default:'#' }}"
+                                                    data-full-image="{% url 'website:download_drive_file' %}?id={{ photo.id }}&preview=1"
+                                                    data-title="{{ photo.name }}"
+                                                    data-index="{{ forloop.counter0 }}">
+                                                <i class="fa fa-expand"></i>
+                                            </button>
+                                            <a href="{% url 'website:download_drive_file' %}?id={{ photo.id }}" 
+                                               class="photo-action-btn download-btn"
+                                               download>
+                                                <i class="fa fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Empty State - When no folders and no photos in current view -->
+                    {% if not drive_folders and not drive_photos %}
+                    <div class="empty-state drive-empty">
+                        <i class="fa fa-folder-open"></i>
+                        <p>No photos or folders found</p>
+                        <span>This folder appears to be empty</span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Show message when at root with no folders but has photos -->
+                    {% if not active_folder_id and not drive_folders and drive_photos %}
+                    <div class="empty-state drive-empty">
+                        <i class="fa fa-folder-open"></i>
+                        <p>No folders found</p>
+                        <span>Photos are organized in folders. Click on a folder to view its contents.</span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Show message when in folder with photos but no folders -->
+                    {% if active_folder_id and not drive_folders and drive_photos %}
+                    <div class="drive-section">
+                        <div class="drive-section-header">
+                            <h3><i class="fa fa-image"></i> Photos in this folder</h3>
+                            <span class="drive-count">{{ drive_photos|length }} images</span>
+                        </div>
+                        <div class="photo-grid drive-grid" id="drivePhotoGrid">
+                            {% for photo in drive_photos %}
+                            <div class="photo-card drive-photo-card" data-index="{{ forloop.counter0 }}">
+                                <div class="photo-card-inner">
+                                    <img 
+                                        class="photo-img" 
+                                        src="{{ photo.thumbnail|default:'#' }}" 
+                                        alt="{{ photo.name }}"
+                                        loading="lazy"
+                                        decoding="async"
+                                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect width=%22300%22 height=%22300%22 fill=%22%23e8edf5%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%235f6b7a%22 font-family=%22sans-serif%22 font-size=%2220%22%3E📷%3C/text%3E%3C/svg%3E'"
+                                    >
+                                    <div class="photo-card-overlay">
+                                        <div class="photo-meta">
+                                            <span class="photo-category">📁 Drive</span>
+                                            <span class="photo-date">{{ photo.name|truncatechars:20 }}</span>
+                                        </div>
+                                        <div class="photo-actions-overlay">
+                                            <button class="photo-action-btn preview-btn" 
+                                                    data-image="{{ photo.preview_url|default:photo.thumbnail|default:'#' }}"
+                                                    data-full-image="{% url 'website:download_drive_file' %}?id={{ photo.id }}&preview=1"
+                                                    data-title="{{ photo.name }}"
+                                                    data-index="{{ forloop.counter0 }}">
+                                                <i class="fa fa-expand"></i>
+                                            </button>
+                                            <a href="{% url 'website:download_drive_file' %}?id={{ photo.id }}" 
+                                               class="photo-action-btn download-btn"
+                                               download>
+                                                <i class="fa fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Toast Notifications -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Preview Modal - Enhanced -->
+<div class="preview-modal" id="previewModal">
+    <div class="preview-modal-overlay" id="previewOverlay"></div>
+    <div class="preview-modal-content">
+        <div class="preview-header">
+            <button class="preview-close" id="previewClose">
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="preview-counter" id="previewCounter"></div>
+            <button class="preview-download" id="previewDownload">
+                <i class="fa fa-download"></i>
+            </button>
+        </div>
+        <div class="preview-body">
+            <button class="preview-nav preview-nav-prev" id="previewPrev">
+                <i class="fa fa-chevron-left"></i>
+            </button>
+            <div class="preview-image-container">
+                <img class="preview-image" id="previewImage" src="" alt="">
+                <div class="preview-loader">
+                    <div class="preview-spinner"></div>
+                </div>
+            </div>
+            <button class="preview-nav preview-nav-next" id="previewNext">
+                <i class="fa fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="preview-footer">
+            <span class="preview-title" id="previewTitle"></span>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/gallery.js' %}"></script>
+{% endblock content %}

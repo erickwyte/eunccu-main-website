@@ -1,0 +1,492 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  /* ── Page wrapper ── */
+  .cr-page {
+    background: var(--white);
+    min-height: 80vh;
+    padding: 150px 0 72px;
+  }
+
+  /* ── Banner ── */
+  .cr-banner {
+    background: var(--ink);
+    color: #fff;
+    padding: 28px 32px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .cr-banner-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-sm);
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .cr-banner h1 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+  }
+  .cr-banner p {
+    font-size: 0.84rem;
+    color: rgba(255,255,255,.70);
+    margin: 5px 0 0;
+    line-height: 1.5;
+  }
+
+  /* ── Progress steps ── */
+  .cr-steps {
+    display: flex;
+    align-items: center;
+    margin-bottom: 28px;
+  }
+  .cr-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+  }
+  .cr-step-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    background: #ddd;
+    color: #fff;
+    margin-bottom: 5px;
+  }
+  .cr-step.done .cr-step-dot  { background: var(--green); }
+  .cr-step.active .cr-step-dot { background: var(--ink); }
+  .cr-step-label {
+    font-size: 0.70rem;
+    color: #888;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .cr-step.active .cr-step-label { color: var(--ink); font-weight: 600; }
+  .cr-step-line {
+    flex: 1;
+    height: 2px;
+    background: #ddd;
+    margin-bottom: 18px;
+  }
+  .cr-step.done + .cr-step-line { background: var(--green); }
+
+  /* ── Section cards ── */
+  .cr-card {
+    background: #fff;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .cr-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 22px;
+    border-bottom: var(--rule);
+    background: #fafaf8;
+  }
+  .cr-card-header-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .cr-card-header-icon.green { background: #e6f4e5; color: var(--green); }
+  .cr-card-header-icon.ink   { background: #f0f0f0; color: var(--ink); }
+  .cr-card-header h2 {
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink);
+    margin: 0;
+  }
+  .cr-card-body { padding: 24px 22px; }
+
+  /* ── Grid layout ── */
+  .cr-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 22px;
+  }
+  .cr-span-2 { grid-column: span 2; }
+
+  /* ── Form controls ── */
+  .cr-form-group { display: flex; flex-direction: column; }
+  .cr-form-label {
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .cr-form-label .req { color: var(--red); margin-left: 2px; }
+  .form-control {
+    height: 40px;
+    padding: 0 12px;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-family: poppins, sans-serif;
+    color: var(--ink);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-control:focus { border-color: var(--green); }
+  select.form-control { cursor: pointer; }
+  .cr-form-help  { font-size: 0.74rem; color: #888; margin-top: 4px; }
+  .cr-field-error { font-size: 0.74rem; color: var(--red); margin-top: 4px; }
+
+  /* ── Photo upload ── */
+  .cr-photo-area {
+    border: 2px dashed #ccc;
+    border-radius: var(--radius-sm);
+    padding: 20px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .cr-photo-area:hover { border-color: var(--green); background: #f0faf0; }
+  .cr-photo-area i { font-size: 28px; color: #bbb; margin-bottom: 6px; display: block; }
+  .cr-photo-area p { font-size: 0.82rem; color: #888; margin: 0; }
+  .cr-photo-area input[type="file"] { display: none; }
+
+  /* ── Alert strips ── */
+  .cr-alert {
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .cr-alert-info    { background: #eff6ff; color: #1e40af; border-left: 3px solid #3b82f6; }
+  .cr-alert-warning { background: #fff8e1; color: #854d0e; border-left: 3px solid #d97706; }
+  .cr-alert-error   { background: #fee2e2; color: #991b1b; border-left: 3px solid var(--red); }
+
+  /* ── Password strength ── */
+  .cr-strength-bar {
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    margin-top: 7px;
+    overflow: hidden;
+  }
+  .cr-strength-fill {
+    height: 100%;
+    border-radius: 2px;
+    width: 0%;
+    transition: width .3s, background .3s;
+  }
+  .cr-strength-label { font-size: 0.72rem; color: #888; margin-top: 4px; }
+
+  /* ── Submit card ── */
+  .cr-submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 22px;
+  }
+  .cr-note { font-size: 0.78rem; color: #888; }
+  .btn-complete {
+    height: 44px;
+    padding: 0 28px;
+    background: var(--green);
+    color: #fff;
+    border: 2px solid var(--green);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem;
+    font-weight: 700;
+    font-family: poppins, sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+  }
+  .btn-complete:hover { background: #236a1a; }
+
+  @media (max-width: 640px) {
+    .cr-grid { grid-template-columns: 1fr; }
+    .cr-span-2 { grid-column: span 1; }
+    .cr-banner { flex-direction: column; text-align: center; }
+  }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="cr-page">
+  <div class="container">
+
+    <!-- Banner -->
+    <div class="cr-banner">
+      <div class="cr-banner-icon"><i class="fa fa-id-card"></i></div>
+      <div>
+        <h1>Complete Your Registration</h1>
+        <p>
+          Welcome, {{ request.user.full_name|default:request.user.email }}.
+          Fill in the details below and set a permanent password to activate your account.
+        </p>
+      </div>
+    </div>
+
+    <!-- Progress steps -->
+    <div class="cr-steps">
+      <div class="cr-step done">
+        <div class="cr-step-dot"><i class="fa fa-check"></i></div>
+        <div class="cr-step-label">Account Created</div>
+      </div>
+      <div class="cr-step-line"></div>
+      <div class="cr-step done">
+        <div class="cr-step-dot"><i class="fa fa-check"></i></div>
+        <div class="cr-step-label">First Login</div>
+      </div>
+      <div class="cr-step-line"></div>
+      <div class="cr-step active">
+        <div class="cr-step-dot">3</div>
+        <div class="cr-step-label">Profile Setup</div>
+      </div>
+      <div class="cr-step-line"></div>
+      <div class="cr-step">
+        <div class="cr-step-dot">4</div>
+        <div class="cr-step-label">Done</div>
+      </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="cr-alert cr-alert-error">
+          <i class="fa fa-times-circle"></i>
+          <div>{{ form.non_field_errors }}</div>
+        </div>
+      {% endif %}
+
+      <!-- Section 1: Profile information -->
+      <div class="cr-card">
+        <div class="cr-card-header">
+          <div class="cr-card-header-icon green"><i class="fa fa-user"></i></div>
+          <h2>Profile Information</h2>
+        </div>
+        <div class="cr-card-body">
+
+          <div class="cr-alert cr-alert-info">
+            <i class="fa fa-info-circle"></i>
+            <span>Fields marked <strong>*</strong> are required. You can update other fields later from your profile.</span>
+          </div>
+
+          <div class="cr-grid">
+
+            <div class="cr-form-group">
+              <label class="cr-form-label" for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+              {{ form.phone }}
+              {% if form.phone.errors %}{% for e in form.phone.errors %}<div class="cr-field-error">{{ e }}</div>{% endfor %}{% endif %}
+            </div>
+
+            <div class="cr-form-group">
+              <label class="cr-form-label" for="{{ form.homeCounty.id_for_label }}">{{ form.homeCounty.label }}</label>
+              {{ form.homeCounty }}
+              {% if form.homeCounty.errors %}{% for e in form.homeCounty.errors %}<div class="cr-field-error">{{ e }}</div>{% endfor %}{% endif %}
+            </div>
+
+            <div class="cr-form-group">
+              <label class="cr-form-label" for="{{ form.userType.id_for_label }}">{{ form.userType.label }} <span class="req">*</span></label>
+              {{ form.userType }}
+              {% if form.userType.errors %}{% for e in form.userType.errors %}<div class="cr-field-error">{{ e }}</div>{% endfor %}{% endif %}
+            </div>
+
+            <!-- Student field -->
+            <div class="cr-form-group" id="yearGroup">
+              <label class="cr-form-label" for="{{ form.yearOfStudy.id_for_label }}">{{ form.yearOfStudy.label }}</label>
+              {{ form.yearOfStudy }}
+              {% if form.yearOfStudy.errors %}{% for e in form.yearOfStudy.errors %}<div class="cr-field-error">{{ e }}</div>{% endfor %}{% endif %}
+            </div>
+
+            <!-- Alumni fields -->
+            <div class="cr-form-group" id="gradGroup" style="display:none;">
+              <label class="cr-form-label" for="{{ form.graduationYear.id_for_label }}">{{ form.graduationYear.label }}</label>
+              {{ form.graduationYear }}
+              {% if form.graduationYear.errors %}{% for e in form.graduationYear.errors %}<div class="cr-field-error">{{ e }}</div>{% endfor %}{% endif %}
+            </div>
+
+            <div class="cr-form-group" id="occGroup" style="display:none;">
+              <label class="cr-form-label" for="{{ form.currentOccupation.id_for_label }}">{{ form.currentOccupation.label }}</label>
+              {{ form.currentOccupation }}
+              {% if form.currentOccupation.errors %}{% for e in form.currentOccupation.errors %}<div class="cr-field-error">{{ e }}</div>{% endfor %}{% endif %}
+            </div>
+
+            <div class="cr-form-group">
+              <label class="cr-form-label" for="{{ form.workplace.id_for_label }}">{{ form.workplace.label }}</label>
+              {{ form.workplace }}
+              {% if form.workplace.errors %}{% for e in form.workplace.errors %}<div class="cr-field-error">{{ e }}</div>{% endfor %}{% endif %}
+            </div>
+
+            <!-- Profile photo -->
+            <div class="cr-form-group cr-span-2">
+              <label class="cr-form-label">Profile Photo (optional)</label>
+              <div class="cr-photo-area" id="photoArea" onclick="document.getElementById('id_profile_picture').click()">
+                <i class="fa fa-camera"></i>
+                <p id="photoLabel">Click to upload a photo</p>
+              </div>
+              {{ form.profile_picture }}
+              {% if form.profile_picture.errors %}{% for e in form.profile_picture.errors %}<div class="cr-field-error">{{ e }}</div>{% endfor %}{% endif %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Password -->
+      <div class="cr-card">
+        <div class="cr-card-header">
+          <div class="cr-card-header-icon ink"><i class="fa fa-lock"></i></div>
+          <h2>Set Your Permanent Password</h2>
+        </div>
+        <div class="cr-card-body">
+
+          <div class="cr-alert cr-alert-warning">
+            <i class="fa fa-exclamation-triangle"></i>
+            <span>You are using a temporary password. You must choose a new permanent password to continue.</span>
+          </div>
+
+          <div class="cr-grid">
+            <div class="cr-form-group">
+              <label class="cr-form-label" for="{{ form.new_password.id_for_label }}">{{ form.new_password.label }} <span class="req">*</span></label>
+              {{ form.new_password }}
+              <div class="cr-strength-bar"><div class="cr-strength-fill" id="strengthFill"></div></div>
+              <div class="cr-strength-label" id="strengthLabel"></div>
+              {% if form.new_password.errors %}{% for e in form.new_password.errors %}<div class="cr-field-error">{{ e }}</div>{% endfor %}{% endif %}
+            </div>
+            <div class="cr-form-group">
+              <label class="cr-form-label" for="{{ form.confirm_password.id_for_label }}">{{ form.confirm_password.label }} <span class="req">*</span></label>
+              {{ form.confirm_password }}
+              <div class="cr-form-help" id="matchHint"></div>
+              {% if form.confirm_password.errors %}{% for e in form.confirm_password.errors %}<div class="cr-field-error">{{ e }}</div>{% endfor %}{% endif %}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="cr-card">
+        <div class="cr-submit-row">
+          <span class="cr-note">All data is saved securely. You can update your profile at any time.</span>
+          <button type="submit" class="btn-complete">
+            <i class="fa fa-check-circle"></i> Complete Registration
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+  // ── Toggle student vs alumni fields ──
+  var typeSelect = document.getElementById('{{ form.userType.id_for_label }}');
+  var yearGroup  = document.getElementById('yearGroup');
+  var gradGroup  = document.getElementById('gradGroup');
+  var occGroup   = document.getElementById('occGroup');
+
+  function toggleFields() {
+    var isAlumnus = typeSelect.value === 'alumnus';
+    yearGroup.style.display = isAlumnus ? 'none' : '';
+    gradGroup.style.display = isAlumnus ? '' : 'none';
+    occGroup.style.display  = isAlumnus ? '' : 'none';
+  }
+  if (typeSelect) {
+    typeSelect.addEventListener('change', toggleFields);
+    toggleFields();
+  }
+
+  // ── Photo label update ──
+  var photoInput = document.getElementById('id_profile_picture');
+  if (photoInput) {
+    photoInput.addEventListener('change', function() {
+      var name = this.files[0] ? this.files[0].name : 'No file selected';
+      document.getElementById('photoLabel').textContent = name;
+    });
+  }
+
+  // ── Password strength ──
+  var pwInput     = document.getElementById('{{ form.new_password.id_for_label }}');
+  var cpInput     = document.getElementById('{{ form.confirm_password.id_for_label }}');
+  var fill        = document.getElementById('strengthFill');
+  var strengthLbl = document.getElementById('strengthLabel');
+  var matchHint   = document.getElementById('matchHint');
+
+  var LEVELS = [
+    { min: 0,  max: 4,  pct: 20,  color: '#ff1500', text: 'Too short' },
+    { min: 5,  max: 7,  pct: 45,  color: '#d97706', text: 'Weak' },
+    { min: 8,  max: 10, pct: 65,  color: '#ca8a04', text: 'Moderate' },
+    { min: 11, max: 14, pct: 82,  color: '#2c8e22', text: 'Strong' },
+    { min: 15, max: 999,pct: 100, color: '#166534', text: 'Very strong' },
+  ];
+
+  function getScore(pw) {
+    var s = pw.length;
+    if (/[A-Z]/.test(pw)) s += 2;
+    if (/[0-9]/.test(pw)) s += 2;
+    if (/[^A-Za-z0-9]/.test(pw)) s += 3;
+    return s;
+  }
+
+  if (pwInput) {
+    pwInput.addEventListener('input', function() {
+      var score = getScore(this.value);
+      var level = LEVELS.find(function(l) { return score >= l.min && score <= l.max; }) || LEVELS[LEVELS.length - 1];
+      fill.style.width = level.pct + '%';
+      fill.style.background = level.color;
+      strengthLbl.textContent = this.value.length ? level.text : '';
+      strengthLbl.style.color = level.color;
+    });
+  }
+
+  if (cpInput) {
+    cpInput.addEventListener('input', function() {
+      if (!this.value) { matchHint.textContent = ''; return; }
+      if (this.value === pwInput.value) {
+        matchHint.textContent = 'Passwords match';
+        matchHint.style.color = '#2c8e22';
+      } else {
+        matchHint.textContent = 'Passwords do not match';
+        matchHint.style.color = '#ff1500';
+      }
+    });
+  }
+</script>
+{% endblock %}

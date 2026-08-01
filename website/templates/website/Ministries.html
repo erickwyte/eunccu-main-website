@@ -1,0 +1,988 @@
+{% extends 'website/base.html'%}
+{% load static %}
+
+<!-- this template contains Eteams, classses, committees and Ministries -->
+{% block content %}
+
+<style>
+    /* ============================================================
+
+       Brand: Green #2c8e22 | Red #ff0019 | Dark #1a1a2e
+    ============================================================ */
+
+    /* ---- Page Header ---- */
+    .pager-header {
+        background: linear-gradient(135deg, #1a2e1a 0%, #2c8e22 60%, #1e6b18 100%);
+        padding: 70px 0 50px;
+        position: relative;
+        overflow: hidden;
+    }
+    .pager-header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .pager-header .page-content h2 {
+        color: #fff;
+        font-size: 2.4rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        letter-spacing: 0.02em;
+    }
+    .pager-header .page-content p {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.05rem;
+        margin-bottom: 16px;
+    }
+    .pager-header .breadcrumb {
+        background: transparent;
+        padding: 0;
+        margin: 0;
+    }
+    .pager-header .breadcrumb-item a { color: #a8e89e; }
+    .pager-header .breadcrumb-item.active { color: #fff; }
+    .pager-header .breadcrumb-item + .breadcrumb-item::before { color: rgba(255,255,255,0.5); }
+
+    /* ---- Section Common ---- */
+    .section-heading h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 10px;
+    }
+    .section-heading .heading-border {
+        display: block;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #2c8e22, #ff0019);
+        margin: 12px auto 16px;
+        border-radius: 3px;
+    }
+    .section-heading p {
+        color: #666;
+        max-width: 640px;
+        margin: 0 auto;
+        font-size: 0.97rem;
+        line-height: 1.7;
+    }
+    
+    .fa fa-whatsapp {
+        width: 12px
+        height: 12px
+    }
+
+    /* ---- CTA Section ---- */
+    .cta-section {
+        background: linear-gradient(135deg, #1a2e1a 0%, #2c8e22 100%);
+        padding: 50px 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .cta-section::after {
+        content: '';
+        position: absolute;
+        right: -60px; top: -60px;
+        width: 260px; height: 260px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.06);
+    }
+    .cta-content h2 ,h3 { color: #fff; font-size: 1.7rem; font-weight: 700; margin-bottom: 8px; }
+    .cta-content p  { color: rgba(255,255,255,0.85); font-size: 1.65rem; margin: 0; }
+    .cta-section .default-btn {
+        background: #fff;
+        color: #2c8e22 !important;
+        font-weight: 600;
+        border-radius: 20px;
+        padding: 8px 18px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 1.4rem;
+        transition: all 0.3s;
+        white-space: nowrap;
+    }
+    .cta-section .default-btn:hover {
+        background: #ff0019;
+        color: #fff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(220,53,69,0.30);
+    }
+
+    /* ---- Default Button - SMALLER SIZE ---- */
+    .default-btn {
+        background: #2c8e22;
+        color: #fff !important;
+        border-radius: 18px;
+        padding: 1px 24px;
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+    }
+    .default-btn:hover {
+        background: #ff0019;
+        color: #fff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220,53,69,0.25);
+        text-decoration: none;
+    }
+    .default-btn i {
+        font-size: 0.8rem;
+    }
+
+    /* ================================================
+       MINISTRIES SLIDER SECTION - LIKE COMMITTEES
+    ================================================ */
+    .ministries-section { 
+        background: #f7f9f7; 
+        padding: 70px 0; 
+    }
+
+    .ministry-slider-wrap {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .ministry-slides {
+        display: flex;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .ministry-slide {
+        min-width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    /* Image side - LEFT */
+    .ministry-slide-img {
+        position: relative;
+        width: 45%;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+    .ministry-slide-img img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .ministry-slide-img .ministry-number {
+        position: absolute;
+        top: 16px; left: 16px;
+        width: 42px; height: 42px;
+        background: rgba(44,142,34,0.92);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        font-weight: 700;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Info side - RIGHT */
+    .ministry-slide-info {
+        padding: 40px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: #fff;
+    }
+    .ministry-tag {
+        display: inline-block;
+        background: linear-gradient(135deg, #2c8e22 0%, #ff0019 100%);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 5px 12px;
+        border-radius: 14px;
+        margin-bottom: 16px;
+        align-self: flex-start;
+    }
+    .ministry-slide-info h3 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 14px;
+        line-height: 1.3;
+    }
+    .ministry-slide-info p {
+        color: #555;
+        font-size: 0.92rem;
+        line-height: 1.7;
+        margin-bottom: 20px;
+    }
+    .ministry-contact-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .chair-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #f0f0f0;
+        color: #1a1a2e;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 16px;
+    }
+    .chair-badge i { color: #2c8e22; font-size: 0.85rem; }
+
+    /* Nav Controls */
+    .ministry-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 30px;
+    }
+    .ministry-nav-btn {
+        background: #2c8e22;
+        color: #fff;
+        border: none;
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+    }
+    .ministry-nav-btn:hover {
+        background: #ff0019;
+        transform: scale(1.08);
+        box-shadow: 0 4px 12px rgba(220,53,69,0.3);
+    }
+    .ministry-dots {
+        display: flex;
+        gap: 8px;
+    }
+    .ministry-dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: #ccc;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: all 0.3s;
+    }
+    .ministry-dot.active {
+        background: #2c8e22;
+        width: 24px;
+        border-radius: 5px;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+        .ministry-slide { flex-direction: column; }
+        .ministry-slide-img { width: 100%; height: 220px; }
+        .ministry-slide-info { padding: 24px; }
+        .ministry-slide-info h3 { font-size: 1.3rem; }
+    }
+
+    /* ================================================
+       E-TEAMS SECTION
+    ================================================ */
+    .eteams-section { background: #fff; padding: 70px 0; }
+
+    .eteam-card {
+        background: #fff;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .eteam-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 20px rgba(44,142,34,0.12);
+    }
+    .eteam-img {
+        position: relative;
+        overflow: hidden;
+        height: 200px;
+    }
+    .eteam-img img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s;
+    }
+    .eteam-card:hover .eteam-img img { transform: scale(1.06); }
+    .eteam-body {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .eteam-body h3 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .eteam-body h3 a {
+        color: #1a1a2e;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    .eteam-body h3 a:hover { color: #2c8e22; }
+    .eteam-body p {
+        font-size: 0.87rem;
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 16px;
+        flex: 1;
+    }
+
+    /* ================================================
+       CLASSES SECTION - ONE CARD PER SCREEN
+    ================================================ */
+    .classes-section { 
+        background: #f7f9f7; 
+        padding: 70px 0; 
+    }
+
+    .class-slider-wrap {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .class-slides {
+        display: flex;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .class-slide {
+        min-width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    /* Image side - LEFT */
+    .class-slide-img {
+        position: relative;
+        width: 40%;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+    .class-slide-img img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* Info side - RIGHT */
+    .class-slide-info {
+        padding: 40px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: #fff;
+    }
+    .class-tag {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff0019 0%, #2c8e22 100%);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 5px 12px;
+        border-radius: 14px;
+        margin-bottom: 16px;
+        align-self: flex-start;
+    }
+    .class-slide-info h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 14px;
+        line-height: 1.3;
+    }
+    .class-slide-info p {
+        color: #555;
+        font-size: 0.92rem;
+        line-height: 1.7;
+        margin-bottom: 20px;
+    }
+
+    /* Nav Controls */
+    .class-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 30px;
+    }
+    .class-nav-btn {
+        background: #2c8e22;
+        color: #fff;
+        border: none;
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+    }
+    .class-nav-btn:hover {
+        background: #ff0019;
+        transform: scale(1.08);
+        box-shadow: 0 4px 12px rgba(220,53,69,0.3);
+    }
+    .class-dots {
+        display: flex;
+        gap: 8px;
+    }
+    .class-dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: #ccc;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: all 0.3s;
+    }
+    .class-dot.active {
+        background: #ff0019;
+        width: 24px;
+        border-radius: 5px;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+        .class-slide { flex-direction: column; }
+        .class-slide-img { width: 100%; height: 220px; }
+        .class-slide-info { padding: 24px; }
+        .class-slide-info h3 { font-size: 1.3rem; }
+    }
+
+    /* ================================================
+       SPECIAL COMMITTEES SLIDER
+    ================================================ */
+    .committees-section { background: #fff; padding: 70px 0; }
+
+    .committee-slider-wrap {
+        position: relative;
+        overflow: hidden;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .committee-slides {
+        display: flex;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .committee-slide {
+        min-width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    /* Image side - LEFT */
+    .committee-slide-img {
+        position: relative;
+        width: 45%;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+    .committee-slide-img img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .committee-slide-img .committee-number {
+        position: absolute;
+        top: 16px; left: 16px;
+        width: 42px; height: 42px;
+        background: rgba(255,0,25,0.92);
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        font-weight: 700;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Info side - RIGHT */
+    .committee-slide-info {
+        padding: 40px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: #fff;
+    }
+    .committee-tag {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff0019 0%, #2c8e22 100%);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 5px 12px;
+        border-radius: 14px;
+        margin-bottom: 16px;
+        align-self: flex-start;
+    }
+    .committee-slide-info h3 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 14px;
+        line-height: 1.3;
+    }
+    .committee-slide-info p {
+        color: #555;
+        font-size: 0.92rem;
+        line-height: 1.7;
+        margin-bottom: 20px;
+    }
+    .committee-contact-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .committee-chair-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #f0f0f0;
+        color: #1a1a2e;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 16px;
+    }
+    .committee-chair-badge i { color: #ff0019; font-size: 0.85rem; }
+
+    /* Nav Controls */
+    .committee-nav {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 30px;
+    }
+    .committee-nav-btn {
+        background: #ff0019;
+        color: #fff;
+        border: none;
+        width: 40px; height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+    }
+    .committee-nav-btn:hover {
+        background: #2c8e22;
+        transform: scale(1.08);
+        box-shadow: 0 4px 12px rgba(44,142,34,0.3);
+    }
+    .committee-dots {
+        display: flex;
+        gap: 8px;
+    }
+    .committee-dot {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        background: #ccc;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: all 0.3s;
+    }
+    .committee-dot.active {
+        background: #ff0019;
+        width: 24px;
+        border-radius: 5px;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+        .committee-slide { flex-direction: column; }
+        .committee-slide-img { width: 100%; height: 220px; }
+        .committee-slide-info { padding: 24px; }
+        .committee-slide-info h3 { font-size: 1.3rem; }
+    }
+
+    /* ---- Utility ---- */
+    .mb-40 { margin-bottom: 40px; }
+</style>
+<div class="header-height"></div>
+<!-- ============ PAGE HEADER ============ -->
+<section class="pager-header">
+    <div class="container">
+        <div class="page-content">
+            <h2>Ministries, E-Teams , Classes and Special Committees of the Christian Union</h2>
+            <p>Get involved in our vibrant ministries, regional evangelistic teams, classes, and special committees.</p>
+            <h3> Discover where you Belong, Explore Ministries</h3>
+        </div>
+    </div>
+</section>
+
+<!-- ============ MINISTRIES SLIDER ============ -->
+<section class="ministries-section" id="ministries">
+    <div class="container">
+        <div class="section-heading text-center mb-40">
+            <h2>Our Ministries</h2>
+            <span class="heading-border"></span>
+            <p>You’re not here by accident. Discover your place, use your gifts, and start serving with purpose.</p>
+            <p>Step Into Your Identity in Christ.</p>
+        </div>
+
+        <div class="ministry-slider-wrap" id="ministrySlider">
+            <div class="ministry-slides" id="ministryTrack">
+                {% for ministry in ministries %}
+                <div class="ministry-slide">
+                    <!-- Image side -->
+                    <div class="ministry-slide-img">
+                        {% if ministry.ministry_image %}
+                            <img src="{{ ministry.ministry_image.url }}" alt="{{ ministry.ministry_name }}">
+                        {% endif %}
+                       <!-- <div class="ministry-number">{{ forloop.counter }}</div> -->
+                    </div>
+                    <!-- Info side -->
+                    <div class="ministry-slide-info">
+                        <span class="ministry-tag">Ministry</span>
+                        <h3>{{ ministry.ministry_name }}</h3>
+                        <p>{{ ministry.ministry_description|safe }}</p>
+                        <div class="ministry-contact-row">
+                            <div class="chair-badge">
+                                <i class="fa fa-user"></i> Chairperson:
+                                {{ ministry.ministry_chair_name }}
+                            </div>
+                            <a href="https://wa.me/{{ ministry.ministry_chair_number }}" 
+                               class="default-btn" target="_blank">
+                                <i class="fa fa-whatsapp"></i>Contact
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Slider Controls -->
+        <div class="ministry-nav">
+            <button class="ministry-nav-btn" id="ministryPrev" aria-label="Previous">
+                <i class="fa fa-chevron-left"></i>
+            </button>
+            <div class="ministry-dots" id="ministryDots"></div>
+            <button class="ministry-nav-btn" id="ministryNext" aria-label="Next">
+                <i class="fa fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ============ CTA 1 ============ -->
+<section class="cta-section d-flex align-items-center">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-9">
+                <div class="cta-content">
+                    <h2>Want to Join a Ministry?</h2>
+                    <p>Discover where your gifts can make the greatest impact in serving our community.</p>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex align-items-center justify-content-md-end mt-3 mt-md-0">
+                <a href="https://wa.me/254102186205" target="_blank" class="default-btn">
+                    <i class="fa fa-whatsapp"></i>Join a Ministry Today
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ E-TEAMS ============ -->
+<section class="eteams-section" id="eteams">
+    <div class="container">
+        <div class="section-heading text-center mb-40">
+            <h2>Evangelistic Teams</h2>
+            <span class="heading-border"></span>
+            <p>Regional teams whose main objective is evangelism — preaching Christ across the country and building cohesion among union members.</p>
+        </div>
+        <div class="row g-4">
+            {% for eteam in eteams %}
+            <div class="col-md-6 col-lg-6">
+                <div class="eteam-card">
+                    <div class="eteam-img">
+                        <img src="{{ eteam.team_image.url }}" alt="{{ eteam.team_name }}">
+                    </div>
+                    <div class="eteam-body">
+                        <h3><a href="#">{{ eteam.team_name }}</a></h3>
+                        <p>{{ eteam.team_description|safe }}</p>
+                        
+                        <a href="https://wa.me/{{ eteam.team_chair_number }}" class="default-btn" target="_blank">
+                            <i class="fa fa-whatsapp"></i>Be Part of This Team
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ============ CTA 2 ============ -->
+<section class="cta-section d-flex align-items-center">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-9">
+                <div class="cta-content">
+                    <h2>Ready to Go Beyond the Campus?</h2>
+                    <p>Be part of a team that shares Christ, builds unity, and impacts lives across regions.</p>
+                </div>
+            </div>
+            <div class="col-md-3 d-flex align-items-center justify-content-md-end mt-3 mt-md-0">
+                <a href="https://wa.me/254102186205" target="_blank" class="default-btn">
+                    <i class="fa fa-whatsapp"></i>Join an E-Team Today
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============ CLASSES SLIDER - ONE CARD PER SCREEN ============ -->
+<section class="classes-section" id="classes">
+    <div class="container">
+        <div class="section-heading text-center mb-40">
+            <h2>Grow Deeper in Faith and Community by being a Class Member</h2>
+            <span class="heading-border"></span>
+            <p>Classes are where real connection and discipleship happen. Don’t grow alone.</p>
+        </div>
+
+        <div class="class-slider-wrap" id="classSlider">
+            <div class="class-slides" id="classTrack">
+                {% for class_item in classes %}
+                <div class="class-slide">
+                    <!-- Image side - LEFT -->
+                    <div class="class-slide-img">
+                        {% if class_item.class_image %}
+                            <img src="{{ class_item.class_image.url }}" alt="{{ class_item.class_name }}">
+                        {% endif %}
+                    </div>
+                    <!-- Info side - RIGHT -->
+                    <div class="class-slide-info">
+                        <span class="class-tag">Class</span>
+                        <h3>{{ class_item.class_name }}</h3>
+                        <p>{{ class_item.class_description|safe }}</p>
+                        <div class="committee-contact-row">
+                            <div class="chair-badge">
+                                <i class="fa fa-user"></i> Chairperson:
+                                {{ class_item.class_chair_name }}
+                            </div>
+                    
+                            <a href="https://wa.me/{{ class_item.class_chair_number }}" 
+                               class="default-btn" target="_blank">
+                                <i class="fa fa-whatsapp"></i>Join this Class
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Slider Controls -->
+        <div class="class-nav">
+            <button class="class-nav-btn" id="classPrev" aria-label="Previous">
+                <i class="fa fa-chevron-left"></i>
+            </button>
+            <div class="class-dots" id="classDots"></div>
+            <button class="class-nav-btn" id="classNext" aria-label="Next">
+                <i class="fa fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ============ SPECIAL COMMITTEES SLIDER ============ -->
+<section class="committees-section" id="committees">
+    <div class="container">
+        <div class="section-heading text-center mb-40">
+            <h2>Special Committees</h2>
+            <h3> Want to Serve in a Specialized Role?</h3>  
+            <span class="heading-border"></span>
+            <p>Use your skills to support the vision of the union through dedicated committees.</p>
+        </div>
+
+        <div class="committee-slider-wrap" id="committeeSlider">
+            <div class="committee-slides" id="committeeTrack">
+                {% for committee in committees %}
+                <div class="committee-slide">
+                    <!-- Image side -->
+                    <div class="committee-slide-img">
+                        {% if committee.committee_image %}
+                            <img src="{{ committee.committee_image.url }}" alt="{{ committee.committee_name }}">
+                        {% endif %}
+                       <!-- <div class="committee-number">{{ forloop.counter }}</div> -->
+                    </div>
+                    <!-- Info side -->
+                    <div class="committee-slide-info">
+                        <span class="committee-tag">Special Committee</span>
+                        <h3>{{ committee.committee_name }}</h3>
+                        <p>{{ committee.committee_description|safe }}</p>
+                        <div class="committee-contact-row">
+                            <div class="committee-chair-badge">
+                                <i class="fa fa-user"></i> Chairperson:
+                                {{ committee.committee_chair }}
+                            </div>
+                            <a href="https://wa.me/{{ committee.committee_chair_number }}" 
+                               class="default-btn" target="_blank">
+                                <i class="fa fa-whatsapp"></i>Join this Committee
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <!-- Slider Controls -->
+        <div class="committee-nav">
+            <button class="committee-nav-btn" id="committeePrev" aria-label="Previous">
+                <i class="fa fa-chevron-left"></i>
+            </button>
+            <div class="committee-dots" id="committeeDots"></div>
+            <button class="committee-nav-btn" id="committeeNext" aria-label="Next">
+                <i class="fa fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ============ SLIDER JAVASCRIPT ============ -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    /* ------ MINISTRIES SLIDER ------ */
+    function initSlider(config) {
+        const track  = document.getElementById(config.trackId);
+        const dotsEl = document.getElementById(config.dotsId);
+        const prevBtn = document.getElementById(config.prevId);
+        const nextBtn = document.getElementById(config.nextId);
+        const sliderWrap = document.getElementById(config.sliderId);
+
+        if (!track) return;
+
+        const slides = track.querySelectorAll(config.slideClass);
+        let current = 0;
+        const total  = slides.length;
+
+        if (total === 0) return;
+
+        /* Build dots */
+        slides.forEach(function (_, i) {
+            var dot = document.createElement('button');
+            dot.className = config.dotClass + (i === 0 ? ' active' : '');
+            dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+            dot.addEventListener('click', function () { goTo(i); });
+            dotsEl.appendChild(dot);
+        });
+
+        function goTo(n) {
+            current = (n + total) % total;
+            track.style.transform = 'translateX(-' + (current * 100) + '%)';
+            dotsEl.querySelectorAll('.' + config.dotClass).forEach(function (d, i) {
+                d.classList.toggle('active', i === current);
+            });
+        }
+
+        prevBtn.addEventListener('click', function () { goTo(current - 1); });
+        nextBtn.addEventListener('click', function () { goTo(current + 1); });
+
+        /* Auto-advance */
+        var autoTimer = setInterval(function () { goTo(current + 1); }, config.autoDelay || 5000);
+        sliderWrap.addEventListener('mouseenter', function () {
+            clearInterval(autoTimer);
+        });
+        sliderWrap.addEventListener('mouseleave', function () {
+            autoTimer = setInterval(function () { goTo(current + 1); }, config.autoDelay || 5000);
+        });
+
+        /* Touch/swipe support */
+        var touchStart = 0;
+        track.addEventListener('touchstart', function (e) {
+            touchStart = e.changedTouches[0].clientX;
+        }, { passive: true });
+        track.addEventListener('touchend', function (e) {
+            var diff = touchStart - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) goTo(diff > 0 ? current + 1 : current - 1);
+        }, { passive: true });
+    }
+
+    /* Initialize Ministries Slider */
+    initSlider({
+        sliderId: 'ministrySlider',
+        trackId: 'ministryTrack',
+        dotsId: 'ministryDots',
+        prevId: 'ministryPrev',
+        nextId: 'ministryNext',
+        slideClass: '.ministry-slide',
+        dotClass: 'ministry-dot',
+        autoDelay: 5000
+    });
+
+    /* Initialize Classes Slider */
+    initSlider({
+        sliderId: 'classSlider',
+        trackId: 'classTrack',
+        dotsId: 'classDots',
+        prevId: 'classPrev',
+        nextId: 'classNext',
+        slideClass: '.class-slide',
+        dotClass: 'class-dot',
+        autoDelay: 5000
+    });
+
+    /* Initialize Committees Slider */
+    initSlider({
+        sliderId: 'committeeSlider',
+        trackId: 'committeeTrack',
+        dotsId: 'committeeDots',
+        prevId: 'committeePrev',
+        nextId: 'committeeNext',
+        slideClass: '.committee-slide',
+        dotClass: 'committee-dot',
+        autoDelay: 6000
+    });
+});
+</script>
+
+{% endblock content %}

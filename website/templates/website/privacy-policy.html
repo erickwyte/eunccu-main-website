@@ -1,0 +1,367 @@
+{% extends 'website/base.html'%}
+{% load static %}
+
+{% block content %}
+
+<style>
+    /* Base Styles */
+    :root {
+        --primary-color: #2c8e22;
+        --secondary-color: #2c8e22;
+        --text-color: #333;
+        --background-color: #f8f9fa;
+        --container-padding: clamp(1rem, 5vw, 2rem);
+        --section-spacing: clamp(1.5rem, 3vw, 2.5rem);
+        --border-radius: 10px;
+        --box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        --transition-speed: 0.3s;
+    }
+
+    .header-height {
+        height: 80px;
+    }
+
+    .pager-header {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("{% static 'img/MinistriesBanner.webp' %}") no-repeat center center;
+        background-size: cover;
+        padding: 100px 0;
+        color: #fff;
+        text-align: center;
+    }
+
+    .page-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .page-content h2 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        margin-bottom: 20px;
+        color: #fff;
+    }
+
+    .page-content p {
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        margin-bottom: 30px;
+        color: #fff;
+    }
+
+    .breadcrumb {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .breadcrumb-item {
+        display: flex;
+        margin-top: clamp(0.5rem, 2vw, 1.25rem);
+        align-items: center;
+        font-size: clamp(0.875rem, 2vw, 1rem);
+        padding: 0.25rem 0.5rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        transition: all var(--transition-speed);
+    }
+
+    .breadcrumb-item:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .breadcrumb-item a {
+        color: #fff;
+        text-decoration: none;
+        transition: color var(--transition-speed);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
+
+    .breadcrumb-item.active {
+        color: rgba(255, 255, 255, 0.8);
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        color: var(--text-color);
+    }
+
+    .privacy-container {
+        max-width: min(1200px, 95%);
+        margin: 0 auto;
+        padding: var(--container-padding);
+    }
+
+    .privacy-header {
+        text-align: center;
+        margin-bottom: var(--section-spacing);
+        padding: clamp(1rem, 3vw, 2rem) 0;
+        background-color: var(--background-color);
+        border-radius: var(--border-radius);
+    }
+
+    .privacy-header h2 {
+        color: var(--primary-color);
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        margin-bottom: 1rem;
+    }
+
+    .privacy-content {
+        background-color: white;
+        padding: clamp(1.5rem, 4vw, 2.5rem);
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+
+    .privacy-section {
+        margin-bottom: var(--section-spacing);
+    }
+
+    .privacy-section h3 {
+        color: var(--primary-color);
+        font-size: clamp(1.2rem, 3vw, 1.5rem);
+        margin-bottom: 1rem;
+        line-height: 1.3;
+    }
+
+    .privacy-section p {
+        margin-bottom: 1rem;
+        font-size: clamp(1rem, 2vw, 1.1rem);
+        line-height: 1.6;
+    }
+
+    .privacy-section ul {
+        padding-left: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .privacy-section li {
+        margin-bottom: 0.5rem;
+        font-size: clamp(1rem, 2vw, 1.1rem);
+        line-height: 1.5;
+    }
+
+    .default-btn {
+        display: inline-block;
+        background-color: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        padding: clamp(0.75rem, 2vw, 1rem) clamp(1.25rem, 3vw, 1.5rem);
+        border-radius: var(--border-radius);
+        transition: all var(--transition-speed);
+        font-weight: 600;
+        margin-top: 1.5rem;
+        text-align: center;
+        width: fit-content;
+    }
+
+    .default-btn:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+        .privacy-content {
+            padding: clamp(1rem, 3vw, 1.5rem);
+        }
+
+        .privacy-section {
+            margin-bottom: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .breadcrumb {
+            gap: 0.25rem;
+        }
+
+        .breadcrumb-item {
+            margin-top: 0.75rem;
+            padding: 0.2rem 0.4rem;
+        }
+
+        .breadcrumb-item a {
+            max-width: 150px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .privacy-container {
+            padding: 1rem;
+        }
+
+        .privacy-header {
+            padding: 1rem 0;
+        }
+
+        .privacy-content {
+            padding: 1rem;
+        }
+
+        .default-btn {
+            width: 100%;
+            padding: 1rem;
+        }
+
+        .privacy-section ul {
+            padding-left: 1rem;
+        }
+
+        .breadcrumb-item {
+            margin-top: 0.5rem;
+            padding: 0.15rem 0.3rem;
+            font-size: 0.875rem;
+        }
+
+        .breadcrumb-item a {
+            max-width: 120px;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .breadcrumb-item {
+            margin-top: 0.4rem;
+            padding: 0.1rem 0.2rem;
+            font-size: 0.8rem;
+        }
+
+        .breadcrumb-item a {
+            max-width: 100px;
+        }
+    }
+
+    /* Print Styles */
+    @media print {
+        .privacy-container {
+            max-width: 100%;
+            padding: 0;
+        }
+
+        .privacy-header {
+            background-color: white;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+
+        .privacy-content {
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .default-btn {
+            display: none;
+        }
+    }
+</style>
+
+<div class="header-height"></div>
+
+<div class="pager-header">
+    <div class="container">
+        <div class="page-content">
+            <h2>Privacy Policy</h2>
+            <p>Our commitment to protecting your privacy and personal information</p>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'website:home'%}">Home</a></li>
+                <li class="breadcrumb-item active">Privacy Policy</li>
+            </ol>
+        </div>
+    </div>
+</div>
+
+<div class="privacy-container">
+    <div class="privacy-content">
+        <div class="privacy-section">
+            <p>As <b>Egerton University Njoro Campus Christian Union</b>, we value the privacy of our members and visitors. This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you visit our website, register as a member, or engage with our services.</p>
+            <p>By accessing or using our website, you agree to the terms of this Privacy Policy. Please read it carefully to understand how we handle your personal data.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h3>1. Information We Collect</h3>
+            <p>We collect the following types of personal information when you interact with our website or become a member:</p>
+            <ul>
+                <li><b>Personal Identification Information</b>: Name, email address, phone number, registration number, home county, and full name.</li>
+                <li><b>Usage Data</b>: Information about how you interact with our website, such as your IP address, browser type, and pages visited.</li>
+                <li><b>Cookies</b>: We use cookies to enhance your experience on our website. Cookies are small files stored on your device that help us analyze site traffic and provide a more personalized experience.</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h3>2. How We Use Your Information</h3>
+            <p>We use the personal information we collect for the following purposes:</p>
+            <ul>
+                <li>To provide you with the services and information related to our Christian Union.</li>
+                <li>To communicate with you regarding events, updates, and other announcements.</li>
+                <li>To process your membership registration and manage your profile.</li>
+                <li>To improve our website and services based on user feedback and behavior.</li>
+                <li>To comply with legal obligations and ensure the security of our website and community.</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h3>3. How We Share Your Information</h3>
+            <p>We will not sell, rent, or trade your personal information to third parties. However, we may share your information in the following circumstances:</p>
+            <ul>
+                <li><b>Service Providers</b>: We may share your information with trusted third-party service providers who assist us in running our website and services (e.g., web hosting services, email services). These providers are obligated to keep your information confidential.</li>
+                <li><b>Legal Compliance</b>: We may disclose your information if required by law or in response to a legal request, such as a court order or subpoena.</li>
+                <li><b>In the Event of Merger or Acquisition</b>: If our organization undergoes a merger, acquisition, or sale of assets, your information may be transferred as part of the transaction.</li>
+            </ul>
+        </div>
+
+        <div class="privacy-section">
+            <h3>4. How We Protect Your Information</h3>
+            <p>We are committed to protecting your personal information from unauthorized access, alteration, disclosure, or destruction. We implement various technical and organizational security measures, including encryption, secure servers, and regular security audits. However, no data transmission or storage method can be guaranteed to be 100% secure, so we cannot guarantee absolute security.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h3>5. Your Rights and Choices</h3>
+            <p>Depending on your jurisdiction, you may have the following rights regarding your personal data:</p>
+            <ul>
+                <li><b>Access</b>: You can request access to the personal information we hold about you.</li>
+                <li><b>Correction</b>: You can request corrections to any inaccurate or incomplete information.</li>
+                <li><b>Deletion</b>: You can request the deletion of your personal data, subject to applicable laws and our retention policies.</li>
+                <li><b>Objection</b>: You can object to our processing of your personal information under certain circumstances.</li>
+            </ul>
+            <p>To exercise any of these rights, please contact us at <b>info@eunccu.org</b></p>
+        </div>
+
+        <div class="privacy-section">
+            <h3>6. Cookies and Tracking Technologies</h3>
+            <p>We use cookies and similar tracking technologies to enhance your user experience. These technologies allow us to:</p>
+            <ul>
+                <li>Personalize content and ads.</li>
+                <li>Analyze website traffic and performance.</li>
+                <li>Retain user preferences and settings.</li>
+            </ul>
+            <p>You can manage or disable cookies through your browser settings, but please note that disabling cookies may affect your ability to use certain features of our website.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h3>7. Children's Privacy</h3>
+            <p>Our website is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have inadvertently collected such information, please contact us, and we will take steps to delete it.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h3>8. Changes to This Privacy Policy</h3>
+            <p>We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any significant changes by posting a notice on our website or by sending you an email. Please review this policy periodically to stay informed about how we are protecting your information.</p>
+        </div>
+
+        <div class="privacy-section">
+            <h3>9. Contact Us</h3>
+            <p>If you have any questions or concerns about this Privacy Policy or how we handle your personal information, please contact us:</p>
+            <p>Email: <a href="https://mail.google.com/mail/?view=cm&fs=1&to=info@eunccu.org&su=Privacy Policy Inquiry&body=Dear EUNCCU Team,%0A%0AI have a question regarding your Privacy Policy.%0A%0A[Please type your message here]" class="email-link" target="_blank" rel="noopener noreferrer">info@eunccu.org</a></p>
+        </div>
+
+        <a href="{% static 'img/EUNCCU-CONSTITUTION.pdf' %}" class="default-btn" target="_blank" rel="noopener no-referrer">Our Constitution</a>
+    </div>
+</div>
+
+{% endblock content %}

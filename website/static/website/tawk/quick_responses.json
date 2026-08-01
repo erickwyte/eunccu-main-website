@@ -1,0 +1,15 @@
+{
+  "greetings": {
+    "welcome": "Welcome to EUNCCU! How can I assist you today?",
+    "goodbye": "Thank you for contacting EUNCCU. God bless you!"
+  },
+  "common_issues": {
+    "login_help": "If you're having trouble logging in:\n1. Check your email spelling\n2. Ensure caps lock is off\n3. Try the 'Forgot Password' option if needed",
+    "book_access": "To access the E-Library:\n1. Log in to your account\n2. Click 'Pages' in the menu\n3. Select 'E-Library'\n4. Browse or search for books",
+    "technical_issue": "If you're experiencing technical issues:\n1. Clear your browser cache\n2. Try refreshing the page\n3. Contact support if the issue persists"
+  },
+  "contact_info": {
+    "support": "You can reach us through:\nEmail: Info@Eunccu.org\nPhone: +(254) 102 186 205",
+    "social_media": "Follow us on:\nFacebook: egertoncu.org\nTwitter: @egertoncu\nInstagram: @cu_egerton"
+  }
+} 

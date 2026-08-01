@@ -1,0 +1,640 @@
+{% extends 'website/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+
+
+  :root {
+    --primary:   #2c8e22;
+    --accent:    #ff0000;
+    --light-bg:  #f7f5f2;
+    --card-bg:   #ffffff;
+    --text-dark: #000000;
+    --text-mid:  #16171a;
+    --text-soft: #525252;
+    --radius:    14px;
+    --shadow:    0 2px 8px rgba(26,60,94,.06);
+  }
+
+  /* ── Page header ── */
+  .leadership-hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #03080e 100%);
+    padding: 100px 0 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle dot-grid texture */
+  .leadership-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Bottom fade edge */
+  .leadership-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,.18));
+    pointer-events: none;
+  }
+
+  .leadership-hero .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Eyebrow label */
+  .leadership-hero .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.55);
+    margin-bottom: 18px;
+  }
+  .leadership-hero .hero-eyebrow::before,
+  .leadership-hero .hero-eyebrow::after {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: rgba(255,255,255,.3);
+  }
+
+  /* Main heading */
+  .leadership-hero h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 0;
+    letter-spacing: -.01em;
+  }
+
+  /* Green accent word highlight */
+  .leadership-hero h1 .accent-word {
+    color: #6ddc5f;
+  }
+
+  /* Decorative divider */
+  .leadership-hero .hero-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px auto;
+  }
+  .leadership-hero .hero-divider span {
+    display: block;
+    height: 1px;
+    width: 50px;
+    background: rgba(255,255,255,.2);
+    border-radius: 1px;
+  }
+  .leadership-hero .hero-divider .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* Subtext */
+  .leadership-hero .hero-sub {
+    font-family: 'DM Sans', sans-serif;
+    color: rgba(255,255,255,.65);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+
+  /* ── Main section ── */
+  .leadership-section {
+    background: var(--light-bg);
+    padding: 60px 0 80px;
+  }
+
+  /* ── Group photo banner ── */
+  .group-banner {
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 48px;
+    position: relative;
+    max-height: 420px;
+    
+  }
+  .group-banner img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    display: block;
+    transition: transform .5s ease;
+    object-position: center center;
+  }
+  .group-banner:hover img { transform: scale(1.02); }
+  .group-banner-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(15,37,64,.85) 0%, transparent 100%);
+    padding: 28px 28px 22px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .group-banner-label h3 {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: 1.4rem;
+    margin: 0;
+  }
+  .group-banner-label span {
+    font-family: 'poppins', sans-serif;
+    color: var(--accent);
+    font-size: .85rem;
+    font-weight: 500;
+    background: rgba(255,255,255,.12);
+    border: 1px solid #fff;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .no-group-image {
+    background: linear-gradient(135deg, #e8e4de 0%, #d4cec6 100%);
+    height: 200px;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 48px;
+    gap: 10px;
+    color: var(--text-soft);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .no-group-image svg { opacity: .4; }
+
+  /* ── Year pill tabs ── */
+  .year-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 44px;
+  }
+  .year-tab {
+    font-family: 'poppins', sans-serif;
+    font-size: .875rem;
+    font-weight: 500;
+    color: var(--primary);
+    background: #fff;
+    border: 1.5px solid #dde3ec;
+    border-radius: 40px;
+    padding: 8px 22px;
+    text-decoration: none;
+    transition: all .2s ease;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  }
+  .year-tab:hover {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(26,60,94,.12);
+  }
+  .year-tab.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(26,60,94,.18);
+  }
+  .year-tab.active .current-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    margin-top: -2px;
+  }
+
+  /* ── Section divider ── */
+  .leaders-header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .leaders-header h2 {
+    font-family: 'poppins', sans-serif;
+    color: var(--text-dark);
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+  }
+  .leaders-header .underline-accent {
+    width: 48px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 2px;
+    margin: 0 auto;
+  }
+
+  /* ── Leader cards — HORIZONTAL LAYOUT ── */
+  .leaders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
+    gap: 28px;
+    margin-bottom: 48px;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  
+  .leader-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform .25s ease, box-shadow .25s ease;
+    animation: fadeUp .4s ease both;
+    display: flex;
+    flex-direction: row;
+    height: 240px;
+  }
+  
+  .leader-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(26,60,94,.10);
+  }
+  
+  .leader-card:nth-child(1) { animation-delay: .05s; }
+  .leader-card:nth-child(2) { animation-delay: .10s; }
+  .leader-card:nth-child(3) { animation-delay: .15s; }
+  .leader-card:nth-child(4) { animation-delay: .20s; }
+  .leader-card:nth-child(5) { animation-delay: .25s; }
+  .leader-card:nth-child(6) { animation-delay: .30s; }
+
+  /* Image section — left side, fixed width */
+  .leader-thumb {
+    position: relative;
+    overflow: hidden;
+    width: 200px;
+    flex-shrink: 0;
+    background: #e8e4de;
+  }
+  
+  .leader-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform .45s ease;
+    display: block;
+  }
+  
+  .leader-card:hover .leader-thumb img {
+    transform: scale(1.08);
+  }
+  
+  /* Gradient overlay on image */
+  .leader-thumb::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(15,37,64,.45) 0%, transparent 100%);
+    pointer-events: none;
+    transition: opacity .3s ease;
+  }
+  
+  /* Contact button on image */
+  .leader-thumb .contact-btn {
+    object-position: top center;
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    opacity: 0;
+    transition: opacity .25s ease, transform .25s ease;
+    white-space: nowrap;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .78rem;
+    font-weight: 600;
+    color: #fff;
+    background: #2c8e22;
+    border: none;
+    padding: 7px 16px;
+    border-radius: 30px;
+    text-decoration: none;
+    box-shadow: 0 3px 10px rgba(37,211,102,.30);
+    letter-spacing: .01em;
+  }
+  
+  .leader-card:hover .leader-thumb .contact-btn {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .contact-btn:hover {
+    background: #1ebe5d;
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .contact-btn svg { flex-shrink: 0; }
+
+  /* Text section — right side, flexible */
+  .leader-details {
+    padding: 20px 24px;
+    border-left: 3px solid var(--accent);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .leader-details h3 {
+    font-family: 'poppins', sans-serif;
+    font-size: 1.05rem;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    line-height: 1.3;
+    flex-shrink: 0;
+  }
+  
+  .leader-details h3 .position-text {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    margin-bottom: 4px;
+  }
+  
+  .leader-details p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: .85rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+    margin: 0;
+    overflow-y: auto;
+    flex: 1;
+  }
+  
+  /* Custom scrollbar for description */
+  .leader-details p::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .leader-details p::-webkit-scrollbar-track {
+    background: rgba(0,0,0,.03);
+    border-radius: 2px;
+  }
+  
+  .leader-details p::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 2px;
+  }
+  
+  .leader-details p::-webkit-scrollbar-thumb:hover {
+    background: #1f6618;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .leaders-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .leader-card {
+      flex-direction: column;
+      height: auto;
+    }
+    .leader-thumb img {
+        object-position: top center;
+    }
+    
+    .leader-thumb {
+      width: 100%;
+      height: 220px;
+      object-position: top center;
+    }
+    
+    .leader-details {
+      border-left: none;
+      border-top: 3px solid var(--accent);
+      max-height: none;
+    }
+    
+    .leader-details p {
+      overflow-y: visible;
+    }
+  }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center;
+    padding: 64px 20px;
+    color: var(--text-soft);
+    font-family: 'DM Sans', sans-serif;
+    grid-column: 1 / -1;
+  }
+  .empty-state svg { margin-bottom: 16px; opacity: .4; }
+  .empty-state p { font-size: 1rem; }
+
+  /* ── Pagination ── */
+  .pagination-wrap {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .pagination-wrap .page-link {
+    font-family: 'DM Sans', sans-serif;
+    font-size: .875rem;
+    color: var(--primary);
+    border: 1.5px solid #dde3ec;
+    border-radius: 8px;
+    padding: 7px 14px;
+    transition: all .2s ease;
+    background: #fff;
+  }
+  .pagination-wrap .page-item.disabled .page-link {
+    color: var(--text-soft);
+    background: var(--light-bg);
+    border-color: #dde3ec;
+    pointer-events: none;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  .pagination-wrap .page-link:hover {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    text-decoration: none;
+  }
+</style>
+
+<div class="header-height"></div>
+
+<!-- Page Hero -->
+<div class="leadership-hero">
+  <div class="container">
+    <div class="hero-inner">
+      <h1>Our <span class="accent-word">Executive</span> Committee</h1>
+      <div class="hero-divider">
+        <span></span>
+        <div class="dot"></div>
+        <span></span>
+      </div>
+      <p class="hero-sub">Meet the dedicated people who serve and lead our community with passion and purpose.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<section class="leadership-section">
+  <div class="container">
+
+    <!-- Pill Tabs -->
+    <div class="year-tabs">
+      {% for exec in exec_years %}
+        <a href="?year={{ exec.spiritual_year|urlencode }}"
+           class="year-tab {% if selected_exec and exec.id == selected_exec.id %}active{% endif %}">
+          {% if exec.is_current %}<span class="current-dot"></span>{% endif %}
+          {{ exec.spiritual_year }}
+        </a>
+      {% endfor %}
+    </div>
+
+    <!-- Group Photo Banner -->
+    {% if selected_exec %}
+      {% if selected_exec.group_image %}
+        <div class="group-banner">
+          <img src="{{ selected_exec.group_image.url }}" alt="Executive Committee {{ selected_exec.spiritual_year }}">
+          <div class="group-banner-label">
+            <h3>Executive Committee</h3>
+            <span>{{ selected_exec.spiritual_year }}</span>
+          </div>
+        </div>
+      {% else %}
+        <div class="no-group-image">
+          <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <p>Group photo for {{ selected_exec.spiritual_year }} not yet uploaded.</p>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    <!-- Leaders heading -->
+    <div class="leaders-header">
+      <h2>
+        {% if selected_exec %}{{ selected_exec.spiritual_year }} Leaders{% else %}Leadership Team{% endif %}
+      </h2>
+      <div class="underline-accent"></div>
+    </div>
+
+    <!-- Leader Cards Grid -->
+    <div class="leaders-grid">
+      {% for leader in page_obj %}
+        <div class="leader-card">
+
+          <!-- Image thumb: left side with gradient overlay + WhatsApp button -->
+          <div class="leader-thumb">
+            <img
+              src="{% if leader.leader_image %}{{ leader.leader_image.url }}{% else %}{% static 'img/icon-3.png' %}{% endif %}"
+              alt="{{ leader.leader_name }}">
+            <a href="https://wa.me/{{ leader.leader_contact }}" target="_blank" class="contact-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+              </svg>
+              Contact
+            </a>
+          </div>
+
+          <!-- Text details: right side with full description -->
+          <div class="leader-details">
+            <h3>
+              <span class="position-text">{{ leader.leader_position }}</span>
+              {{ leader.leader_name }}
+            </h3>
+            <p>{{ leader.leader_description|safe }}</p>
+          </div>
+
+        </div>
+      {% empty %}
+        <div class="empty-state">
+          <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <p>Leaders for this spiritual year will be added soon.</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination — preserves selected year -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination-wrap">
+      {% if page_obj.has_previous %}
+        <ul class="pagination mb-0">
+          <li class="page-item">
+            <a class="page-link" href="?page=1{% if selected_exec %}&year={{ selected_exec.spiritual_year|urlencode }}{% endif %}">&laquo; First</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_exec %}&year={{ selected_exec.spiritual_year|urlencode }}{% endif %}">Previous</a>
+          </li>
+        </ul>
+      {% endif %}
+      <ul class="pagination mb-0">
+        <li class="page-item disabled">
+          <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        </li>
+      </ul>
+      {% if page_obj.has_next %}
+        <ul class="pagination mb-0">
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_exec %}&year={{ selected_exec.spiritual_year|urlencode }}{% endif %}">Next</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if selected_exec %}&year={{ selected_exec.spiritual_year|urlencode }}{% endif %}">Last &raquo;</a>
+          </li>
+        </ul>
+      {% endif %}
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% endblock content %}

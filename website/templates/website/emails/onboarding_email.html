@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to EUNCCU</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #222;
+    }
+
+    .wrapper {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1a3a6b 0%, #2563eb 100%);
+      padding: 40px 32px 32px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      color: rgba(255, 255, 255, 0.80);
+      font-size: 14px;
+    }
+
+    .body {
+      padding: 36px 32px;
+    }
+
+    .greeting {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .intro {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .credentials-box {
+      background: #f0f5ff;
+      border-left: 4px solid #2563eb;
+      border-radius: 6px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+    }
+
+    .credentials-box h2 {
+      margin: 0 0 14px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #1a3a6b;
+    }
+
+    .credential-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .credential-row .label {
+      width: 120px;
+      font-weight: 600;
+      color: #555;
+      flex-shrink: 0;
+    }
+
+    .credential-row .value {
+      color: #1a1a1a;
+      word-break: break-all;
+    }
+
+    .credential-row .value code {
+      background: #e0e9ff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: #1a3a6b;
+    }
+
+    .cta-section {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #1a3a6b 0%, #2563eb 100%);
+      color: #ffffff !important;
+      text-decoration: none;
+      padding: 14px 36px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .steps {
+      background: #fafafa;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+    }
+
+    .steps h3 {
+      margin: 0 0 14px;
+      font-size: 14px;
+      color: #1a3a6b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .steps ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .steps li {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.8;
+    }
+
+    .warning {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #7a5c00;
+      margin-bottom: 28px;
+    }
+
+    .footer {
+      background: #f4f4f4;
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      color: #888;
+      border-top: 1px solid #e0e0e0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <h1>Egerton University Njoro Campus Christian Union</h1>
+      <p>Member Portal — Account Created</p>
+    </div>
+
+    <div class="body">
+      <p class="greeting">Hello {{ user.full_name }},</p>
+      <p class="intro">
+        Your account on the EUNCCU Member has been created by an administrator.
+        Use the credentials below to sign in and complete your registration.
+        You will be required to set a permanent password on your first login.
+      </p>
+
+      <!-- Login credentials -->
+      <div class="credentials-box">
+        <h2>Your Login Credentials</h2>
+        <div class="credential-row">
+          <span class="label">Email</span>
+          <span class="value"><code>{{ user.email }}</code></span>
+        </div>
+        <div class="credential-row">
+          <span class="label">Temporary Password</span>
+          <span class="value"><code>{{ temp_password }}</code></span>
+        </div>
+      </div>
+
+      <!-- Login button -->
+      <div class="cta-section">
+        <a href="{{ login_url }}" class="cta-button">Sign In to the the website</a>
+      </div>
+
+      <!-- Steps -->
+      <div class="steps">
+        <h3>What Happens Next</h3>
+        <ol>
+          <li>Click the button above or visit: <strong>{{ login_url }}</strong></li>
+          <li>Sign in using your email and the temporary password above.</li>
+          <li>You will be directed to a short registration form.</li>
+          <li>Fill in your profile details and choose a new permanent password.</li>
+          <li>Submit? you will then have full access to the website.</li>
+        </ol>
+      </div>
+
+      <!-- Security notice -->
+      <div class="warning">
+        Do not share your temporary password with anyone. You will be prompted to
+        change it immediately upon first login.
+      </div>
+
+      <p style="font-size:14px;color:#555;line-height:1.7;">
+        If you did not expect this email or believe it was sent in error, please contact
+        the EUNCCU leadership team immediately.
+      </p>
+    </div>
+
+    <div class="footer">
+      &copy; {% now "Y" %} Egerton University Njoro Campus Christian Union. All rights reserved.
+    </div>
+  </div>
+</body>
+
+</html>

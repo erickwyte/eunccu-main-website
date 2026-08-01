@@ -1,0 +1,47 @@
+{
+  "categories": {
+    "account_management": {
+      "title": "Account Management",
+      "articles": [
+        {
+          "title": "How to Register",
+          "content": "1. Click 'Join EUNCCU' button\n2. Fill in your personal information\n3. Choose your user type (Student/Alumnus)\n4. Upload a profile picture (optional)\n5. Create a password\n6. Accept terms and conditions\n7. Click 'Create Account'"
+        },
+        {
+          "title": "Login Process",
+          "content": "1. Click the 'Login' button\n2. Enter your registered email\n3. Enter your password\n4. Click 'Sign In'"
+        },
+        {
+          "title": "Password Reset",
+          "content": "1. Click 'Forgot Password'\n2. Enter your email address\n3. Check your email for reset link\n4. Click the link and create new password"
+        }
+      ]
+    },
+    "e_library": {
+      "title": "E-Library",
+      "articles": [
+        {
+          "title": "Accessing Books",
+          "content": "1. Log into your account\n2. Click 'Pages' in navigation\n3. Select 'E-Library'\n4. Browse available books\n5. Click on a book to read"
+        },
+        {
+          "title": "Publishing Books",
+          "content": "For Members:\n1. Log into member account\n2. Go to E-Library\n3. Click 'Upload Book'\n4. Fill book details\n5. Upload PDF file\n6. Submit for review"
+        },
+        {
+          "title": "Rating and Reviews",
+          "content": "1. Open a book\n2. Scroll to reviews section\n3. Rate book (1-5 stars)\n4. Write your review\n5. Submit review"
+        }
+      ]
+    },
+    "ministries": {
+      "title": "Ministries",
+      "articles": [
+        {
+          "title": "Praise & Worship",
+          "content": "Worship team details:\n- Practice times\n- Service schedule\n- How to join"
+        }
+      ]
+    }
+  }
+} 

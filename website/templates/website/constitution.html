@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EUNCCU Constitution — Egerton University Njoro Campus Christian Union</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+
+/* --
+   TOKENS
+-- */
+:root {
+  --bg:       #252525;
+  --surface:  #141416;
+  --surface2: #1a1a1d;
+  --border:   rgba(224, 224, 224, 0.404);
+  --border-m: rgba(224, 224, 224, 0.452);
+  --white:    #f2ede6;
+  --dim:      #d1d1d1;
+  --dimmer:   #e2e2e2;
+  --green-sub:     rgb(8, 139, 1);
+  --green-sub-lt:  rgb(11, 141, 4);
+  --green:    #2c8e22;
+  --green-lt: #3db831;
+  --red:      #ff0000;
+  --nav-h:    52px;
+}
+
+/* --
+   BASE
+-- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+
+/* --
+   CSS CROSS
+-- */
+.cx {
+  display: inline-block;
+  position: relative;
+  width: 1em; height: 1em; flex-shrink: 0;
+}
+.cx::before, .cx::after {
+  content: ''; position: absolute; background: currentColor;
+}
+.cx::before { width: 24%; height: 100%; top: 0; left: 38%; }
+.cx::after  { width: 100%; height: 24%; top: 33%; left: 0; }
+
+/* --
+   TOP NAV
+-- */
+.top-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--nav-h);
+  background: rgba(14,14,15,.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px;
+}
+.top-nav::after {
+  content: '';
+  position: absolute; bottom: -2px; left: 0; right: 0;
+  height: 2px;
+  
+  opacity: .45;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 12px;
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+}
+.nav-brand .cx { font-size: .85rem; color: var(--red); }
+.nav-crumb {
+  display: flex; align-items: center; gap: 10px;
+  font-size: .62rem; font-weight: 500;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--dim);
+}
+.nav-crumb span { color: var(--dimmer); }
+.nav-crumb a:hover { color: var(--green-sub); }
+.nav-right {
+  display: flex; gap: 10px;
+}
+.nav-btn {
+  font-size: .6rem; font-weight: 600;
+  letter-spacing: .16em; text-transform: uppercase;
+  padding: 8px 20px; cursor: pointer;
+  border: 1px solid var(--border-m);
+  background: transparent; color: var(--dim);
+  transition: all .2s;
+}
+.nav-btn:hover { border-color: var(--green-sub); color: var(--green-sub); }
+.nav-btn.primary { background: var(--green-sub); color: var(--bg); border-color: var(--green-sub); }
+.nav-btn.primary:hover { background: var(--green-sub-lt); border-color: var(--green-sub-lt); }
+
+/* --
+   LAYOUT
+-- */
+.page-wrap {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  margin-top: var(--nav-h);
+  min-height: calc(100vh - var(--nav-h));
+}
+
+/* --
+   SIDEBAR
+-- */
+.sidebar {
+  position: sticky;
+  top: var(--nav-h);
+  height: calc(100vh - var(--nav-h));
+  overflow-y: auto;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 36px 0 60px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--dimmer) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--dimmer); border-radius: 2px; }
+
+.sb-head {
+  padding: 0 24px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+.sb-label {
+  font-size: .56rem; font-weight: 700;
+  letter-spacing: .28em; text-transform: uppercase;
+  color: var(--green-sub); margin-bottom: 6px; opacity: .8;
+}
+.sb-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-weight: 600;
+  line-height: 1.3; color: var(--white);
+}
+
+.sb-section { margin-bottom: 4px; }
+.sb-part-btn {
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 24px;
+  background: none; border: none; cursor: pointer;
+  text-align: left;
+  transition: background .15s;
+}
+.sb-part-btn:hover { background: rgba(255,255,255,.03); }
+.sb-part-btn.active { background: rgba(201,168,76,.06); }
+.sb-part-btn.active .sb-pname { color: var(--green-sub); }
+.sb-pletter {
+  font-size: .58rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--dimmer); min-width: 22px;
+}
+.sb-pname {
+  font-size: .78rem; font-weight: 400;
+  color: var(--dim); flex: 1; padding: 0 10px;
+  line-height: 1.3;
+}
+.sb-arrow {
+  font-size: .5rem; color: var(--dimmer);
+  transition: transform .2s;
+}
+.sb-part-btn.open .sb-arrow { transform: rotate(90deg); }
+
+.sb-items {
+  max-height: 0; overflow: hidden;
+  transition: max-height .3s ease;
+}
+.sb-items.open { max-height: 600px; }
+.sb-item {
+  display: block;
+  padding: 7px 24px 7px 56px;
+  font-size: .72rem; font-weight: 300;
+  color: var(--dimmer);
+  transition: color .15s, background .15s;
+  line-height: 1.35;
+}
+.sb-item:hover { color: var(--white); background: rgba(255,255,255,.02); }
+.sb-item.active { color: var(--green-sub-lt); }
+
+/* reg number at bottom */
+.sb-reg {
+  padding: 24px 24px 0;
+  margin-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.sb-reg p {
+  font-size: .58rem; font-weight: 400;
+  color: var(--dimmer); line-height: 1.6;
+}
+.sb-reg strong { color: var(--green-sub); font-weight: 600; display: block; margin-bottom: 4px; font-size: .56rem; letter-spacing: .14em; text-transform: uppercase; }
+
+/* --
+   MAIN CONTENT
+-- */
+.main {
+  padding: 0;
+  max-width: 860px;
+}
+
+/* -- HERO BANNER -- */
+.const-hero {
+  padding: 72px 64px 60px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+/* faint grid */
+.const-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+.hero-tag {
+  display: flex; align-items: center; gap: 12px;
+  font-size: .6rem; font-weight: 600;
+  letter-spacing: .28em; text-transform: uppercase;
+  color: var(--green-sub); margin-bottom: 20px;
+}
+.hero-tag::before { content:''; display:block; width:36px; height:1px; background:var(--green-sub); opacity:.7; }
+.const-hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 4vw, 3.8rem);
+  font-weight: 300; line-height: 1.1;
+  color: var(--white); margin-bottom: 10px;
+}
+.const-hero h1 strong { font-weight: 700; }
+.const-hero h1 em { font-style: italic; color: var(--green-sub-lt); }
+.const-sub {
+  font-size: .88rem; font-weight: 300;
+  color: var(--dim); line-height: 1.7;
+  max-width: 560px; margin-bottom: 36px;
+}
+.hero-meta {
+  display: flex; gap: 0;
+  border: 1px solid var(--border);
+}
+.hm-item {
+  padding: 14px 28px;
+  border-right: 1px solid var(--border);
+}
+.hm-item:last-child { border-right: none; }
+.hm-label {
+  font-size: .54rem; font-weight: 700;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--dimmer); margin-bottom: 3px;
+}
+.hm-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: .95rem; font-weight: 600; color: var(--white);
+}
+
+/* -- SECTION BLOCKS -- */
+.const-part {
+  border-bottom: 1px solid var(--border);
+}
+.part-header {
+  padding: 40px 64px 32px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 20px;
+  transition: background .18s;
+  user-select: none;
+}
+.part-header:hover { background: rgba(255,255,255,.015); }
+.ph-left { flex: 1; }
+.part-tag {
+  font-size: .56rem; font-weight: 700;
+  letter-spacing: .26em; text-transform: uppercase;
+  color: var(--green-sub); margin-bottom: 8px; opacity: .8;
+}
+.part-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+  font-weight: 300; line-height: 1.15; color: var(--white);
+}
+.part-title strong { font-weight: 700; }
+.part-title em { font-style: italic; color: var(--green-sub-lt); }
+.toggle-btn {
+  width: 36px; height: 36px; flex-shrink: 0;
+  border: 1px solid var(--border-m);
+  background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--dim); font-size: .7rem;
+  transition: all .2s; margin-top: 4px;
+}
+.toggle-btn:hover { border-color: var(--green-sub); color: var(--green-sub); }
+.toggle-btn .arr { transition: transform .3s; display: block; }
+.const-part.open .toggle-btn .arr { transform: rotate(180deg); }
+
+.part-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height .5s cubic-bezier(.4,0,.2,1);
+}
+.const-part.open .part-body { max-height: 9999px; }
+.part-inner { padding: 40px 64px 48px; }
+
+/* -- PREAMBLE special layout -- */
+.preamble-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.08rem; font-weight: 400; font-style: italic;
+  line-height: 1.85; color: rgba(242,237,230,.8);
+  border-left: 2px solid var(--green-sub);
+  padding-left: 24px;
+}
+
+/* -- ARTICLE -- */
+.article { margin-bottom: 38px; }
+.article:last-child { margin-bottom: 0; }
+.art-label {
+  font-size: .56rem; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 8px;
+}
+.art-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 600;
+  color: var(--white); margin-bottom: 14px;
+  line-height: 1.25;
+}
+.art-body {
+  font-size: .88rem; font-weight: 300;
+  line-height: 1.88; color: #8a8580;
+}
+.art-body p { margin-bottom: 12px; }
+.art-body p:last-child { margin-bottom: 0; }
+
+/* -- IDENTITY CARDS (vision/mission/values) -- */
+.id-cards {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border: 1px solid var(--border);
+  margin-top: 24px;
+}
+.id-card {
+  padding: 28px 28px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.id-card:nth-child(2n) { border-right: none; }
+.id-card:nth-last-child(-n+2) { border-bottom: none; }
+.id-card-label {
+  font-size: .54rem; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--green-sub); margin-bottom: 10px; opacity: .8;
+}
+.id-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; font-weight: 600;
+  color: var(--white); margin-bottom: 8px;
+}
+.id-card p {
+  font-size: .82rem; font-weight: 300;
+  line-height: 1.8; color: var(--dim);
+}
+
+/* -- NUMBERED LIST -- */
+.const-list { list-style: none; margin-top: 12px; }
+.const-list li {
+  display: flex; gap: 16px; align-items: baseline;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  font-size: .86rem; font-weight: 300;
+  line-height: 1.75; color: #8a8580;
+}
+.const-list li:last-child { border-bottom: none; }
+.li-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem; font-weight: 600;
+  color: var(--green-sub); opacity: .6;
+  min-width: 22px; flex-shrink: 0;
+}
+
+/* -- VALUES STRIP -- */
+.values-strip {
+  display: grid; grid-template-columns: repeat(5,1fr);
+  border: 1px solid var(--border); margin-top: 16px;
+}
+.val-chip {
+  padding: 18px 16px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.val-chip:last-child { border-right: none; }
+.val-n {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 700;
+  color: var(--green-sub); opacity: .35;
+  line-height: 1; margin-bottom: 6px;
+}
+.val-chip p {
+  font-size: .72rem; font-weight: 500;
+  color: var(--white); letter-spacing: .02em;
+}
+
+/* -- GOVERNANCE OFFICERS -- */
+.officers-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0; border: 1px solid var(--border); margin-top: 18px;
+}
+.officer {
+  padding: 22px 24px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.officer:hover { background: rgba(255,255,255,.02); }
+.officer:nth-child(2n) { border-right: none; }
+.off-num {
+  font-size: .56rem; font-weight: 700;
+  letter-spacing: .18em; color: var(--red); margin-bottom: 5px;
+}
+.off-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem; font-weight: 600; color: var(--white);
+  margin-bottom: 6px;
+}
+.off-duty { font-size: .76rem; font-weight: 300; color: var(--dim); line-height: 1.6; }
+
+/* -- DUTIES ACCORDION -- */
+.duty-group { margin-bottom: 20px; }
+.duty-role-head {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.duty-role-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem; font-weight: 700;
+  color: var(--green-sub); opacity: .6; min-width: 20px;
+}
+.duty-role-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-weight: 600; color: var(--white); flex: 1;
+}
+.duty-toggle {
+  font-size: .55rem; color: var(--dimmer);
+  border: 1px solid var(--border); padding: 4px 10px;
+  font-family: 'Outfit', sans-serif; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+  transition: all .2s;
+}
+.duty-role-head:hover .duty-toggle { border-color: var(--green-sub); color: var(--green-sub); }
+.duty-list {
+  max-height: 0; overflow: hidden;
+  transition: max-height .35s ease;
+  padding-left: 34px;
+}
+.duty-list.open { max-height: 1000px; }
+
+/* -- MINISTRIES / COMMITTEES / TEAMS -- */
+.sub-group { margin-bottom: 32px; }
+.sub-group-label {
+  font-size: .58rem; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--green-sub); margin-bottom: 12px; opacity: .8;
+}
+.sub-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 0;
+  border: 1px solid var(--border);
+}
+.sub-item {
+  padding: 14px 16px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-size: .78rem; font-weight: 300; color: var(--dim);
+  display: flex; align-items: center; gap: 10px;
+  transition: color .15s, background .15s;
+}
+.sub-item:hover { color: var(--white); background: rgba(255,255,255,.02); }
+.sub-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.sub-dot.red { background: var(--red); }
+.sub-dot.green-sub { background: var(--green-sub); }
+
+/* -- MEETINGS TABLE -- */
+.mtg-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.mtg-table th {
+  background: var(--surface2);
+  font-size: .58rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--green-sub); padding: 12px 16px; text-align: left;
+  border-bottom: 1px solid var(--border-m);
+}
+.mtg-table td {
+  padding: 14px 16px;
+  font-size: .82rem; font-weight: 300;
+  color: var(--dim); line-height: 1.6;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.mtg-table tr:hover td { background: rgba(255,255,255,.015); }
+.mtg-table td:first-child {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: .95rem; font-weight: 600; color: var(--white);
+}
+
+/* -- AMENDMENTS TIMELINE -- */
+.amend-tl { position: relative; padding-left: 52px; margin-top: 16px; }
+.amend-tl::before {
+  content: ''; position: absolute;
+  left: 14px; top: 6px; bottom: 0;
+  width: 1px; background: var(--border-m);
+}
+.amend-item { position: relative; margin-bottom: 18px; display: flex; gap: 20px; align-items: baseline; }
+.amend-dot {
+  position: absolute; left: -42px; top: 7px;
+  width: 11px; height: 11px; border-radius: 50%;
+  border: 1.5px solid var(--green-sub);
+  background: var(--bg);
+}
+.amend-item.latest .amend-dot { background: var(--green-sub); }
+.amend-date {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: .95rem; font-weight: 600; color: var(--white);
+  min-width: 120px;
+}
+.amend-num {
+  font-size: .62rem; font-weight: 500;
+  letter-spacing: .12em; color: var(--dimmer);
+}
+
+/* -- DOCTRINAL BASIS -- */
+.doctrine-list { list-style: none; margin-top: 12px; }
+.doctrine-item {
+  display: flex; gap: 18px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  align-items: flex-start;
+}
+.doctrine-item:last-child { border-bottom: none; }
+.d-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 700;
+  color: var(--green-sub); opacity: .4;
+  min-width: 28px; line-height: 1; flex-shrink: 0;
+  padding-top: 2px;
+}
+.d-text {
+  font-size: .86rem; font-weight: 300;
+  line-height: 1.8; color: #8a8580;
+}
+
+/* -- INFOBOX -- */
+.infobox {
+  border: 1px solid var(--border-m);
+  border-left: 3px solid var(--green);
+  padding: 18px 22px;
+  margin: 16px 0;
+  background: rgba(44,142,34,.04);
+}
+.infobox.green-sub { border-left-color: var(--green-sub); background: rgba(201,168,76,.04); }
+.infobox.red  { border-left-color: var(--red);  background: rgba(255,0,0,.04); }
+.infobox p {
+  font-size: .84rem; font-weight: 300;
+  line-height: 1.78; color: #9a9590;
+}
+.infobox strong { color: var(--white); font-weight: 600; }
+
+/* -- MEMBERSHIP TYPES -- */
+.mem-cards {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 0;
+  border: 1px solid var(--border); margin-top: 18px;
+}
+.mem-card {
+  padding: 26px 24px;
+  border-right: 1px solid var(--border);
+}
+.mem-card:last-child { border-right: none; }
+.mem-type {
+  font-size: .54rem; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--green-sub); margin-bottom: 8px; opacity: .8;
+}
+.mem-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; font-weight: 600; color: var(--white); margin-bottom: 10px;
+}
+.mem-desc {
+  font-size: .78rem; font-weight: 300; line-height: 1.75; color: var(--dim);
+  margin-bottom: 12px;
+}
+.mem-rights {
+  list-style: none; font-size: .74rem; font-weight: 300; color: var(--dimmer);
+}
+.mem-rights li { padding: 4px 0; display: flex; gap: 8px; }
+.mem-rights li::before { content: '—'; color: var(--dimmer); flex-shrink: 0; }
+
+/* -- ELIGIBILITY NOTE -- */
+.elig-note {
+  border: 1px solid var(--border); padding: 20px 22px;
+  margin-top: 16px;
+}
+.elig-note h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: .95rem; font-weight: 600; color: var(--green-sub-lt);
+  margin-bottom: 8px;
+}
+.elig-note p { font-size: .82rem; font-weight: 300; line-height: 1.78; color: var(--dim); }
+
+/* -- SECTION DIVIDER -- */
+.sec-div {
+  display: flex; align-items: center; gap: 14px;
+  margin: 28px 0;
+}
+.sec-div-line { flex: 1; height: 1px; background: var(--border); }
+.sec-div-mark { font-size: .56rem; letter-spacing: .22em; text-transform: uppercase; color: var(--dimmer); font-weight: 600; }
+
+/* -- SCROLL REVEAL -- */
+.sr { opacity:0; transform:translateY(22px); transition:opacity .6s ease,transform .6s ease; }
+.sr.in { opacity:1; transform:none; }
+
+/* --
+   FOOTER
+-- */
+.const-footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 64px;
+  background: var(--surface);
+}
+.const-footer::before {
+  content: '';
+  display: block; height: 2px;
+  background: linear-gradient(90deg, var(--green-sub), var(--red), var(--green-sub));
+  opacity: .3; margin-bottom: 48px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+}
+.footer-copy {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; font-weight: 300; font-style: italic;
+  color: rgba(242,237,230,.5); line-height: 1.5;
+  margin-bottom: 16px;
+}
+.footer-meta {
+  font-size: .68rem; font-weight: 300;
+  color: var(--dimmer); line-height: 1.8;
+}
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links a {
+  font-size: .76rem; font-weight: 400;
+  color: var(--dim); display: flex; align-items: center; gap: 8px;
+  transition: color .2s;
+}
+.footer-links a::before { content: ''; display:block; width:20px; height:1px; background:currentColor; }
+.footer-links a:hover { color: var(--green-sub); }
+
+/* --
+   RESPONSIVE
+-- */
+@media (max-width: 900px) {
+  .top-nav { padding: 0 20px; }
+  .nav-crumb, .nav-right { display: none; }
+  .page-wrap { grid-template-columns: 1fr; }
+  .sidebar {
+    position: static; height: auto;
+    border-right: none; border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+  }
+  .const-hero, .part-header, .part-inner, .const-footer { padding-left: 24px; padding-right: 24px; }
+  .id-cards { grid-template-columns: 1fr; }
+  .id-card { border-right: none; border-bottom: 1px solid var(--border); }
+  .values-strip { grid-template-columns: 1fr 1fr; }
+  .officers-grid { grid-template-columns: 1fr; }
+  .officer { border-right: none; }
+  .sub-grid { grid-template-columns: 1fr 1fr; }
+  .mem-cards { grid-template-columns: 1fr; }
+  .mem-card { border-right: none; border-bottom: 1px solid var(--border); }
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; }
+  .mtg-table { font-size: .76rem; }
+}
+
+.dl-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  overflow: hidden;
+}
+
+/*when downloading/*
+/* Hide text when loading */
+.dl-link.loading .label {
+  visibility: hidden;
+}
+
+/* Loader container */
+.dl-link .loader {
+  position: absolute;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Show loader when active */
+.dl-link.loading .loader {
+  display: flex;
+}
+
+.dl-link.loading .loader::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 3px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+</style>
+</head>
+<body>
+
+<!--  TOP NAV -- -->
+<nav class="top-nav">
+  <div class="nav-brand">
+    
+  
+    <span style="color:var(--dim)">Constitution</span>
+  </div>
+  <div class="nav-right">
+    <a href="#" class="nav-btn" onclick="window.print();return false;">Print</a>
+
+    <a href="EUNCCU-CONSTITUTION.pdf" class="nav-btn primary dl-link">
+  <span class="label">Download PDF</span>
+  <span class="loader"></span>
+</a>
+
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!--  SIDEBAR  -->
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="sb-label">Document</div>
+      <div class="sb-title">EUNCCU Constitution 2022</div>
+    </div>
+
+    <!-- Part A -->
+    <div class="sb-section">
+      <button class="sb-part-btn" onclick="toggleSb(this,'sb-a')">
+        <span class="sb-pletter">A</span>
+        <span class="sb-pname">Preamble</span>
+        <span class="sb-arrow">&#9658;</span>
+      </button>
+    </div>
+
+    <!-- Part B -->
+    <div class="sb-section">
+      <button class="sb-part-btn" onclick="toggleSb(this,'sb-b')">
+        <span class="sb-pletter">B</span>
+        <span class="sb-pname">Identity</span>
+        <span class="sb-arrow">&#9658;</span>
+      </button>
+      <div class="sb-items" id="sb-b">
+        <a href="#art1" class="sb-item">Art. 1 — Name &amp; Logo</a>
+        <a href="#art2" class="sb-item">Art. 2 — Vision</a>
+        <a href="#art3" class="sb-item">Art. 3 — Mission</a>
+        <a href="#art4" class="sb-item">Art. 4 — Core Values</a>
+        <a href="#art5" class="sb-item">Art. 5 — Objectives</a>
+        <a href="#art6" class="sb-item">Art. 6 — Doctrinal Basis</a>
+      </div>
+    </div>
+
+    <!-- Part C -->
+    <div class="sb-section">
+      <button class="sb-part-btn" onclick="toggleSb(this,'sb-c')">
+        <span class="sb-pletter">C</span>
+        <span class="sb-pname">Membership</span>
+        <span class="sb-arrow">&#9658;</span>
+      </button>
+      <div class="sb-items" id="sb-c">
+        <a href="#art7" class="sb-item">Art. 7.1 — Membership Categories</a>
+        <a href="#art72" class="sb-item">Art. 7.2 — Rights &amp; Responsibilities</a>
+      </div>
+    </div>
+
+    <!-- Part D -->
+    <div class="sb-section">
+      <button class="sb-part-btn" onclick="toggleSb(this,'sb-d')">
+        <span class="sb-pletter">D</span>
+        <span class="sb-pname">Governance</span>
+        <span class="sb-arrow">&#9658;</span>
+      </button>
+      <div class="sb-items" id="sb-d">
+        <a href="#art81" class="sb-item">Art. 8.1 — Executive Committee</a>
+        <a href="#art813" class="sb-item">Art. 8.1.3 — Office Bearers</a>
+        <a href="#art82" class="sb-item">Art. 8.2 — Patron</a>
+        <a href="#art83" class="sb-item">Art. 8.3 — Advisory Committee</a>
+        <a href="#art84" class="sb-item">Art. 8.4 — CIC</a>
+        <a href="#art85" class="sb-item">Art. 8.5 — University Chaplain</a>
+        <a href="#art86" class="sb-item">Art. 8.6 — Sub-Committees</a>
+      </div>
+    </div>
+
+    <!-- Part E -->
+    <div class="sb-section">
+      <button class="sb-part-btn" onclick="toggleSb(this,'sb-e')">
+        <span class="sb-pletter">E</span>
+        <span class="sb-pname">Ministries &amp; Teams</span>
+        <span class="sb-arrow">&#9658;</span>
+      </button>
+      <div class="sb-items" id="sb-e">
+        <a href="#art91" class="sb-item">Art. 9.1 — Ministries</a>
+        <a href="#art92" class="sb-item">Art. 9.2 — Special Committees</a>
+        <a href="#art93" class="sb-item">Art. 9.3 — Evangelistic Teams</a>
+      </div>
+    </div>
+
+    <!-- Part F -->
+    <div class="sb-section">
+      <button class="sb-part-btn" onclick="toggleSb(this,'sb-f')">
+        <span class="sb-pletter">F</span>
+        <span class="sb-pname">Meetings</span>
+        <span class="sb-arrow">&#9658;</span>
+      </button>
+      <div class="sb-items" id="sb-f">
+        <a href="#art101" class="sb-item">Art. 10.1 — General Meetings</a>
+        <a href="#art102" class="sb-item">Art. 10.2 — Procedure</a>
+        <a href="#art103" class="sb-item">Art. 10.3 — Other Meetings</a>
+      </div>
+    </div>
+
+    <!-- Part G -->
+    <div class="sb-section">
+      <button class="sb-part-btn" onclick="toggleSb(this,'sb-g')">
+        <span class="sb-pletter">G</span>
+        <span class="sb-pname">Nominations</span>
+        <span class="sb-arrow">&#9658;</span>
+      </button>
+      <div class="sb-items" id="sb-g">
+        <a href="#art111" class="sb-item">Art. 11.1 — Eligibility</a>
+        <a href="#art112" class="sb-item">Art. 11.2 — Nominations College</a>
+        <a href="#art113" class="sb-item">Art. 11.3 — Process</a>
+        <a href="#art114" class="sb-item">Art. 11.4 — Terms of Service</a>
+        <a href="#art115" class="sb-item">Art. 11.5 — Replacement</a>
+      </div>
+    </div>
+
+    <!-- Part H -->
+    <div class="sb-section">
+      <button class="sb-part-btn" onclick="toggleSb(this,'sb-h')">
+        <span class="sb-pletter">H</span>
+        <span class="sb-pname">Accounts</span>
+        <span class="sb-arrow">&#9658;</span>
+      </button>
+      <div class="sb-items" id="sb-h">
+        <a href="#art121" class="sb-item">Art. 12.1 — Funds</a>
+        <a href="#art122" class="sb-item">Art. 12.2 — Accounts</a>
+        <a href="#art123" class="sb-item">Art. 12.3 — External Auditor</a>
+        <a href="#art124" class="sb-item">Art. 12.4 — Union Assets</a>
+      </div>
+    </div>
+
+    <!-- Parts I-L -->
+    <div class="sb-section">
+      <button class="sb-part-btn" onclick="toggleSb(this,'sb-ijkl')">
+        <span class="sb-pletter">I–L</span>
+        <span class="sb-pname">Documents, Dissolution &amp; Amendments</span>
+        <span class="sb-arrow">&#9658;</span>
+      </button>
+      <div class="sb-items" id="sb-ijkl">
+        <a href="#partI" class="sb-item">Part I — Accompanying Documents</a>
+        <a href="#partJ" class="sb-item">Part J — Dissolution</a>
+        <a href="#partK" class="sb-item">Part K — Amendments</a>
+        <a href="#partL" class="sb-item">Part L — Application</a>
+      </div>
+    </div>
+
+    <div class="sb-reg">
+      <strong>Registration</strong>
+      <p>EU/AA/SA/ASSOC/16<br/>Office of the Dean of Students<br/>Egerton University, Njoro Campus</p>
+    </div>
+  </aside>
+
+  <!--  MAIN CONTENT ═ -->
+  <main class="main">
+
+    <!-- HERO -->
+    <div class="const-hero">
+      <div class="hero-tag">Official Document</div>
+      <h1>
+        <strong>EUNCCU</strong> Constitution<br/>
+        <em>2022 Edition</em>
+      </h1>
+      <p class="const-sub">
+        The governing document of the Egerton University, Njoro Campus Christian Union — establishing the identity, governance, membership, and operations of the Union since its founding on 25th March 1967.
+      </p>
+      <div class="hero-meta">
+        <div class="hm-item">
+          <div class="hm-label">Last Amended</div>
+          <div class="hm-val">11 June 2022</div>
+        </div>
+        <div class="hm-item">
+          <div class="hm-label">Total Amendments</div>
+          <div class="hm-val">11</div>
+        </div>
+        <div class="hm-item">
+          <div class="hm-label">Registration No.</div>
+          <div class="hm-val">EU/AA/SA/ASSOC/16</div>
+        </div>
+        <div class="hm-item">
+          <div class="hm-label">Total Parts</div>
+          <div class="hm-val">12</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- -- PART A: PREAMBLE -- -->
+    <section class="const-part open" id="partA">
+      <div class="part-header" onclick="togglePart(this)">
+        <div class="ph-left">
+          <div class="part-tag">Part A</div>
+          <h2 class="part-title"><strong>Preamble</strong></h2>
+        </div>
+        <button class="toggle-btn"><span class="arr">&#9650;</span></button>
+      </div>
+      <div class="part-body">
+        <div class="part-inner">
+          <div class="preamble-text sr">
+            We, The Egerton University, Njoro Campus Christian Union (EUNCCU), are a Union of Christian students in Egerton University Njoro Campus bound together in common faith in the one and only true God, committed to living according to the Holy Biblical Scriptures, and being exclusively non-political and non-denominational, do adopt, enact and give to ourselves and to the coming Egerton University, Njoro Campus Christian Union generations this constitution.
+          </div>
+          <div class="sec-div"><span class="sec-div-line"></span><span class="sec-div-mark">Declaration</span><span class="sec-div-line"></span></div>
+          <div class="infobox sr">
+            <p>This constitution is explicit; that which is not covered herein shall be interpreted by the Executive Committee. <strong>No provision shall be construed as to qualify, defeat or in any manner contravene the Holy Biblical Scriptures.</strong> Any such provision shall, to the extent of the contravention, have no effect.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -- PART B: IDENTITY -- -->
+    <section class="const-part open" id="partB">
+      <div class="part-header" onclick="togglePart(this)">
+        <div class="ph-left">
+          <div class="part-tag">Part B</div>
+          <h2 class="part-title"><strong>Identity</strong></h2>
+        </div>
+        <button class="toggle-btn"><span class="arr">&#9650;</span></button>
+      </div>
+      <div class="part-body">
+        <div class="part-inner">
+
+          <div class="article sr" id="art1">
+            <div class="art-label">Article 1</div>
+            <div class="art-title">Name &amp; Logo</div>
+            <div class="art-body">
+              <p>The full name of the association shall be <strong style="color:var(--white)">'Egerton University, Njoro Campus Christian Union (EUNCCU)'</strong>, herein referred to as 'The Union'. Registration number: <strong style="color:var(--green-sub)">EU/AA/SA/ASSOC/16</strong>, as registered in the Office of the Dean of Students, Egerton University, Njoro Campus.</p>
+              <p>The logo shall be a copyright which uniquely identifies the Christian Union and shall only be used in the furtherance of the vision, mission and specific objectives of the Union.</p>
+            </div>
+          </div>
+
+          <div class="id-cards sr" id="art2">
+            <div class="id-card">
+              <div class="id-card-label">Article 2 — Vision</div>
+              <div class="id-card-title">Equipped for Service</div>
+              <p>To be Christian believers, holistically equipped for service and holy living.</p>
+            </div>
+            <div class="id-card">
+              <div class="id-card-label">Article 3 — Mission</div>
+              <div class="id-card-title">Cultivating Fellowship</div>
+              <p>We are committed to cultivating a fellowship of Christian believers, equipped for eternal life and every good work, in the body of Christ and the society, through nurturing and training in God's word.</p>
+            </div>
+          </div>
+
+          <div class="article sr" id="art4" style="margin-top:28px">
+            <div class="art-label">Article 4</div>
+            <div class="art-title">Core Values</div>
+            <div class="values-strip">
+              <div class="val-chip"><div class="val-n">1</div><p>Holiness</p></div>
+              <div class="val-chip"><div class="val-n">2</div><p>Faithfulness to Scripture</p></div>
+              <div class="val-chip"><div class="val-n">3</div><p>Unity</p></div>
+              <div class="val-chip"><div class="val-n">4</div><p>Integrity</p></div>
+              <div class="val-chip"><div class="val-n">5</div><p>Excellence</p></div>
+            </div>
+          </div>
+
+          <div class="article sr" id="art5">
+            <div class="art-label">Article 5</div>
+            <div class="art-title">Objectives</div>
+            <ul class="const-list">
+              <li><span class="li-num">1</span><span><strong style="color:var(--white)">Evangelism.</strong> To share the love of Christ and promote the knowledge of Christian faith within and without the University campus, for the purpose of facilitating individuals' commitment to God, using the Holy Biblical Scriptures as our absolute authority.</span></li>
+              <li><span class="li-num">2</span><span><strong style="color:var(--white)">Discipleship.</strong> To promote faithful and practical Christian living among Christians within and without the university campus through Sunday services, fellowships and other activities.</span></li>
+              <li><span class="li-num">3</span><span><strong style="color:var(--white)">Leadership Development.</strong> To train and promote quality Christian leadership and individuals' talents through service to God, among the Union members.</span></li>
+              <li><span class="li-num">4</span><span><strong style="color:var(--white)">Holistic Development.</strong> To nurture and impact individuals who are reliable Socially, Economically and Academically as per Biblical teachings.</span></li>
+            </ul>
+          </div>
+
+          <div class="article sr" id="art6">
+            <div class="art-label">Article 6</div>
+            <div class="art-title">Doctrinal Basis</div>
+            <div class="art-body" style="margin-bottom:14px">The doctrinal basis of the Union shall be the fundamental truths of Christianity including:</div>
+            <ul class="doctrine-list">
+              <li class="doctrine-item"><span class="d-num">1</span><span class="d-text">The trinity of the Godhead — The Father, The Son and The Holy Spirit.</span></li>
+              <li class="doctrine-item"><span class="d-num">2</span><span class="d-text">The virgin birth of Jesus Christ.</span></li>
+              <li class="doctrine-item"><span class="d-num">3</span><span class="d-text">The universal sinfulness and guilt of all men since the fall, rendering them subject to God's wrath and judgment.</span></li>
+              <li class="doctrine-item"><span class="d-num">4</span><span class="d-text">Salvation by grace through faith in the death and resurrection of Jesus Christ.</span></li>
+              <li class="doctrine-item"><span class="d-num">5</span><span class="d-text">The presence, power and the work of the Holy Spirit.</span></li>
+              <li class="doctrine-item"><span class="d-num">6</span><span class="d-text">The atoning power of the blood of Jesus Christ.</span></li>
+              <li class="doctrine-item"><span class="d-num">7</span><span class="d-text">The second coming of the Lord Jesus Christ.</span></li>
+              <li class="doctrine-item"><span class="d-num">8</span><span class="d-text">The divine inspiration and truthfulness of the Holy Biblical Scriptures as originally given and its supreme authority in all matters of faith and conduct.</span></li>
+              <li class="doctrine-item"><span class="d-num">9</span><span class="d-text">The one Holy universal church, which is the body of Christ and to which all true believers belong.</span></li>
+              <li class="doctrine-item"><span class="d-num">10</span><span class="d-text">The unity of believers in the body of Christ without discrimination on the account of race, tribe, gender, disability or any other manner of discrimination.</span></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- -- PART C: MEMBERSHIP -- -->
+    <section class="const-part" id="partC">
+      <div class="part-header" onclick="togglePart(this)">
+        <div class="ph-left">
+          <div class="part-tag">Part C</div>
+          <h2 class="part-title"><strong>Membership</strong></h2>
+        </div>
+        <button class="toggle-btn"><span class="arr">&#9650;</span></button>
+      </div>
+      <div class="part-body">
+        <div class="part-inner">
+          <div class="article sr" id="art7">
+            <div class="art-label">Article 7.1</div>
+            <div class="art-title">Membership Categories</div>
+            <div class="mem-cards">
+              <div class="mem-card">
+                <div class="mem-type">7.1.1</div>
+                <div class="mem-name">Full Membership</div>
+                <p class="mem-desc">Open to all Egerton University undergraduate and diploma students who ascribe to the doctrinal basis and conscientiously sign the declaration of faith.</p>
+                <ul class="mem-rights">
+                  <li>Eligible to hold office</li>
+                  <li>Entitled to vote in general meetings</li>
+                  <li>May propose constitutional amendments</li>
+                </ul>
+              </div>
+              <div class="mem-card">
+                <div class="mem-type">7.1.2</div>
+                <div class="mem-name">Special Membership</div>
+                <p class="mem-desc">Open to all other students of Egerton University who conscientiously sign the declaration of faith and ascribe to the doctrinal basis.</p>
+                <ul class="mem-rights">
+                  <li>May participate in nominations</li>
+                  <li>Entitled to vote in general meetings</li>
+                  <li>Not eligible for Executive Committee</li>
+                  <li>May serve in short-term special committees</li>
+                </ul>
+              </div>
+              <div class="mem-card">
+                <div class="mem-type">7.1.3</div>
+                <div class="mem-name">Associate Membership</div>
+                <p class="mem-desc">Open to born-again former members and other born-again Christians who are not students at the university, having signed the declaration of faith.</p>
+                <ul class="mem-rights">
+                  <li>Free to participate in activities</li>
+                  <li>Advisory role only</li>
+                  <li>Not entitled to vote</li>
+                  <li>Not eligible to hold office</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="infobox green-sub sr" style="margin-top:24px">
+            <p><strong>Declaration of Faith:</strong> "I declare my faith in Jesus Christ as my Lord and Saviour. I will live a life worthy of the Christian calling and in joining The Union, I ascribe to its doctrinal basis and commit myself to be actively involved in The Union's activities as it seeks to fulfill its objectives." — Article 7.1.1</p>
+          </div>
+          <div class="article sr" id="art72" style="margin-top:28px">
+            <div class="art-label">Article 7.1.4 &amp; 7.1.5</div>
+            <div class="art-title">Fees &amp; Termination</div>
+            <div class="art-body"><p>There shall be no membership fees. Membership shall cease upon: completion or termination of studies; resignation after careful consideration by the Executive Committee; or a judicious exercise of power by the Executive Committee in consultation with the Advisory Committee.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -- PART D: GOVERNANCE -- -->
+    <section class="const-part" id="partD">
+      <div class="part-header" onclick="togglePart(this)">
+        <div class="ph-left">
+          <div class="part-tag">Part D</div>
+          <h2 class="part-title"><strong>Governance</strong></h2>
+        </div>
+        <button class="toggle-btn"><span class="arr">&#9650;</span></button>
+      </div>
+      <div class="part-body">
+        <div class="part-inner">
+
+          <div class="art-body sr" style="margin-bottom:24px">Governance in the Union is vested in: the Annual General Meeting (supreme body), the Executive Committee, the Advisory Committee, the Constitution Implementation Committee, the University Chaplain, and the Sub-committees.</div>
+
+          <div class="article sr" id="art81">
+            <div class="art-label">Article 8.1</div>
+            <div class="art-title">Executive Committee — Composition</div>
+            <div class="officers-grid">
+              <div class="officer"><div class="off-num">I</div><div class="off-title">Chairperson</div><p class="off-duty">Principal coordinator &amp; spokesperson; signatory to bank account; presides over all meetings.</p></div>
+              <div class="officer"><div class="off-num">II</div><div class="off-title">Vice-Chairperson</div><p class="off-duty">Performs chairperson duties in absence; custodian of constitution and policy documents.</p></div>
+              <div class="officer"><div class="off-num">III</div><div class="off-title">Secretary</div><p class="off-duty">Maintains member database; records minutes; signatory to bank account.</p></div>
+              <div class="officer"><div class="off-num">IV</div><div class="off-title">Vice-Secretary</div><p class="off-duty">Assists secretary; coordinates new members' orientation programmes.</p></div>
+              <div class="officer"><div class="off-num">V</div><div class="off-title">Treasurer</div><p class="off-duty">Manages Union finances; signatory to bank account; keeps asset records.</p></div>
+              <div class="officer"><div class="off-num">VI</div><div class="off-title">Librarian</div><p class="off-duty">Custodian of library materials; purchases recommended literature; manages postal mail.</p></div>
+              <div class="officer"><div class="off-num">VII</div><div class="off-title">Prayer Secretary</div><p class="off-duty">Coordinates all devotional activities; leads prayer ministrations; handles prayer correspondences.</p></div>
+              <div class="officer"><div class="off-num">VIII</div><div class="off-title">Music Director</div><p class="off-duty">Links Ebenezer, Praise &amp; Worship and Choir ministries; facilitates Sunday services.</p></div>
+              <div class="officer"><div class="off-num">IX</div><div class="off-title">Technical Coordinator</div><p class="off-duty">Manages Union assets and music equipment; oversees Media and Instrumentalists' ministries.</p></div>
+              <div class="officer"><div class="off-num">X</div><div class="off-title">Missions Coordinator</div><p class="off-duty">Coordinates evangelistic strategies; links Outreach, FFM and regional evangelistic teams.</p></div>
+              <div class="officer"><div class="off-num">XI</div><div class="off-title">Bible Study Coordinator</div><p class="off-duty">Coordinates all Bible study groups; organises baptism and Holy communion; links Pastoral Committee.</p></div>
+              <div class="officer"><div class="off-num">XII</div><div class="off-title">Organizing Secretary</div><p class="off-duty">Manages transport, venue bookings and recreational activities; links Brothers &amp; Sisters Committee.</p></div>
+            </div>
+          </div>
+
+          <div class="infobox sr" id="art813" style="margin-top:24px">
+            <p><strong>Composition Rule:</strong> At least three (3) members shall be in their second year of study, and at most nine (9) shall be in their third year of study (or fourth-year Engineering/Veterinary Medicine students).</p>
+          </div>
+
+          <div class="article sr" id="art82" style="margin-top:28px">
+            <div class="art-label">Article 8.2</div>
+            <div class="art-title">The Patron</div>
+            <div class="art-body"><p>Shall be a staff of the university whose rank shall be equivalent to, or higher than, that of an assistant lecturer, who has shown interest in the Union's activities. The Union shall have two patrons, one of whom shall be a signatory to the Union's bank account.</p></div>
+          </div>
+
+          <div class="article sr" id="art83">
+            <div class="art-label">Article 8.3</div>
+            <div class="art-title">Advisory Committee</div>
+            <div class="art-body">
+              <p>Shall consist of at least 7 associate members — one being the convener — all of whom shall be born-again Christians, active in the Union's activities, and of mature Christian character. The committee has no executive powers but advises on matters promoting the Union's objectives.</p>
+              <p>Members include: the Union's alumni chairperson, at most 2 FOCUS staff members, the two patrons, two university staff members, and one non-university staff member. They serve for two academic years and are eligible for re-appointment.</p>
+            </div>
+          </div>
+
+          <div class="article sr" id="art84">
+            <div class="art-label">Article 8.4</div>
+            <div class="art-title">Constitution Implementation Committee (CIC)</div>
+            <div class="art-body"><p>Constituted of all immediate former members of the CRC. The CIC shall: oversee the implementation of the constitution; make proposals to the Executive Committee on implementation; and facilitate training of Union officials on constitutional matters.</p></div>
+          </div>
+
+          <div class="article sr" id="art85">
+            <div class="art-label">Article 8.5</div>
+            <div class="art-title">University Chaplain</div>
+            <div class="art-body"><p>To perform advisory duties, the Chaplain must: be a born-again Christian; be an ordained minister of the Word; and ascribe to the objectives of the Union and be willing to work in accordance with its constitution.</p></div>
+          </div>
+
+          <div class="article sr" id="art86">
+            <div class="art-label">Article 8.6</div>
+            <div class="art-title">Sub-Committees</div>
+            <div class="art-body"><p>Each sub-committee shall have at most nine (9) officials, proposed by outgoing officials and approved by the Executive Committee. Every sub-committee shall have a linker to the Executive Committee, and all must strictly adhere to the Union's constitution, leadership manual, and their respective policy documents.</p></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- -- PART E: MINISTRIES -- -->
+    <section class="const-part" id="partE">
+      <div class="part-header" onclick="togglePart(this)">
+        <div class="ph-left">
+          <div class="part-tag">Part E</div>
+          <h2 class="part-title"><strong>Ministries, Committees</strong> &amp; <em>Evangelistic Teams</em></h2>
+        </div>
+        <button class="toggle-btn"><span class="arr">&#9650;</span></button>
+      </div>
+      <div class="part-body">
+        <div class="part-inner">
+
+          <div class="sub-group sr" id="art91">
+            <div class="sub-group-label">Article 9.1 — Ministries (14)</div>
+            <div class="sub-grid">
+              <div class="sub-item"><span class="sub-dot"></span>Catering Ministry</div>
+              <div class="sub-item"><span class="sub-dot"></span>Choir Ministry</div>
+              <div class="sub-item"><span class="sub-dot"></span>Class Fellowships</div>
+              <div class="sub-item"><span class="sub-dot"></span>Ebenezer Ministry</div>
+              <div class="sub-item"><span class="sub-dot"></span>Faith Foundation Ministry (FFM)</div>
+              <div class="sub-item"><span class="sub-dot"></span>Information Technology Ministry</div>
+              <div class="sub-item"><span class="sub-dot"></span>Instrumentalists' Ministry</div>
+              <div class="sub-item"><span class="sub-dot"></span>Intercessory Ministry</div>
+              <div class="sub-item"><span class="sub-dot"></span>Outreach Ministry</div>
+              <div class="sub-item"><span class="sub-dot"></span>Praise &amp; Worship Ministry</div>
+              <div class="sub-item"><span class="sub-dot"></span>Publicity Ministry</div>
+              <div class="sub-item"><span class="sub-dot"></span>Sunday School Ministry</div>
+              <div class="sub-item"><span class="sub-dot"></span>Ushering Ministry</div>
+              <div class="sub-item"><span class="sub-dot"></span>Literature Ministry</div>
+            </div>
+          </div>
+
+          <div class="sub-group sr" id="art92">
+            <div class="sub-group-label">Article 9.2 — Special Committees (6 Permanent)</div>
+            <div class="sub-grid">
+              <div class="sub-item"><span class="sub-dot green-sub"></span>Accounts Committee</div>
+              <div class="sub-item"><span class="sub-dot green-sub"></span>Brothers &amp; Sisters Committee</div>
+              <div class="sub-item"><span class="sub-dot green-sub"></span>Business Committee (B.COMM)</div>
+              <div class="sub-item"><span class="sub-dot green-sub"></span>In-reach Committee</div>
+              <div class="sub-item"><span class="sub-dot green-sub"></span>Pastoral Committee</div>
+              <div class="sub-item"><span class="sub-dot green-sub"></span>Welfare Committee</div>
+            </div>
+          </div>
+
+          <div class="sub-group sr" id="art93">
+            <div class="sub-group-label">Article 9.3 — Regional Evangelistic Teams (7)</div>
+            <div class="sub-grid">
+              <div class="sub-item"><span class="sub-dot red"></span>Central Evangelistic Team (CET)</div>
+              <div class="sub-item"><span class="sub-dot red"></span>EMUSETA</div>
+              <div class="sub-item"><span class="sub-dot red"></span>Mid-Eastern United Brethren (MUBET)</div>
+              <div class="sub-item"><span class="sub-dot red"></span>Nyanza Evangelistic Team (NET)</div>
+              <div class="sub-item"><span class="sub-dot red"></span>Rift Valley Evangelistic Team (RIVET)</div>
+              <div class="sub-item"><span class="sub-dot red"></span>Uttermost Evangelistic Team (UET)</div>
+              <div class="sub-item"><span class="sub-dot red"></span>Western Outreach (WESO)</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- -- PART F: MEETINGS -- -->
+    <section class="const-part" id="partF">
+      <div class="part-header" onclick="togglePart(this)">
+        <div class="ph-left">
+          <div class="part-tag">Part F</div>
+          <h2 class="part-title"><strong>Meetings</strong></h2>
+        </div>
+        <button class="toggle-btn"><span class="arr">&#9650;</span></button>
+      </div>
+      <div class="part-body">
+        <div class="part-inner">
+          <div class="article sr" id="art101">
+            <div class="art-label">Article 10.1</div>
+            <div class="art-title">General Meetings</div>
+            <table class="mtg-table">
+              <thead>
+                <tr>
+                  <th>Meeting Type</th>
+                  <th>Frequency</th>
+                  <th>Notice Required</th>
+                  <th>Quorum</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Annual General Meeting (AGM)</td>
+                  <td>Once per academic year; by first weekend of 3rd month of 1st semester</td>
+                  <td>21 days written notice; accounts 7 days prior</td>
+                  <td>At least two-thirds of registered members in session</td>
+                </tr>
+                <tr>
+                  <td>Special General Meeting (SGM)</td>
+                  <td>As called by Executive Committee; evaluation SGM by week 10 of 2nd semester</td>
+                  <td>7 days written notice</td>
+                  <td>At least 25% of registered committed members</td>
+                </tr>
+                <tr>
+                  <td>Member-Requisitioned SGM</td>
+                  <td>Upon written request by at least 25% of members</td>
+                  <td>Within 21 days of requisition; 7 days notice</td>
+                  <td>At least 25% of registered committed members</td>
+                </tr>
+                <tr>
+                  <td>Dissolution Meeting</td>
+                  <td>Special purpose only</td>
+                  <td>14 days notice for subsequent meetings</td>
+                  <td>Two-thirds of total members; 50% for 2nd meeting</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="article sr" id="art102" style="margin-top:28px">
+            <div class="art-label">Article 10.2 — Procedure</div>
+            <div class="art-title">Meeting Procedure</div>
+            <div class="art-body"><p>The Chairperson shall preside at all general meetings, with the Vice-Chairperson deputising in absence. The Secretary records minutes, with the Vice-Secretary deputising. The Chairperson may limit the number of speakers for or against any motion at their discretion.</p></div>
+          </div>
+          <div class="article sr" id="art103">
+            <div class="art-label">Article 10.3 — Other Meetings</div>
+            <div class="art-title">Weekly &amp; Sub-Committee Meetings</div>
+            <div class="art-body"><p>Weekly meetings shall include Bible studies, devotions, fellowships, services, ministerial meetings, and any other activities the Executive Committee determines. The Executive Committee shall convene meetings with sub-committees at least once a semester.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -- PART G: NOMINATIONS -- -->
+    <section class="const-part" id="partG">
+      <div class="part-header" onclick="togglePart(this)">
+        <div class="ph-left">
+          <div class="part-tag">Part G</div>
+          <h2 class="part-title"><strong>Nominations</strong> &amp; <em>Replacements</em></h2>
+        </div>
+        <button class="toggle-btn"><span class="arr">&#9650;</span></button>
+      </div>
+      <div class="part-body">
+        <div class="part-inner">
+
+          <div class="article sr" id="art111">
+            <div class="art-label">Article 11.1 — Eligibility</div>
+            <div class="art-title">Who May Stand for Office</div>
+            <div class="elig-note">
+              <h4>Ineligibility Conditions</h4>
+              <p>All members in their <strong>first and final years</strong> of study shall be ineligible to hold any office in the Executive Committee. Members of the outgoing Executive Committee who are not in their final year shall be eligible for re-appointment.</p>
+            </div>
+            <div class="infobox sr" style="margin-top:14px">
+              <p><strong>Exception:</strong> A member who has completed a diploma programme at Egerton University, Njoro Campus, and immediately enrolls for a degree programme shall be eligible from their first year of study.</p>
+            </div>
+          </div>
+
+          <div class="article sr" id="art112">
+            <div class="art-label">Article 11.2</div>
+            <div class="art-title">Nominations College</div>
+            <div class="art-body"><p>Composed of 9–13 members including: ineligible sitting Executive Committee members; ineligible former Executive Committee members; one reputable Union member appointed by the sitting committee; and a FOCUS staff returning officer (advisory role). The college shall be constituted two weeks before the nominations date and trained before nominations commence.</p></div>
+          </div>
+
+          <div class="article sr" id="art113">
+            <div class="art-label">Article 11.3</div>
+            <div class="art-title">The Nominations Process</div>
+            <ul class="const-list">
+              <li><span class="li-num">1</span><span>Members notified at least 3 weeks before nominations for prayer, fasting and meditation.</span></li>
+              <li><span class="li-num">2</span><span>All eligible members introduced at least twice before the nomination date.</span></li>
+              <li><span class="li-num">3</span><span>Nominations held within the second month of the first semester.</span></li>
+              <li><span class="li-num">4</span><span>Full and special members recommend candidates in writing through prayerful consideration.</span></li>
+              <li><span class="li-num">5</span><span>The Nominations College makes final appointments for each office.</span></li>
+              <li><span class="li-num">6</span><span>Appointees presented before the Union two weeks after nominations and two weeks before the AGM.</span></li>
+              <li><span class="li-num">7</span><span>Objections must be made in writing within 7 days of presentation.</span></li>
+              <li><span class="li-num">8</span><span>Appointed leaders take office only after ratification at the AGM.</span></li>
+            </ul>
+          </div>
+
+          <div class="article sr" id="art114">
+            <div class="art-label">Article 11.4</div>
+            <div class="art-title">Terms of Service</div>
+            <ul class="const-list">
+              <li><span class="li-num">1</span><span>A leadership year runs between two consecutive AGMs.</span></li>
+              <li><span class="li-num">2</span><span>A member shall not serve for more than two terms.</span></li>
+              <li><span class="li-num">3</span><span>The Chairperson shall not serve for more than one consecutive term.</span></li>
+            </ul>
+          </div>
+
+          <div class="article sr" id="art115">
+            <div class="art-label">Article 11.5</div>
+            <div class="art-title">Replacement</div>
+            <div class="art-body" style="margin-bottom:12px">Replacement may be triggered by:</div>
+            <ul class="const-list">
+              <li><span class="li-num">1</span><span>A two-thirds vote of no confidence in a special general meeting.</span></li>
+              <li><span class="li-num">2</span><span>Resignation of the entire committee or part thereof.</span></li>
+              <li><span class="li-num">3</span><span>Death of a member.</span></li>
+              <li><span class="li-num">4</span><span>Vote of no confidence among other Executive Committee members (ratified by 2/3 of full and special members in an SGM).</span></li>
+              <li><span class="li-num">5</span><span>Academic reasons: deferment, discontinuation, change of institution.</span></li>
+              <li><span class="li-num">6</span><span>Critical health reasons.</span></li>
+              <li><span class="li-num">7</span><span>Conduct deemed unfit for the position of service.</span></li>
+              <li><span class="li-num">8</span><span>Ceasing to be a member of the Union within the term of service.</span></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- -- PART H: ACCOUNTS -- -->
+    <section class="const-part" id="partH">
+      <div class="part-header" onclick="togglePart(this)">
+        <div class="ph-left">
+          <div class="part-tag">Part H</div>
+          <h2 class="part-title"><strong>Accounts</strong> &amp; <em>Administration</em></h2>
+        </div>
+        <button class="toggle-btn"><span class="arr">&#9650;</span></button>
+      </div>
+      <div class="part-body">
+        <div class="part-inner">
+          <div class="article sr" id="art121">
+            <div class="art-label">Article 12.1 — Funds</div>
+            <div class="art-title">Financial Year &amp; Aid</div>
+            <div class="art-body"><p>The financial year shall run for a period of 12 months and present financial reports in accordance with Article 10.1.1(4). The Union shall accept financial and other aid from within and without it. All further information regarding fund management shall be contained within the Union's financial policy.</p></div>
+          </div>
+          <div class="article sr" id="art122">
+            <div class="art-label">Article 12.2 — Accounts</div>
+            <div class="art-title">Books of Account</div>
+            <div class="art-body"><p>Books of accounts and all related documents shall be available for inspection at the registered office, by any member or person authorised by the Executive Committee, provided a written request of not less than 7 days reaches the Executive Committee through the Secretary. The Treasurer shall work with the Accounts Committee to keep records up to date and prepare for auditing.</p></div>
+          </div>
+          <div class="article sr" id="art123">
+            <div class="art-label">Article 12.3 — External Auditor</div>
+            <div class="art-title">Audit Requirements</div>
+            <ul class="const-list">
+              <li><span class="li-num">1</span><span>The external auditor shall be proposed by the Executive Committee in consultation with the Advisory Committee.</span></li>
+              <li><span class="li-num">2</span><span>Must be a qualified accountant.</span></li>
+              <li><span class="li-num">3</span><span>Shall not be an office bearer or member of the Union.</span></li>
+              <li><span class="li-num">4</span><span>All accounts and records shall be open for inspection before the AGM.</span></li>
+              <li><span class="li-num">5</span><span>The auditor's report shall be furnished to members at the same time as the statement of account.</span></li>
+            </ul>
+          </div>
+          <div class="article sr" id="art124">
+            <div class="art-label">Article 12.4 — Union Assets</div>
+            <div class="art-title">Asset Management</div>
+            <div class="art-body"><p>Assets shall be used towards achieving the objectives of the Union and shall not be leased, lent or given out unless the Executive Committee deems it necessary and in the Union's interest. There shall be an assets' manager working under the Technical Coordinator, responsible for accountability and efficiency in acquisition, maintenance and disposal.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- -- PARTS I–L -- -->
+    <section class="const-part" id="partI">
+      <div class="part-header" onclick="togglePart(this)">
+        <div class="ph-left">
+          <div class="part-tag">Parts I — L</div>
+          <h2 class="part-title"><strong>Documents, Dissolution,</strong> <em>Amendments</em> &amp; <strong>Application</strong></h2>
+        </div>
+        <button class="toggle-btn"><span class="arr">&#9650;</span></button>
+      </div>
+      <div class="part-body">
+        <div class="part-inner">
+
+          <div class="article sr">
+            <div class="art-label">Part I — Accompanying Documents</div>
+            <div class="art-title">Policy Framework</div>
+            <div class="art-body" style="margin-bottom:14px">The following accompanying documents govern the Union's operations, each reviewable only by a two-thirds resolution of the Executive Committee:</div>
+            <ul class="const-list">
+              <li><span class="li-num">1</span><span><strong style="color:var(--white)">Financial Policy</strong> — Detailed management of funds and assets.</span></li>
+              <li><span class="li-num">2</span><span><strong style="color:var(--white)">Leadership Manual</strong> — Practical governance instructions; assumes knowledge of this constitution.</span></li>
+              <li><span class="li-num">3</span><span><strong style="color:var(--white)">Assets Policy</strong></span></li>
+              <li><span class="li-num">4</span><span><strong style="color:var(--white)">Partnership Policy</strong></span></li>
+              <li><span class="li-num">5</span><span><strong style="color:var(--white)">Evangelistic Teams' Policy</strong></span></li>
+              <li><span class="li-num">6</span><span><strong style="color:var(--white)">Ministries' Policy</strong></span></li>
+              <li><span class="li-num">7</span><span><strong style="color:var(--white)">Missions' Policy</strong></span></li>
+            </ul>
+          </div>
+
+          <div class="article sr" id="partJ">
+            <div class="art-label">Part J — Dissolution</div>
+            <div class="art-title">Dissolution of the Union</div>
+            <div class="infobox red">
+              <p>The Union shall not be dissolved except by a resolution passed at a general meeting by a vote of <strong>two-thirds of committed members present</strong>. No dissolution shall be effected without prior written permission from the Office of the Dean of Students, signed by three sitting Executive Committee members. Upon approved dissolution, all assets shall be liquidated and the balance distributed to Christian organisations as decided by the dissolution meeting.</p>
+            </div>
+          </div>
+
+          <div class="article sr" id="partK">
+            <div class="art-label">Part K — Amendments</div>
+            <div class="art-title">History of Amendments</div>
+            <div class="art-body" style="margin-bottom:20px">Amendments require either a scheduled review by the Constitution Review Committee (CRC) after at least three years, or a member-proposed amendment passed by two-thirds of members in an SGM. Any amendment must be ratified in a general meeting.</div>
+            <div class="amend-tl">
+              <div class="amend-item"><div class="amend-dot"></div><span class="amend-date">25 March 1967</span><span class="amend-num">Original Constitution</span></div>
+              <div class="amend-item"><div class="amend-dot"></div><span class="amend-date">10 October 1972</span><span class="amend-num">1st Amendment</span></div>
+              <div class="amend-item"><div class="amend-dot"></div><span class="amend-date">10 October 1992</span><span class="amend-num">2nd Amendment</span></div>
+              <div class="amend-item"><div class="amend-dot"></div><span class="amend-date">27 January 1996</span><span class="amend-num">3rd Amendment</span></div>
+              <div class="amend-item"><div class="amend-dot"></div><span class="amend-date">31 January 1998</span><span class="amend-num">4th Amendment</span></div>
+              <div class="amend-item"><div class="amend-dot"></div><span class="amend-date">11 March 2000</span><span class="amend-num">5th Amendment</span></div>
+              <div class="amend-item"><div class="amend-dot"></div><span class="amend-date">31 March 2007</span><span class="amend-num">6th Amendment</span></div>
+              <div class="amend-item"><div class="amend-dot"></div><span class="amend-date">12 March 2008</span><span class="amend-num">7th Amendment</span></div>
+              <div class="amend-item"><div class="amend-dot"></div><span class="amend-date">3 October 2009</span><span class="amend-num">8th Amendment</span></div>
+              <div class="amend-item"><div class="amend-dot"></div><span class="amend-date">26 March 2014</span><span class="amend-num">9th Amendment</span></div>
+              <div class="amend-item"><div class="amend-dot"></div><span class="amend-date">4 November 2017</span><span class="amend-num">10th Amendment</span></div>
+              <div class="amend-item latest"><div class="amend-dot"></div><span class="amend-date">11 June 2022</span><span class="amend-num">11th Amendment — Current Edition</span></div>
+            </div>
+          </div>
+
+          <div class="article sr" id="partL">
+            <div class="art-label">Part L — Application</div>
+            <div class="art-title">Application Clause</div>
+            <ul class="const-list">
+              <li><span class="li-num">i</span><span>Subjected to the Union's general meeting before its adoption.</span></li>
+              <li><span class="li-num">ii</span><span>Comes into full effect as soon as the 2022/2023 leadership year Executive Committee is convened.</span></li>
+              <li><span class="li-num">iii</span><span>To be used by the Union's Executive Committee officials.</span></li>
+              <li><span class="li-num">iv</span><span>Comes into full implementation at the 2022/2023 AGM.</span></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="const-footer">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-copy">"No provision herein shall be construed as to qualify, defeat or in any manner contravene the Holy Biblical Scriptures."</div>
+          <div class="footer-meta">
+            Egerton University, Njoro Campus Christian Union<br/>
+            Registration No. EU/AA/SA/ASSOC/16<br/>
+            Office of the Dean of Students, Egerton University<br/>
+            Constitution adopted 25 March 1967 &bull; 11th Amendment 11 June 2022
+          </div>
+        </div>
+        <div>
+          <p style="font-size:.56rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--green-sub);margin-bottom:16px;opacity:.8">Quick Links</p>
+          <ul class="footer-links">
+            <li><a href="about-us.html">About Us</a></li>
+            <li><a href="#partA">Preamble</a></li>
+            <li><a href="#partB">Identity &amp; Doctrine</a></li>
+            <li><a href="#partC">Membership</a></li>
+            <li><a href="#partD">Governance</a></li>
+            <li><a href="#partE">Ministries &amp; Teams</a></li>
+            <li><a href="#partK">Amendment History</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div><!-- end page-wrap -->
+
+<script>
+/* -- PART TOGGLE -- */
+function togglePart(header) {
+  const part = header.closest('.const-part');
+  part.classList.toggle('open');
+}
+
+/* -- SIDEBAR TOGGLE -- */
+function toggleSb(btn, id) {
+  const items = document.getElementById(id);
+  if (!items) return;
+  const isOpen = items.classList.contains('open');
+  items.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+}
+
+/* -- SCROLL REVEAL -- */
+const io = new IntersectionObserver(
+  entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }),
+  { threshold: 0.08 }
+);
+document.querySelectorAll('.sr').forEach(el => io.observe(el));
+
+/* -- ACTIVE SIDEBAR LINK -- */
+const allLinks = document.querySelectorAll('.sb-item');
+const headings = document.querySelectorAll('[id]');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  headings.forEach(h => {
+    if (window.scrollY >= h.offsetTop - 120) cur = h.id;
+  });
+  allLinks.forEach(a => {
+    const href = a.getAttribute('href').replace('#','');
+    a.classList.toggle('active', href === cur);
+  });
+}, { passive: true });
+
+/* -- DUTY ACCORDION -- */
+document.querySelectorAll('.duty-role-head').forEach(head => {
+  head.addEventListener('click', () => {
+    const list = head.nextElementSibling;
+    list.classList.toggle('open');
+    const btn = head.querySelector('.duty-toggle');
+    btn.textContent = list.classList.contains('open') ? 'Collapse' : 'Expand';
+  });
+});
+/*--DOWNLOAD--*/
+document.querySelectorAll(".dl-link").forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault(); 
+    const url = link.getAttribute("href");
+
+    link.classList.add("loading");
+
+    setTimeout(() => {
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = url.split("EUNCCU-CONSTITUTION.pdf").pop();
+      a.click();
+
+      link.classList.remove("loading");
+    }, 1200); // delay for animation
+  });
+});
+
+</script>
+</body>
+</html>

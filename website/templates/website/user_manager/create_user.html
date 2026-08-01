@@ -1,0 +1,190 @@
+{% extends "website/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  .cu-page {
+    background: var(--white);
+    min-height: 80vh;
+    padding: 150px 0 60px;
+  }
+  .cu-wrap {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .cu-heading-strip {
+    border-bottom: var(--rule-thick);
+    padding-bottom: 14px;
+    margin-bottom: 28px;
+  }
+  .cu-heading-strip h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0;
+  }
+  .cu-heading-strip p {
+    font-size: 0.82rem;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  .cu-card {
+    background: #fff;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    padding: 30px;
+  }
+
+  /* Form */
+  .cu-form-group { margin-bottom: 18px; }
+  .cu-form-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .cu-form-label .req { color: var(--red); margin-left: 2px; }
+  .form-control {
+    width: 100%;
+    height: 42px;
+    padding: 0 13px;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-family: poppins, sans-serif;
+    color: var(--ink);
+    background: var(--white);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-control:focus { border-color: var(--green); }
+  .cu-form-help  { font-size: 0.76rem; color: #888; margin-top: 4px; }
+  .cu-field-error { font-size: 0.76rem; color: var(--red); margin-top: 4px; }
+
+  .cu-alert {
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.84rem;
+    margin-bottom: 18px;
+    border-left: 3px solid var(--red);
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  /* Buttons */
+  .cu-btn-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+    gap: 10px;
+  }
+  .btn-back {
+    height: 40px;
+    padding: 0 16px;
+    border: var(--rule);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: #666;
+    font-size: 0.86rem;
+    font-family: poppins, sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-back:hover { background: #f0f0f0; color: var(--ink); }
+  .btn-submit {
+    height: 40px;
+    padding: 0 22px;
+    background: var(--green);
+    color: #fff;
+    border: 2px solid var(--green);
+    border-radius: var(--radius-sm);
+    font-size: 0.86rem;
+    font-weight: 700;
+    font-family: poppins, sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: background 0.2s;
+  }
+  .btn-submit:hover { background: #236a1a; }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="cu-page">
+  <div class="container">
+    <div class="cu-wrap">
+
+      <div class="cu-heading-strip">
+        <h1>Create Member Account</h1>
+        <p>User Manager Portal &mdash; Internal use only</p>
+      </div>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="cu-alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <div class="cu-card">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="cu-form-group">
+            <label class="cu-form-label" for="id_full_name">
+              Full Name <span class="req">*</span>
+            </label>
+            {{ create_form.full_name }}
+            {% if create_form.full_name.errors %}
+              {% for e in create_form.full_name.errors %}<div class="cu-field-error">{{ e }}</div>{% endfor %}
+            {% endif %}
+          </div>
+
+          <div class="cu-form-group">
+            <label class="cu-form-label" for="id_registrationNumber">Registration Number</label>
+            {{ create_form.registrationNumber }}
+            <div class="cu-form-help">{{ create_form.registrationNumber.help_text }}</div>
+            {% if create_form.registrationNumber.errors %}
+              {% for e in create_form.registrationNumber.errors %}<div class="cu-field-error">{{ e }}</div>{% endfor %}
+            {% endif %}
+          </div>
+
+          <div class="cu-form-group">
+            <label class="cu-form-label" for="id_email">
+              Email Address <span class="req">*</span>
+            </label>
+            {{ create_form.email }}
+            {% if create_form.email.errors %}
+              {% for e in create_form.email.errors %}<div class="cu-field-error">{{ e }}</div>{% endfor %}
+            {% endif %}
+          </div>
+
+          {% if create_form.non_field_errors %}
+            <div class="cu-alert">{{ create_form.non_field_errors }}</div>
+          {% endif %}
+
+          <div class="cu-btn-row">
+            <a href="{% url 'website:user_manager_dashboard' %}" class="btn-back">
+              <i class="fa fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <button type="submit" class="btn-submit">
+              <i class="fa fa-user-plus"></i> Create Account
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
