@@ -9,7 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="description" content="">
         <meta name="author" content="mediaministrydevelopers">
-        <title>Egerton University Njoro Campus Christian Union</title>
+        <title>{% block title %}Egerton University Njoro Campus Christian Union{% endblock %}</title>
 		<link rel="shortcut icon" type="image/x-icon" href="{% static 'img/logo2.png' %}">
 
         <!-- Font Awesome Icons CSS -->
@@ -649,11 +649,8 @@
         <script defer src="{% static 'js/vendor/letteranimation.min.js' %}"></script>
         <!-- Wow JS -->
         <script defer src="{% static 'js/vendor/wow.min.js' %}"></script>
-        <!-- Contact JS -->
-        <script defer src="{% static 'js/contact.js' %}"></script>
         <!-- Main JS -->
         <script defer src="{% static 'js/main.js' %}"></script>
-        <script defer src="{% static 'js/tabs.js' %}"></script>
 
 
         <!--Start of Tawk.to Script-->

@@ -1,324 +1,50 @@
+{% extends 'website/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="User Profile - Egerton University Njoro Campus Christian Union">
-    <meta name="author" content="EUNCCU">
-    <title>My Profile | EUNCCU</title>
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/logo2.png' %}">
-    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
-    <style>
-        :root {
-            --primary-green: #2c8e22;
-            --secondary-red: #ff0019;
-            --light-bg: #ffffff;
-            --dark-text: #000000;
-            --light-text: #333333;
-            --border-color: #cccccc;
-        }
 
-        body {
-            background-color: #f5f5f5;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--dark-text);
-        }
+{% block title %}My Profile | EUNCCU{% endblock %}
 
-        .profile-header {
-            background: linear-gradient(135deg, var(--primary-green) 0%, rgba(26, 92, 42, 0.95) 100%);
-            color: white;
-            padding: 3rem 0;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(26, 92, 42, 0.25);
-        }
+{% block extra_css %}
+<style>
+:root {
+    --primary-green: #2c8e22;
+    --secondary-red: #ff0019;
+    --dark-text: #000000;
+    --light-text: #333333;
+    --border-color: #cccccc;
+}
 
-        .profile-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0;
-            color: white;
-        }
+.content-container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+.profile-header { background: linear-gradient(135deg, var(--primary-green) 0%, rgba(26, 92, 42, 0.95) 100%); color: white; padding: 3rem 0; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(26, 92, 42, 0.25); }
+.profile-header h1 { margin: 0; font-size: 2.5rem; }
+.profile-header p { margin-top: 0.5rem; opacity: 0.95; }
+.main-profile-section { background: white; border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 2rem; }
+.profile-top { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; padding: 2.5rem; align-items: start; }
+.profile-picture-section { text-align: center; }
+.profile-avatar, .default-avatar { width: 200px; height: 200px; margin: 0 auto 1.5rem; border-radius: 12px; border: 4px solid var(--primary-green); box-shadow: 0 4px 12px rgba(44, 142, 34, 0.2); }
+.default-avatar { display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, var(--primary-green), rgba(26,92,42,0.7)); font-size: 4rem; }
+.btn-edit-profile, .btn-user-manager { background-color: var(--primary-green); color: white; border:none; padding:0.75rem 2rem; border-radius:8px; font-size:1rem; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; }
+.btn-edit-profile:hover, .btn-user-manager:hover { background-color: var(--secondary-red); }
+.info-group { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+.info-item { display:flex; flex-direction:column; }
+.info-label { font-size:0.85rem; font-weight:600; color: var(--light-text); text-transform:uppercase; margin-bottom:0.5rem; }
+.info-value { font-size:1.1rem; font-weight:500; color: var(--dark-text); word-break:break-all; }
+.info-value.highlight { color: var(--primary-green); font-weight:600; }
+.divider { height:1px; background-color: var(--border-color); margin:1.5rem 0; }
+.profile-footer { padding:2rem 2.5rem; background:white; border-top:1px solid var(--border-color); display:flex; gap:1rem; justify-content:flex-end; }
+@media (max-width:768px) { .profile-top { grid-template-columns:1fr; padding:1.5rem; } .info-group { grid-template-columns:1fr; } .profile-footer { flex-direction:column; align-items:stretch; } }
+</style>
+{% endblock %}
 
-        .profile-header p {
-            font-size: 1.1rem;
-            margin-top: 0.5rem;
-            opacity: 0.95;
-        }
-
-        .profile-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .main-profile-section {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-
-        .profile-top {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 2rem;
-            padding: 2.5rem;
-            align-items: start;
-        }
-
-        .profile-picture-section {
-            text-align: center;
-        }
-
-        .profile-avatar {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 1.5rem;
-            border-radius: 12px;
-            object-fit: cover;
-            border: 4px solid var(--primary-green);
-            box-shadow: 0 4px 12px rgba(44, 142, 34, 0.2);
-        }
-
-        .default-avatar {
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 1.5rem;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary-green), rgba(26, 92, 42, 0.7));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            border: 4px solid var(--primary-green);
-            box-shadow: 0 4px 12px rgba(26, 92, 42, 0.25);
-        }
-
-        .edit-btn-container {
-            margin-top: 1rem;
-        }
-
-        .btn-edit-profile {
-            background-color: var(--primary-green);
-            color: white;
-            border: none;
-            padding: 0.75rem 2rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-block;
-            text-decoration: none;
-        }
-
-        .btn-edit-profile:hover {
-            background-color: var(--secondary-red);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
-            color: white;
-        }
-
-        .profile-info {
-            padding: 0;
-        }
-
-        .info-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .info-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .info-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--light-text);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-        }
-
-        .info-value {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: var(--dark-text);
-            word-break: break-all;
-        }
-
-        .info-value.highlight {
-            color: var(--primary-green);
-            font-weight: 600;
-        }
-
-        .divider {
-            height: 1px;
-            background-color: var(--border-color);
-            margin: 1.5rem -2.5rem;
-        }
-
-        .profile-footer {
-            padding: 2rem 2.5rem;
-            background-color: var(--light-bg);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-        }
-
-        .profile-card {
-            background: #ffffff;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            margin: 2rem 0;
-            overflow: hidden;
-            box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
-        }
-
-        .profile-card-header {
-            padding: 1.6rem 2rem;
-            border-bottom: 1px solid #e5e7eb;
-            background: #f8fafc;
-        }
-
-        .profile-card-header h2 {
-            margin: 0;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #111827;
-        }
-
-        .profile-card-header p {
-            margin: 0.65rem 0 0;
-            color: #475569;
-            font-size: 0.94rem;
-            line-height: 1.6;
-        }
-
-        .profile-card-body {
-            padding: 1.8rem 2rem;
-        }
-
-        .profile-card-body form {
-            display: grid;
-            gap: 1.5rem;
-        }
-
-        .profile-card-body .info-item {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .profile-card-body .info-label {
-            margin-bottom: 0;
-            color: #334155;
-            font-size: 0.82rem;
-            letter-spacing: 0.02em;
-        }
-
-        .profile-card-body .form-control {
-            width: 100%;
-            padding: 0.9rem 1rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            background: #ffffff;
-            font-size: 0.95rem;
-        }
-
-        .profile-card-body .btn-edit-profile {
-            width: fit-content;
-            margin-top: 0.5rem;
-        }
-
-        .profile-footer .btn-edit-profile {
-            margin: 0;
-        }
-
-        .btn-user-manager {
-            background-color: #1f5f3a;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-        }
-
-        .btn-user-manager:hover {
-            background-color: var(--secondary-red);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
-            color: white;
-        }
-
-        .no-auth-message {
-            background-color: #ffe6e6;
-            border: 2px solid var(--secondary-red);
-            color: #c70039;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 2rem 0;
-            font-size: 1.1rem;
-        }
-
-        @media (max-width: 768px) {
-            .profile-top {
-                grid-template-columns: 1fr;
-                padding: 1.5rem;
-            }
-
-            .profile-header h1 {
-                font-size: 1.8rem;
-            }
-
-            .info-group {
-                grid-template-columns: 1fr;
-            }
-
-            .profile-footer {
-                flex-direction: column;
-                padding: 1.5rem;
-            }
-
-            .profile-footer .btn-edit-profile {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
-</head>
-<body>
-
-<div class="profile-header">
-    <div class="profile-container">
-        <h1>My Profile</h1>
-        <p>Manage and view your account information</p>
+{% block content %}
+<div class="header-height"></div>
+<div class="content-container">
+    <div class="profile-header">
+        <div>
+            <h1>My Profile</h1>
+            <p>Manage and view your account information</p>
+        </div>
     </div>
-    <div class="home-btn-container">
-        <a href="{% url 'website:home' %}" class="btn-edit-profile">
-            <i class="fa fa-home"></i> Back to Home
-        </a>
-    </div>
-</div>
 
-<div class="profile-container">
     {% if request.user.is_authenticated %}
         <div class="main-profile-section">
             <div class="profile-top">
@@ -328,14 +54,9 @@
                     {% else %}
                         <div class="default-avatar">👤</div>
                     {% endif %}
-                    <div class="edit-btn-container">
-                        <a href="{% url 'website:edit_profile' %}" class="btn-edit-profile">
-                            <i class="fa fa-pencil"></i> Edit Profile
-                        </a>
-                    </div>
+                    <a href="{% url 'website:edit_profile' %}" class="btn-edit-profile"><i class="fa fa-pencil"></i> Edit Profile</a>
                 </div>
-
-                <div class="profile-info">
+                <div>
                     <div class="info-group">
                         <div class="info-item">
                             <span class="info-label">Full Name</span>
@@ -346,7 +67,6 @@
                             <span class="info-value">{{ request.user.username }}</span>
                         </div>
                     </div>
-
                     <div class="info-group">
                         <div class="info-item">
                             <span class="info-label">Email Address</span>
@@ -357,9 +77,7 @@
                             <span class="info-value">{{ request.user.phone|default:"Not Set" }}</span>
                         </div>
                     </div>
-
                     <div class="divider"></div>
-
                     <div class="info-group">
                         <div class="info-item">
                             <span class="info-label">Registration Number</span>
@@ -372,82 +90,20 @@
                     </div>
                 </div>
             </div>
-
-            <div class="profile-card profile-password-section">
-                <div class="profile-card-header">
-                    <h2>Change Password</h2>
-                    <p>Update your password securely without logging out.</p>
-                </div>
-                <div class="profile-card-body">
-                    <form method="post" action="{% url 'website:profile' %}">
-                        {% csrf_token %}
-                        <div class="info-group">
-                            <div class="info-item">
-                                <label class="info-label" for="id_current_password">Current Password</label>
-                                {{ change_password_form.current_password }}
-                                {% if change_password_form.current_password.errors %}
-                                    <div class="info-value" style="color: #b91c1c; font-size: 0.82rem;">{{ change_password_form.current_password.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="info-group">
-                            <div class="info-item">
-                                <label class="info-label" for="id_new_password">New Password</label>
-                                {{ change_password_form.new_password }}
-                                {% if change_password_form.new_password.errors %}
-                                    <div class="info-value" style="color: #b91c1c; font-size: 0.82rem;">{{ change_password_form.new_password.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="info-item">
-                                <label class="info-label" for="id_confirm_password">Confirm New Password</label>
-                                {{ change_password_form.confirm_password }}
-                                {% if change_password_form.confirm_password.errors %}
-                                    <div class="info-value" style="color: #b91c1c; font-size: 0.82rem;">{{ change_password_form.confirm_password.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% if change_password_form.non_field_errors %}
-                            <div class="info-value" style="color: #b91c1c; margin-bottom: 1rem;">{{ change_password_form.non_field_errors }}</div>
-                        {% endif %}
-                        <button type="submit" class="btn-edit-profile">Update Password</button>
-                    </form>
-                </div>
-            </div>
-
             <div class="profile-footer">
-                {% if request.user.groups.all %}
-                    {% for group in request.user.groups.all %}
-                        {% if group.name == "User Manager" %}
-                            <a href="{% url 'website:user_manager_dashboard' %}" class="btn-user-manager">
-                                <i class="fa fa-users"></i> User Manager
-                            </a>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-                <a href="{% url 'website:edit_profile' %}" class="btn-edit-profile">
-                    <i class="fa fa-pencil"></i> Edit Profile
-                </a>
+                {% for group in request.user.groups.all %}
+                    {% if group.name == "User Manager" %}
+                        <a href="{% url 'website:user_manager_dashboard' %}" class="btn-user-manager"><i class="fa fa-users"></i> User Manager</a>
+                    {% endif %}
+                {% endfor %}
+                <a href="{% url 'website:edit_profile' %}" class="btn-edit-profile"><i class="fa fa-pencil"></i> Edit Profile</a>
             </div>
         </div>
     {% else %}
-        <div class="no-auth-message">
-            <i class="fa fa-exclamation-triangle"></i> You must be logged in to view your profile. 
-            <a href="{% url 'website:login' %}" style="color: inherit; font-weight: 600; text-decoration: underline;">Click here to login</a>
+        <div style="background:#fff; border-radius:12px; padding:2rem; box-shadow:0 2px 16px rgba(0,0,0,0.08);">
+            <div style="color:#c70039; font-weight:700; margin-bottom:1rem;">You must be logged in to view your profile.</div>
+            <a href="{% url 'website:login' %}" style="color: var(--primary-green); font-weight:600; text-decoration:underline;">Click here to login</a>
         </div>
     {% endif %}
 </div>
-
-<script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
-<script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
-</body>
-</html>
-
-    <!-- ✅ Your Custom Scripts -->
-    <script src="{% static 'js/contact.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-
-    <!-- Scroll-to-top -->
-    <a data-scroll href="#header" id="scroll-to-top"><i class="arrow_up"></i></a>
-
-</body>
-</html>
+{% endblock %}

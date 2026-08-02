@@ -1,521 +1,168 @@
+{% extends 'website/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="icon" href="{% static 'img/logo2.png' %}" type="image/x-icon">
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/logo2.png' %}">
+{% block title %}Login | EUNCCU{% endblock %}
 
-    <!-- CSS Files -->
-    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/elegant-font-icons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/elegant-line-icons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/venobox/venobox.css' %}">
-    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
-    <link rel="stylesheet" href="{% static 'css/slicknav.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/css-animation.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/nivo-slider.css' %}">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
-    <link rel="stylesheet" href="{% static 'css/Registration.css' %}">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
+{% block extra_css %}
+<style>
+:root {
+    --primary-green: #2c8e22;
+    --primary-red: #ff0019;
+    --text-dark: #000000;
+    --text-mid: #333333;
+    --border: #cccccc;
+    --input-bg: #ffffff;
+}
 
-    <script src="{% static 'js/vendor/modernizr-2.8.3-respond-1.4.2.min.js' %}"></script>
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 130px);
+    padding: 48px 20px 64px;
+}
 
-    <style>
-        :root {
-            --primary-green: #2c8e22;
-            --primary-red: #ff0019;
-            --text-dark: #000000;
-            --text-mid: #333333;
-            --text-muted: #555555;
-            --border: #cccccc;
-            --input-bg: #ffffff;
-            --shadow: 0 8px 32px rgba(26, 92, 42, 0.15);
-        }
+.form-container2 {
+    width: 100%;
+    max-width: 780px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(26, 92, 42, 0.15);
+    border: 1px solid rgba(26, 92, 42, 0.12);
+    overflow: hidden;
+}
 
-        * {
-            box-sizing: border-box;
-        }
+.login-header {
+    background: linear-gradient(135deg, var(--primary-green) 0%, rgba(0, 107, 27, 0.83) 100%);
+    padding: 40px 40px 32px;
+    text-align: center;
+}
 
-        body {
-            font-family: 'DM Sans', Arial, sans-serif;
-            background-image: url("{% static 'img/' %}");
-            background-size: cover;
-            background-position: center center;
-            background-attachment: fixed;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+.login-header h2 {
+    color: #fff;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
 
-        /* ──  NAVBAR ── */
-        header#header {
-            width: 100%;
-            position: fixed;
-            /* fixed to top */
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 9999;
-            background: #fff;
-            /* solid bg so content scrolls behind it */
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.10);
-        }
+.login-header p {
+    color: rgba(255,255,255,0.72);
+    margin: 0;
+}
 
-        /* ── BODY OFFSET so content starts below navbar ── */
-        body {
-            padding-top: 72px;
-        }
+.login-body {
+    padding: 28px 36px 36px;
+}
 
-        /* ── PAGE WRAPPER ── */
-        .main-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-grow: 1;
-            padding: 48px 20px 64px;
-            min-height: calc(100vh - 72px);
-        }
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
 
-        /* ── LOGIN CARD ── */
-        .form-container2 {
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 780px;
-            overflow: hidden;
-            border: 1px solid rgba(26, 92, 42, 0.12);
-        }
+.field label {
+    font-weight: 600;
+    color: var(--text-mid);
+    font-size: 0.88rem;
+}
 
-        /* ── CARD HEADER ── */
-        .login-header {
-            background: linear-gradient(135deg, var(--primary-green) 0%, rgba(0, 107, 27, 0.83) 100%);
-            padding: 40px 40px 32px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
+.field input {
+    padding: 12px 14px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 10px;
+    background: var(--input-bg);
+    font-size: 0.95rem;
+}
 
-        .login-header::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        }
+.forgot-link {
+    display: block;
+    margin-bottom: 20px;
+    text-align: right;
+    color: var(--primary-green);
+    text-decoration: none;
+}
 
-        .login-header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 28px;
-            background: #ffffff;
-            border-radius: 28px 28px 0 0;
-        }
+.btn-login {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, var(--primary-green), rgba(0, 148, 37, 0.9));
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
 
-        .login-logo {
-            width: 76px;
-            height: 76px;
-            border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            object-fit: contain;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 4px;
-            position: relative;
-            z-index: 1;
-            margin-bottom: 14px;
-        }
+.alert {
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
 
-        .login-header h2 {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #fff;
-            position: relative;
-            z-index: 1;
-            margin: 0 0 6px;
-            letter-spacing: -0.02em;
-        }
+.alert-success {
+    background: #d4edda;
+    color: #2c8e22;
+}
 
-        .login-header p {
-            color: rgba(255, 255, 255, 0.70);
-            font-size: 0.88rem;
-            font-weight: 300;
-            position: relative;
-            z-index: 1;
-            margin: 0;
-        }
+.alert-error,
+.alert-danger {
+    background: #ffe6e6;
+    color: #c70039;
+}
 
-        /* ── CARD BODY ── */
-        .login-body {
-            padding: 28px 36px 36px;
-        }
+@media (max-width: 576px) {
+    .login-body { padding: 24px 22px 28px; }
+    .login-header { padding: 32px 22px 28px; }
+}
+</style>
+{% endblock %}
 
-        /* ── ALERTS ── */
-        .alert {
-            padding: 11px 14px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .alert-danger,
-        .alert-error {
-            background: #ffe6e6;
-            color: #c70039;
-            border: 1px solid var(--primary-red);
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #2c8e22;
-            border: 1px solid #c3e6cb;
-        }
-
-        /* ── FIELDS ── */
-        .field {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 16px;
-        }
-
-        .field label {
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--text-mid);
-            letter-spacing: 0.01em;
-        }
-
-        .field input {
-            width: 100%;
-            padding: 11px 14px;
-            background: var(--input-bg);
-            border: 1.5px solid var(--border);
-            border-radius: 9px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.93rem;
-            color: var(--text-dark);
-            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-            outline: none;
-            margin: 0;
-        }
-
-        .field input:focus {
-            border-color: var(--primary-green);
-            box-shadow: 0 0 0 3px rgba(26, 92, 42, 0.1);
-            background: #fff;
-        }
-
-        .field input::placeholder {
-            color: #b0bac5;
-        }
-
-        /* ── FORGOT PASSWORD ── */
-        .forgot-link {
-            display: block;
-            text-align: right;
-            font-size: 0.8rem;
-            color: var(--primary-green);
-            text-decoration: none;
-            font-weight: 500;
-            margin-top: -8px;
-            margin-bottom: 20px;
-            transition: color 0.2s;
-        }
-
-        .forgot-link:hover {
-            color: var(--primary-red);
-            text-decoration: underline;
-        }
-
-        /* ── BUTTONS ── */
-        .btn-login {
-            width: 100%;
-            padding: 13px;
-            background: linear-gradient(135deg, var(--primary-green), rgba(0, 148, 37, 0.9));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.97rem;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-            box-shadow: 0 4px 16px rgba(26, 92, 42, 0.25);
-            margin-bottom: 10px;
-        }
-
-        .btn-login:hover {
-            background: linear-gradient(135deg, var(--primary-green), rgba(0, 148, 37, 0.9));
-            opacity: 0.95;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 24px rgba(220, 53, 69, 0.30);
-        }
-
-        .btn-login:active {
-            transform: translateY(0);
-        }
-
-        .btn-register {
-            width: 100%;
-            padding: 13px;
-            background: transparent;
-            color: var(--primary-green);
-            border: 1.5px solid var(--primary-green);
-            border-radius: 10px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.97rem;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s, transform 0.15s;
-        }
-
-        .btn-register:hover {
-            background: #e8f5ed;
-            transform: translateY(-1px);
-        }
-
-        .btn-register:active {
-            transform: translateY(0);
-        }
-
-        /* ── DIVIDER ── */
-        .or-divider {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 14px 0;
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .or-divider::before,
-        .or-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        /* ── FOOTER ── */
-        .login-footer {
-            text-align: center;
-            margin-top: 22px;
-            padding-top: 18px;
-            border-top: 1px solid var(--border);
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .login-footer a {
-            color: var(--primary-green);
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .login-footer a:hover {
-            color: var(--primary-red);
-            text-decoration: underline;
-        }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 500px) {
-            .login-body {
-                padding: 24px 22px 28px;
-            }
-
-            .login-header {
-                padding: 32px 22px 28px;
-            }
-
-            .login-header h2 {
-                font-size: 1.5rem;
-            }
-
-            body {
-                padding-top: 64px;
-            }
-
-            .main-content {
-                min-height: calc(100vh - 64px);
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <!--[if lt IE 8]>
-        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
-
-    <!-- ── NAVBAR ── -->
-    <header id="header" class="header-section">
-        <div class="bottom-header">
-            <div class="container">
-                <div class="bottom-content-wrap row">
-                    <div class="col-sm-4">
-                        <div class="site-branding">
-                            <a href="{% url 'website:home' %}"><img src="{% static 'img/logo2.png' %}" alt="Brand"></a>
-                        </div>
-                    </div>
-                    <div class="col-sm-8 text-right">
-                        <ul id="mainmenu" class="nav navbar-nav nav-menu">
-                            <li class="active"><a href="{% url 'website:home' %}">Home</a></li>
-                            <li>
-                                About Us
-                                <ul>
-                                    <li><a href="{% url 'website:about' %}">Who are we</a></li>
-                                    <li><a href="{% url 'website:leadership' %}">Leadership</a></li>
-                                    <li><a href="{% url 'website:ministries' %}">Ministries </a></li>
-                                    <li><a href="{% url 'website:ministries' %}#eteams">E‑Teams</a></li>
-                                    <li><a href="{% url 'website:ministries' %}#classes">Classes</a></li>
-                                    <li><a href="{% url 'website:ministries' %}#committees">Committees</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="{% url 'website:events' %}">Events</a></li>
-                            <li><a href="{% url 'website:devotion_list' %}">Devotions</a></li>
-                            <li>
-                                Pages
-                                <ul>
-                                    <li><a href="{% url 'website:gallery' %}">Gallery</a></li>
-                                    <li><a href=" https://biblestudy.eunccu.org/ " target="_blank"
-                                            rel="noopener no-referrer">Bible Study</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="{% url 'website:contact' %}">Contact</a></li>
-                            {% if request.user.is_authenticated %}
-                            <li><img src="{% if request.user.profile_picture %}{{ request.user.profile_picture.url }}{% else %}{% static 'img/default-profile.webp' %}{% endif %}"
-                                    alt="Profile" class="rounded-circle"
-                                    style="width: 35px; height: 35px; object-fit: cover; border: 3px solid #fff;">
-                                <ul>
-                                    <li><a href="{% url 'website:profile' %}">Profile</a></li>
-                                    <li><a href="{% url 'website:logout' %}">Logout</a></li>
-                                    {% else %}
-                                    <li><a href="{% url 'website:login' %}">Login</a></li>
-                                    {% endif %}
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+{% block content %}
+<div class="header-height"></div>
+<div class="main-content">
+    <div class="form-container2">
+        <div class="login-header">
+            <img src="{% static 'img/logo2.png' %}" alt="EUNCCU Logo" style="width: 76px; height: 76px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); margin-bottom: 14px;">
+            <h2>Welcome Back</h2>
+            <p>Sign in to your EUNCCU account</p>
         </div>
-    </header>
-
-    <!-- ── PAGE CONTENT ── -->
-    <div class="main-content">
-        <div class="form-container2">
-
-            <!-- Header -->
-            <div class="login-header">
-                <img src="{% static 'img/logo2.png' %}" alt="EUNCCU Logo" class="login-logo" />
-                <h2>Welcome Back</h2>
-                <p>Sign in to your EUNCCU account</p>
-            </div>
-
-            <!-- Body -->
-            <div class="login-body">
-
-                {% if messages %}
+        <div class="login-body">
+            {% if messages %}
                 {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}" role="alert">
-                    {{ message }}
-                </div>
+                    <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
                 {% endfor %}
-                {% endif %}
-
-                <form id="loginForm" method="post" action="">
-                    {% csrf_token %}
-
-                    <div class="field">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" placeholder="you@example.com" required />
-                    </div>
-
-                    <div class="field">
-                        <label for="loginPassword">Password</label>
-                        <input type="password" id="loginPassword" name="password" placeholder="Enter your password"
-                            required />
-                    </div>
-
-                    {% if next %}
+            {% endif %}
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                </div>
+                <div class="field">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" placeholder="Enter your password" required>
+                </div>
+                {% if next %}
                     <input type="hidden" name="next" value="{{ next }}">
-                    {% endif %}
-
-                    <a href="{% url 'auth_utils:password_reset' %}" class="forgot-link">Forgot password?</a>
-
-                    <button type="submit" class="btn-login">Sign In</button>
-
-                    <!-- <div class="or-divider">or</div> #login logic changed
-
-                    <button type="button" class="btn-register" onclick="redirectToRegistration()">Create an Account</button>
-                </form>
-
-              <div class="login-footer">
-                    Don't have an account? <a href="{% url 'website:register' %}">Register here</a>
-                </div> -->
-
-            </div>
+                {% endif %}
+                <a href="{% url 'auth_utils:password_reset' %}" class="forgot-link">Forgot password?</a>
+                <button type="submit" class="btn-login">Sign In</button>
+            </form>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <script>
-        function redirectToRegistration() {
-            window.location.href = "{% url 'website:register' %}";
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const alerts = document.querySelectorAll(".alert");
-            alerts.forEach(function (alert) {
-                setTimeout(() => {
-                    alert.style.transition = 'opacity 0.5s ease';
-                    alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 500);
-                }, 4000);
-            });
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.alert').forEach(function (alert) {
+            setTimeout(function () {
+                alert.style.transition = 'opacity 0.4s ease';
+                alert.style.opacity = '0';
+                setTimeout(function () { alert.remove(); }, 400);
+            }, 4000);
         });
-    </script>
-
-    <a data-scroll href="#header" id="scroll-to-top"><i class="arrow_up"></i></a>
-
-    <!-- JavaScript Files -->
-    <script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
-    <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/vendor/tether.min.js' %}"></script>
-    <script src="{% static 'js/vendor/imagesloaded.pkgd.min.js' %}"></script>
-    <script src="{% static 'js/vendor/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.isotope.v3.0.2.js' %}"></script>
-    <script src="{% static 'js/vendor/smooth-scroll.min.js' %}"></script>
-    <script src="{% static 'js/vendor/venobox.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.ajaxchimp.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.counterup.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.waypoints.v2.0.3.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.slicknav.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.nivo.slider.pack.js' %}"></script>
-    <script src="{% static 'js/vendor/letteranimation.min.js' %}"></script>
-    <script src="{% static 'js/vendor/wow.min.js' %}"></script>
-    <script src="{% static 'js/contact.js' %}"></script>
-    <script src="{% static 'js/main.js' %}"></script>
-</body>
-
-</html>
+    });
+</script>
+{% endblock %}
