@@ -177,6 +177,9 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = f'Egerton University Njoro Campus Christian Union <{EMAIL_HOST_USER}>'
 NOTIFICATION_DELAY_SECONDS = config('NOTIFICATION_DELAY_SECONDS', default=60, cast=int)
 
+# The public site root used to build absolute links in out-of-request contexts.
+SITE_URL = config('SITE_URL', default='https://eunccu.org')
+
 # =============
 # YouTube API
 # =============

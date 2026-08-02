@@ -110,7 +110,7 @@ def _build_drive_parents_query(folder_ids):
 
 def get_google_drive_photos(folder_id=None, page_size=100, page_token=None):
     """
-    Fetch photos from a Google Drive folder and all nested child folders.
+    Fetch photos from the specified Google Drive folder only (no nested subfolders).
     """
     service = get_google_drive_service()
     if not service:
@@ -125,9 +125,7 @@ def get_google_drive_photos(folder_id=None, page_size=100, page_token=None):
         return cached_result
 
     try:
-        folder_ids = [folder_id] + _collect_drive_folder_descendants(service, folder_id)
-        parents_query = _build_drive_parents_query(folder_ids)
-        query = f"({parents_query}) and mimeType contains 'image/' and trashed = false"
+        query = f"'{folder_id}' in parents and mimeType contains 'image/' and trashed = false"
 
         photos = []
         current_page_token = page_token
@@ -170,9 +168,37 @@ def get_google_drive_photos(folder_id=None, page_size=100, page_token=None):
         return {'items': [], 'next_page_token': None}
 
 
+def _count_drive_folder_children(service, folder_id):
+    """Count direct child folders and direct image files for a given folder."""
+    folder_count = 0
+    file_count = 0
+    page_token = None
+
+    while True:
+        results = service.files().list(
+            q=f"'{folder_id}' in parents and trashed = false",
+            spaces='drive',
+            fields='nextPageToken, files(id, mimeType)',
+            pageSize=100,
+            pageToken=page_token,
+        ).execute()
+
+        for item in results.get('files', []):
+            if item.get('mimeType') == 'application/vnd.google-apps.folder':
+                folder_count += 1
+            elif item.get('mimeType', '').startswith('image/'):
+                file_count += 1
+
+        page_token = results.get('nextPageToken')
+        if not page_token:
+            break
+
+    return folder_count, file_count
+
+
 def get_google_drive_folders(folder_id=None, page_size=50):
     """
-    Fetch folders from a Google Drive folder.
+    Fetch folders from a Google Drive folder and include direct child counts.
     """
     service = get_google_drive_service()
     if not service:
@@ -197,11 +223,14 @@ def get_google_drive_folders(folder_id=None, page_size=50):
 
         folders = []
         for file in results.get('files', []):
+            folder_count, file_count = _count_drive_folder_children(service, file['id'])
             folders.append({
                 'id': file['id'],
                 'name': file['name'],
                 'type': 'folder',
-                'thumbnail': 'https://cdn-icons-png.flaticon.com/512/716/716784.png'
+                'thumbnail': 'https://cdn-icons-png.flaticon.com/512/716/716784.png',
+                'folder_count': folder_count,
+                'file_count': file_count,
             })
 
         cache.set(cache_key, folders, GOOGLE_DRIVE_METADATA_CACHE_TIMEOUT)

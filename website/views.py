@@ -7,15 +7,16 @@ from dj_database_url import config
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from django.utils.crypto import get_random_string
 import os
 from django.http import JsonResponse, HttpResponse
 from django.http import FileResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import DisallowedHost, ImproperlyConfigured
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -28,7 +29,7 @@ from .models import (
 from .models import Devotion
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
-from .forms import ProfileForm
+from .forms import ProfileForm, ChangePasswordForm
 from .forms import TestimonySubmissionForm
 from .forms import OnboardUserForm, CompleteRegistrationForm
 from datetime import date
@@ -52,6 +53,30 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 User = get_user_model()
+
+
+def generate_temp_password(length=12):
+    return get_random_string(length=length)
+
+
+def build_absolute_url(request, path):
+    try:
+        return request.build_absolute_uri(path)
+    except DisallowedHost:
+        site_url = getattr(settings, 'SITE_URL', None)
+        if site_url:
+            return f"{site_url.rstrip('/')}{path}"
+        raise
+
+
+def build_complete_registration_link(request, user):
+    uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+    token = default_token_generator.make_token(user)
+    return build_absolute_url(
+        request,
+        reverse('website:complete_registration_token', kwargs={'uidb64': uidb64, 'token': token}),
+    )
+
 
 #-- DEVOTIONS VIEWS --
 import logging
@@ -647,8 +672,22 @@ class ProfileView(LoginRequiredWithMessageMixin, TemplateView):
             'registrationNumber': user.registrationNumber,
             'phone': user.phone,
             'homeCounty': user.homeCounty,
+            'change_password_form': kwargs.get('change_password_form') or ChangePasswordForm(user=user),
         })
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = ChangePasswordForm(request.POST, user=request.user)
+        if form.is_valid():
+            request.user.set_password(form.cleaned_data['new_password'])
+            request.user.save()
+            update_session_auth_hash(request, request.user)
+            messages.success(request, 'Your password has been updated successfully.')
+            return redirect('website:profile')
+
+        context = self.get_context_data(**kwargs)
+        context['change_password_form'] = form
+        return render(request, self.template_name, context)
 
 
 class UserNotificationsView(LoginRequiredWithMessageMixin,TemplateView):
@@ -722,7 +761,7 @@ class CreateUserView(UserManagerMixin, TemplateView):
             return render(request, self.template_name, {'create_form': form})
 
         data = form.cleaned_data
-        temp_password = getattr(settings, 'DEFAULT_TEMP_PASSWORD', 'student')
+        temp_password = generate_temp_password(12)
         username = OnboardUserForm._generate_username(data['email'])
 
         new_user = User.objects.create_user(
@@ -734,10 +773,12 @@ class CreateUserView(UserManagerMixin, TemplateView):
             is_active=True,
             completed=False,
             must_change_password=True,
+            send_welcome_email=False,
         )
 
         # Send onboarding email with credentials and instructions.
-        login_url = request.build_absolute_uri(reverse('website:login'))
+        login_url = build_absolute_url(request, reverse('website:login'))
+        complete_registration_url = build_complete_registration_link(request, new_user)
         try:
             send_html_email(
                 subject='Welcome Your Account Has Been Created',
@@ -747,6 +788,7 @@ class CreateUserView(UserManagerMixin, TemplateView):
                     'user': new_user,
                     'temp_password': temp_password,
                     'login_url': login_url,
+                    'action_url': complete_registration_url,
                 },
             )
             messages.success(
@@ -778,7 +820,7 @@ class BulkCreateUsersView(UserManagerMixin, TemplateView):
         if not rows:
             return JsonResponse({'error': 'No user rows provided.'}, status=400)
 
-        login_url = request.build_absolute_uri(reverse('website:login'))
+        login_url = build_absolute_url(request, reverse('website:login'))
         temp_password = getattr(settings, 'DEFAULT_TEMP_PASSWORD', 'student')
 
         results = []
@@ -800,6 +842,7 @@ class BulkCreateUsersView(UserManagerMixin, TemplateView):
                 continue
 
             try:
+                temp_password = generate_temp_password(12)
                 username = OnboardUserForm._generate_username(email)
                 new_user = User.objects.create_user(
                     username=username,
@@ -810,6 +853,7 @@ class BulkCreateUsersView(UserManagerMixin, TemplateView):
                     is_active=True,
                     completed=False,
                     must_change_password=True,
+                    send_welcome_email=False,
                 )
                 try:
                     send_html_email(
@@ -820,6 +864,7 @@ class BulkCreateUsersView(UserManagerMixin, TemplateView):
                             'user': new_user,
                             'temp_password': temp_password,
                             'login_url': login_url,
+                            'action_url': build_complete_registration_link(request, new_user),
                         },
                     )
                     email_sent = True
@@ -860,10 +905,30 @@ class CompleteRegistrationView(TemplateView):
     template_name = 'website/complete_registration.html'
 
     def dispatch(self, request, *args, **kwargs):
+        uidb64 = kwargs.get('uidb64')
+        token = kwargs.get('token')
+
         if not request.user.is_authenticated:
+            if uidb64 and token:
+                try:
+                    uid = force_str(urlsafe_base64_decode(uidb64))
+                    user = User._default_manager.get(pk=uid)
+                except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+                    user = None
+
+                if user and default_token_generator.check_token(user, token):
+                    if user.is_active and not user.completed:
+                        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                        return super().dispatch(request, *args, **kwargs)
+                messages.error(
+                    request,
+                    'Your registration link is invalid or has expired. Please ask an administrator to resend your onboarding email.'
+                )
+                return redirect('website:login')
+
             messages.warning(request, 'Please sign in to access this page.')
             return redirect('website:login')
-        # If already completed then it skip this page.
+
         if request.user.completed:
             return redirect('website:home')
         return super().dispatch(request, *args, **kwargs)

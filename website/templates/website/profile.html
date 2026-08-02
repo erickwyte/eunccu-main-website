@@ -176,8 +176,96 @@
             justify-content: flex-end;
         }
 
+        .profile-card {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            margin: 2rem 0;
+            overflow: hidden;
+            box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+        }
+
+        .profile-card-header {
+            padding: 1.6rem 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f8fafc;
+        }
+
+        .profile-card-header h2 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .profile-card-header p {
+            margin: 0.65rem 0 0;
+            color: #475569;
+            font-size: 0.94rem;
+            line-height: 1.6;
+        }
+
+        .profile-card-body {
+            padding: 1.8rem 2rem;
+        }
+
+        .profile-card-body form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .profile-card-body .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .profile-card-body .info-label {
+            margin-bottom: 0;
+            color: #334155;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+        }
+
+        .profile-card-body .form-control {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            background: #ffffff;
+            font-size: 0.95rem;
+        }
+
+        .profile-card-body .btn-edit-profile {
+            width: fit-content;
+            margin-top: 0.5rem;
+        }
+
         .profile-footer .btn-edit-profile {
             margin: 0;
+        }
+
+        .btn-user-manager {
+            background-color: #1f5f3a;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-user-manager:hover {
+            background-color: var(--secondary-red);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            color: white;
         }
 
         .no-auth-message {
@@ -285,7 +373,57 @@
                 </div>
             </div>
 
+            <div class="profile-card profile-password-section">
+                <div class="profile-card-header">
+                    <h2>Change Password</h2>
+                    <p>Update your password securely without logging out.</p>
+                </div>
+                <div class="profile-card-body">
+                    <form method="post" action="{% url 'website:profile' %}">
+                        {% csrf_token %}
+                        <div class="info-group">
+                            <div class="info-item">
+                                <label class="info-label" for="id_current_password">Current Password</label>
+                                {{ change_password_form.current_password }}
+                                {% if change_password_form.current_password.errors %}
+                                    <div class="info-value" style="color: #b91c1c; font-size: 0.82rem;">{{ change_password_form.current_password.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="info-group">
+                            <div class="info-item">
+                                <label class="info-label" for="id_new_password">New Password</label>
+                                {{ change_password_form.new_password }}
+                                {% if change_password_form.new_password.errors %}
+                                    <div class="info-value" style="color: #b91c1c; font-size: 0.82rem;">{{ change_password_form.new_password.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="info-item">
+                                <label class="info-label" for="id_confirm_password">Confirm New Password</label>
+                                {{ change_password_form.confirm_password }}
+                                {% if change_password_form.confirm_password.errors %}
+                                    <div class="info-value" style="color: #b91c1c; font-size: 0.82rem;">{{ change_password_form.confirm_password.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if change_password_form.non_field_errors %}
+                            <div class="info-value" style="color: #b91c1c; margin-bottom: 1rem;">{{ change_password_form.non_field_errors }}</div>
+                        {% endif %}
+                        <button type="submit" class="btn-edit-profile">Update Password</button>
+                    </form>
+                </div>
+            </div>
+
             <div class="profile-footer">
+                {% if request.user.groups.all %}
+                    {% for group in request.user.groups.all %}
+                        {% if group.name == "User Manager" %}
+                            <a href="{% url 'website:user_manager_dashboard' %}" class="btn-user-manager">
+                                <i class="fa fa-users"></i> User Manager
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
                 <a href="{% url 'website:edit_profile' %}" class="btn-edit-profile">
                     <i class="fa fa-pencil"></i> Edit Profile
                 </a>
@@ -303,28 +441,6 @@
 <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
 </body>
 </html>
-
-    <!-- Scripts -->
-    <!-- ✅ jQuery (must come first) -->
-    <script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
-
-    <!-- ✅ Bootstrap (after jQuery) -->
-    <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
-
-    <!-- ✅ Core Plugins -->
-    <script src="{% static 'js/vendor/tether.min.js' %}"></script>
-    <script src="{% static 'js/vendor/imagesloaded.pkgd.min.js' %}"></script>
-    <script src="{% static 'js/vendor/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.isotope.v3.0.2.js' %}"></script>
-    <script src="{% static 'js/vendor/smooth-scroll.min.js' %}"></script>
-    <script src="{% static 'js/vendor/venobox.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.ajaxchimp.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.counterup.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.waypoints.v2.0.3.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.slicknav.min.js' %}"></script>
-    <script src="{% static 'js/vendor/jquery.nivo.slider.pack.js' %}"></script>
-    <script src="{% static 'js/vendor/letteranimation.min.js' %}"></script>
-    <script src="{% static 'js/vendor/wow.min.js' %}"></script>
 
     <!-- ✅ Your Custom Scripts -->
     <script src="{% static 'js/contact.js' %}"></script>

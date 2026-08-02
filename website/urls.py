@@ -37,6 +37,11 @@ urlpatterns = [
 
     # --- First-login profile completion ---
     path('complete-registration/', views.CompleteRegistrationView.as_view(), name='complete_registration'),
+    path(
+        'complete-registration/<uidb64>/<token>/',
+        views.CompleteRegistrationView.as_view(),
+        name='complete_registration_token'
+    ),
 
     # --- User Manager dashboard (User Manager group only) ---
     path('user-manager/', views.UserManagerDashboardView.as_view(), name='user_manager_dashboard'),

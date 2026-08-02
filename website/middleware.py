@@ -20,6 +20,7 @@ Bypass paths (never redirected):
 from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
+from .permissions import is_user_manager
 
 
 class ProfileCompletionMiddleware:
@@ -52,6 +53,9 @@ class ProfileCompletionMiddleware:
 
             # Check whether this path is exempt from the redirect.
             is_exempt = any(path.startswith(prefix) for prefix in self.EXEMPT_PREFIXES)
+
+            if path.startswith('/admin/') and is_user_manager(request.user):
+                return redirect('website:user_manager_dashboard')
 
             if not is_exempt:
                 # Superusers and staff bypass the completion requirement so

@@ -24,7 +24,7 @@
     }
 
     .header {
-      background: linear-gradient(135deg, #1a3a6b 0%, #2563eb 100%);
+      background: linear-gradient(135deg, #216e27 0%, #2c8e22 100%);
       padding: 40px 32px 32px;
       text-align: center;
     }
@@ -39,7 +39,7 @@
 
     .header p {
       margin: 8px 0 0;
-      color: rgba(255, 255, 255, 0.80);
+      color: rgba(255, 255, 255, 0.90);
       font-size: 14px;
     }
 
@@ -61,8 +61,8 @@
     }
 
     .credentials-box {
-      background: #f0f5ff;
-      border-left: 4px solid #2563eb;
+      background: #ecfdf5;
+      border-left: 4px solid #2c8e22;
       border-radius: 6px;
       padding: 20px 24px;
       margin-bottom: 28px;
@@ -73,7 +73,7 @@
       font-size: 14px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #1a3a6b;
+      color: #166534;
     }
 
     .credential-row {
@@ -111,7 +111,7 @@
 
     .cta-button {
       display: inline-block;
-      background: linear-gradient(135deg, #1a3a6b 0%, #2563eb 100%);
+      background: linear-gradient(135deg, #216e27 0%, #2c8e22 100%);
       color: #ffffff !important;
       text-decoration: none;
       padding: 14px 36px;
@@ -179,9 +179,8 @@
     <div class="body">
       <p class="greeting">Hello {{ user.full_name }},</p>
       <p class="intro">
-        Your account on the EUNCCU Member has been created by an administrator.
-        Use the credentials below to sign in and complete your registration.
-        You will be required to set a permanent password on your first login.
+        Your account on the EUNCCU Member portal has been created by an administrator.
+        Click the button below to complete your registration and set a permanent password.
       </p>
 
       <!-- Login credentials -->
@@ -199,18 +198,18 @@
 
       <!-- Login button -->
       <div class="cta-section">
-        <a href="{{ login_url }}" class="cta-button">Sign In to the the website</a>
+        <a href="{{ action_url }}" class="cta-button">Complete your registration</a>
       </div>
 
       <!-- Steps -->
       <div class="steps">
         <h3>What Happens Next</h3>
         <ol>
-          <li>Click the button above or visit: <strong>{{ login_url }}</strong></li>
-          <li>Sign in using your email and the temporary password above.</li>
-          <li>You will be directed to a short registration form.</li>
+          <li>Click the button above to open your secure registration form.</li>
+          <li>The link will sign you in automatically and take you to the completion page.</li>
           <li>Fill in your profile details and choose a new permanent password.</li>
-          <li>Submit? you will then have full access to the website.</li>
+          <li>Submit the form to finish onboarding.</li>
+          <li>If the button does not work, copy and paste this link into your browser: <strong>{{ action_url }}</strong></li>
         </ol>
       </div>
 

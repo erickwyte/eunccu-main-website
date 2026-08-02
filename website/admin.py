@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.cache import cache
 from .utils import get_latest_youtube_video, schedule_notification_task
 from .forms import CustomUserCreationForm
+from .permissions import USER_MANAGER_GROUP, ensure_user_manager_group_exists
 import logging
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
@@ -75,6 +76,21 @@ def send_testimony_approval_notification(testimony_id):
             user=testimony.submitted_by,
             message='Your testimony has been approved and is now visible on the website.',
         )
+
+
+@admin.action(description='Assign selected users to User Manager')
+def assign_to_user_manager(modeladmin, request, queryset):
+    group = ensure_user_manager_group_exists()
+    updated = 0
+    for user in queryset:
+        if not user.groups.filter(pk=group.pk).exists():
+            user.groups.add(group)
+            updated += 1
+
+    if updated:
+        modeladmin.message_user(request, f'{updated} user(s) assigned to {USER_MANAGER_GROUP}.', level=messages.SUCCESS)
+    else:
+        modeladmin.message_user(request, 'Selected users were already in the User Manager group.', level=messages.INFO)
 
 # Define the county to E-Team mapping with multiple possible variations
 COUNTY_TO_ETEAM = {
@@ -539,11 +555,29 @@ def send_email_to_selected_users(modeladmin, request, queryset):
 
 
 # --- SINGLE, COMBINED CustomUserAdmin CLASS ---
+class UserManagerFilter(admin.SimpleListFilter):
+    title = 'User Manager status'
+    parameter_name = 'user_manager'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('yes', 'User Manager'),
+            ('no', 'Not User Manager'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            return queryset.filter(groups__name=USER_MANAGER_GROUP)
+        if self.value() == 'no':
+            return queryset.exclude(groups__name=USER_MANAGER_GROUP)
+        return queryset
+
+
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     add_form = CustomUserCreationForm
-    list_display = ('username', 'email', 'get_full_name', 'phone', 'role', 'userType', 'is_staff')
-    list_filter = ('role', 'userType', 'is_staff', 'is_superuser', 'yearOfStudy', 'date_joined', 'homeCounty')
+    list_display = ('username', 'email', 'get_full_name', 'phone', 'role', 'userType', 'is_user_manager', 'is_staff')
+    list_filter = ('role', 'userType', 'groups', UserManagerFilter, 'is_staff', 'is_superuser', 'yearOfStudy', 'date_joined', 'homeCounty')
     search_fields = ('username', 'email', 'full_name', 'homeCounty')
     ordering = ('username',)
     readonly_fields = ('date_joined', 'last_login')
@@ -573,6 +607,7 @@ class CustomUserAdmin(UserAdmin):
         export_users_to_pdf,       # Existing grouped-by-E-Team version
         export_all_users_to_pdf,   # New general all-members version
         send_email_to_selected_users,
+        assign_to_user_manager,
     ]
 
     # Helper method for list display
@@ -580,6 +615,10 @@ class CustomUserAdmin(UserAdmin):
         return obj.get_full_name()
     get_full_name.short_description = 'Full Name'
 
+    def is_user_manager(self, obj):
+        return obj.groups.filter(name=USER_MANAGER_GROUP).exists()
+    is_user_manager.boolean = True
+    is_user_manager.short_description = 'User Manager'
 
     
     #-----Devotions page imports----

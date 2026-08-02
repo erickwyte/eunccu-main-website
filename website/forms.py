@@ -21,6 +21,58 @@ class ProfileForm(forms.ModelForm):
             'homeCounty': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+
+class ChangePasswordForm(forms.Form):
+    current_password = forms.CharField(
+        label='Current Password',
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter current password',
+            'autocomplete': 'current-password',
+        }),
+        required=True,
+    )
+    new_password = forms.CharField(
+        label='New Password',
+        min_length=8,
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Choose a strong new password',
+            'autocomplete': 'new-password',
+        }),
+        required=True,
+    )
+    confirm_password = forms.CharField(
+        label='Confirm New Password',
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Repeat your new password',
+            'autocomplete': 'new-password',
+        }),
+        required=True,
+    )
+
+    def __init__(self, *args, user=None, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_current_password(self):
+        current_password = self.cleaned_data.get('current_password')
+        if self.user and not self.user.check_password(current_password):
+            raise ValidationError('Current password is incorrect.')
+        return current_password
+
+    def clean(self):
+        cleaned = super().clean()
+        pw1 = cleaned.get('new_password')
+        pw2 = cleaned.get('confirm_password')
+        if pw1 and pw2 and pw1 != pw2:
+            self.add_error('confirm_password', 'The two passwords do not match.')
+        elif pw1 and self.user:
+            password_validation.validate_password(pw1, self.user)
+        return cleaned
+
+
 class CustomUserCreationForm(forms.ModelForm):
     password1 = forms.CharField(
         label='Password',

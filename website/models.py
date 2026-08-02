@@ -62,10 +62,12 @@ IMAGE_CATEGORIES = [
 # --------------------------
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
+        send_welcome_email = extra_fields.pop('send_welcome_email', True)
         if not email:
             raise ValueError('The Email must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
+        user._send_welcome_email = send_welcome_email
         user.set_password(password)
         user.save(using=self._db)
         return user

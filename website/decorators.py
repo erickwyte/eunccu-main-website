@@ -36,7 +36,7 @@ def user_manager_required(view_func):
             messages.warning(request, 'Please sign in to access this page.')
             return redirect('website:login')
 
-        if not is_user_manager(request.user):
+        if not (request.user.is_superuser or is_user_manager(request.user)):
             messages.error(
                 request,
                 'You do not have permission to access this area.'
@@ -63,7 +63,7 @@ class UserManagerMixin(AccessMixin):
             messages.warning(request, 'Please sign in to access this page.')
             return redirect('website:login')
 
-        if not is_user_manager(request.user):
+        if not (request.user.is_superuser or is_user_manager(request.user)):
             messages.error(
                 request,
                 'You do not have permission to access this area.'

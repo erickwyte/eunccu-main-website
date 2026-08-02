@@ -18,9 +18,19 @@
                 <div class="hero-stats">
                     <h1 class="hero-title">Welcome to the Gallery</h1>
                     <p class="hero-description">
-                        Explore the collection of photos from our community. Use the source switch to view local uploads or Google Drive content, and tap any image to preview and download.
-                        {% if active_source == 'google-drive' %}You are currently browsing shared Drive photos.{% else %}You are currently browsing local event photos.{% endif %}
+                        Explore the collection of photos from our community. 
                     </p>
+                    <div class="stats-row">
+                        <span class="stat-item">
+                            <span class="stat-number">{% if total_photos %}{{ total_photos }}{% else %}0{% endif %}</span>
+                            <span class="stat-label">photos</span>
+                        </span>
+                        <span class="stat-divider">•</span>
+                        <span class="stat-item">
+                            <span class="stat-number">{% if total_folders %}{{ total_folders }}{% else %}0{% endif %}</span>
+                            <span class="stat-label">albums</span>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -34,7 +44,7 @@
                     <span class="source-badge">📁</span>
                 </a>
                 <a href="?source=google-drive" class="source-link {% if active_source == 'google-drive' %}active{% endif %}">
-                    <i class="fa fa-cloud"></i>
+                    <i class="fa fa-google-drive"></i>
                     <span>Google Drive</span>
                     <span class="source-badge">☁️</span>
                 </a>
@@ -56,6 +66,9 @@
                     <button class="filter-action-btn" id="sortBtn">
                         <i class="fa fa-sort-amount-desc"></i>
                         <span>Latest</span>
+                    </button>
+                    <button class="filter-action-btn" id="viewToggle">
+                        <i class="fa fa-th"></i>
                     </button>
                 </div>
             </div>
@@ -155,8 +168,13 @@
                     <div class="drive-header">
                         <div class="drive-header-content">
                             <div class="drive-title">
-                                <i class="fa fa-google-drive"></i>
-                                <h2>Google Drive</h2>
+                                <div class="drive-title-icon">
+                                    <i class="fa fa-google-drive"></i>
+                                </div>
+                                <div class="drive-title-text">
+                                    <h2>Google Drive</h2>
+                                    <span class="drive-subtitle">Browse your cloud albums</span>
+                                </div>
                             </div>
                             {% if active_folder_id %}
                             <a href="?source=google-drive" class="drive-back-btn">
@@ -184,7 +202,30 @@
                     </nav>
                     {% endif %}
 
-                    <!-- Drive Folders Section - ALWAYS SHOW FIRST -->
+                    <!-- Drive Stats Bar -->
+                    <div class="drive-stats-bar">
+                        <div class="drive-stat-item">
+                            <i class="fa fa-folder-open"></i>
+                            <span class="drive-stat-value">{{ drive_folders|length|default:0 }}</span>
+                            <span class="drive-stat-label">Folders</span>
+                        </div>
+                        <div class="drive-stat-divider"></div>
+                        <div class="drive-stat-item">
+                            <i class="fa fa-file-image-o"></i>
+                            <span class="drive-stat-value">{{ drive_photos|length|default:0 }}</span>
+                            <span class="drive-stat-label">Photos</span>
+                        </div>
+                        {% if active_folder_id %}
+                        <div class="drive-stat-divider"></div>
+                        <div class="drive-stat-item">
+                            <i class="fa fa-folder"></i>
+                            <span class="drive-stat-label">Current folder</span>
+                            <span class="drive-stat-current">{{ current_folder_name|default:"" }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Drive Folders Section - Enhanced Design -->
                     {% if drive_folders %}
                     <div class="drive-section">
                         <div class="drive-section-header">
@@ -193,30 +234,53 @@
                         </div>
                         <div class="drive-folders">
                             {% for folder in drive_folders %}
-                            <a href="?source=google-drive&folder={{ folder.id }}" class="folder-card">
-                                <div class="folder-icon">
-                                    <i class="fa fa-folder"></i>
+                            <a href="?source=google-drive&folder={{ folder.id }}" class="folder-card {% if not folder.file_count and not folder.folder_count %}empty-folder{% endif %}">
+                                <div class="folder-icon-wrapper">
+                                    <div class="folder-icon">
+                                        <i class="fa fa-folder"></i>
+                                    </div>
+                                    <div class="folder-icon-badge">
+                                        {% if folder.file_count %}
+                                            {{ folder.file_count }}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    </div>
                                 </div>
                                 <div class="folder-info">
                                     <span class="folder-name">{{ folder.name }}</span>
                                     <span class="folder-sub">
                                         {% if folder.folder_count %}
-                                            {{ folder.folder_count }} folders
+                                            <span class="folder-sub-item">
+                                                <i class="fa fa-folder-o"></i> {{ folder.folder_count }} folders
+                                            </span>
                                         {% endif %}
                                         {% if folder.file_count %}
-                                            • {{ folder.file_count }} files
+                                            <span class="folder-sub-item">
+                                                <i class="fa fa-file-image-o"></i> {{ folder.file_count }} files
+                                            </span>
+                                        {% endif %}
+                                        {% if not folder.folder_count and not folder.file_count %}
+                                            <span class="folder-sub-item empty-folder-label">
+                                                <i class="fa fa-folder-open-o"></i> Empty folder
+                                            </span>
                                         {% endif %}
                                     </span>
                                 </div>
-                                <i class="fa fa-chevron-right folder-arrow"></i>
+                                <div class="folder-actions">
+                                    <span class="folder-open-btn">
+                                        <i class="fa fa-arrow-right"></i>
+                                        <span>Open</span>
+                                    </span>
+                                </div>
                             </a>
                             {% endfor %}
                         </div>
                     </div>
                     {% endif %}
 
-                    <!-- Drive Photos Section - ONLY SHOW WHEN IN A FOLDER AND THERE ARE NO SUBFOLDERS -->
-                    {% if drive_photos and active_folder_id and not drive_folders %}
+                    <!-- Drive Photos Section -->
+                    {% if drive_photos and active_folder_id %}
                     <div class="drive-section">
                         <div class="drive-section-header">
                             <h3><i class="fa fa-image"></i> Photos in this folder</h3>
@@ -261,7 +325,7 @@
                     </div>
                     {% endif %}
 
-                    <!-- Empty State - When no folders and no photos in current view -->
+                    <!-- Empty State - When no folders and no photos -->
                     {% if not drive_folders and not drive_photos %}
                     <div class="empty-state drive-empty">
                         <i class="fa fa-folder-open"></i>
@@ -276,52 +340,6 @@
                         <i class="fa fa-folder-open"></i>
                         <p>No folders found</p>
                         <span>Photos are organized in folders. Click on a folder to view its contents.</span>
-                    </div>
-                    {% endif %}
-
-                    <!-- Show message when in folder with photos but no folders -->
-                    {% if active_folder_id and not drive_folders and drive_photos %}
-                    <div class="drive-section">
-                        <div class="drive-section-header">
-                            <h3><i class="fa fa-image"></i> Photos in this folder</h3>
-                            <span class="drive-count">{{ drive_photos|length }} images</span>
-                        </div>
-                        <div class="photo-grid drive-grid" id="drivePhotoGrid">
-                            {% for photo in drive_photos %}
-                            <div class="photo-card drive-photo-card" data-index="{{ forloop.counter0 }}">
-                                <div class="photo-card-inner">
-                                    <img 
-                                        class="photo-img" 
-                                        src="{{ photo.thumbnail|default:'#' }}" 
-                                        alt="{{ photo.name }}"
-                                        loading="lazy"
-                                        decoding="async"
-                                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect width=%22300%22 height=%22300%22 fill=%22%23e8edf5%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%235f6b7a%22 font-family=%22sans-serif%22 font-size=%2220%22%3E📷%3C/text%3E%3C/svg%3E'"
-                                    >
-                                    <div class="photo-card-overlay">
-                                        <div class="photo-meta">
-                                            <span class="photo-category">📁 Drive</span>
-                                            <span class="photo-date">{{ photo.name|truncatechars:20 }}</span>
-                                        </div>
-                                        <div class="photo-actions-overlay">
-                                            <button class="photo-action-btn preview-btn" 
-                                                    data-image="{{ photo.preview_url|default:photo.thumbnail|default:'#' }}"
-                                                    data-full-image="{% url 'website:download_drive_file' %}?id={{ photo.id }}&preview=1"
-                                                    data-title="{{ photo.name }}"
-                                                    data-index="{{ forloop.counter0 }}">
-                                                <i class="fa fa-expand"></i>
-                                            </button>
-                                            <a href="{% url 'website:download_drive_file' %}?id={{ photo.id }}" 
-                                               class="photo-action-btn download-btn"
-                                               download>
-                                                <i class="fa fa-download"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
                     </div>
                     {% endif %}
                 {% endif %}

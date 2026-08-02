@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 @receiver(post_save, sender=CustomUser)
 def send_welcome_email_on_user_create(sender, instance, created, **kwargs):
-    if created and instance.email:
+    if created and instance.email and getattr(instance, '_send_welcome_email', True):
         try:
             send_html_email(
                 subject='Welcome to EUNCCU – Your Account Has Been Created',

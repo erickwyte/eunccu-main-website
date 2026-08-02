@@ -2,13 +2,18 @@ from unittest.mock import patch
 
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+from django.contrib.auth.tokens import default_token_generator
 from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from website.admin import TestimonyAdmin
 from website.models import Notification, Testimony
+from website.permissions import USER_MANAGER_GROUP
 
 
 User = get_user_model()
@@ -115,3 +120,72 @@ class TestimonyWorkflowTests(TestCase):
                 message__icontains='approved',
             ).exists()
         )
+
+    def test_user_manager_group_exists_and_dashboard_is_accessible(self):
+        self.assertTrue(Group.objects.filter(name=USER_MANAGER_GROUP).exists())
+
+        user_manager = User.objects.create_user(
+            email='manager@example.com',
+            username='manager',
+            password='secret123',
+            full_name='User Manager',
+            phone=111222333,
+        )
+        user_manager.groups.add(Group.objects.get(name=USER_MANAGER_GROUP))
+
+        self.client.force_login(user_manager)
+        response = self.client.get(reverse('website:user_manager_dashboard'))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_superuser_can_access_user_manager_dashboard(self):
+        super_admin = User.objects.create_superuser(
+            email='superadmin@example.com',
+            username='superadmin',
+            password='secret123',
+            full_name='Super Admin',
+            phone=999888777,
+        )
+
+        self.client.force_login(super_admin)
+        response = self.client.get(reverse('website:user_manager_dashboard'))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_complete_registration_token_logs_user_in(self):
+        pending_user = User.objects.create_user(
+            email='tokenuser@example.com',
+            username='tokenuser',
+            password='secret123',
+            full_name='Token User',
+            is_active=True,
+            completed=False,
+            must_change_password=True,
+        )
+        uidb64 = urlsafe_base64_encode(force_bytes(pending_user.pk))
+        token = default_token_generator.make_token(pending_user)
+
+        response = self.client.get(
+            reverse('website:complete_registration_token', kwargs={'uidb64': uidb64, 'token': token})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Complete Your Registration')
+
+    def test_user_manager_users_are_redirected_from_admin(self):
+        user_manager = User.objects.create_user(
+            email='admin-blocked@example.com',
+            username='adminblocked',
+            password='secret123',
+            full_name='Restricted Manager',
+            phone=444555666,
+            is_staff=False,
+            is_superuser=False,
+        )
+        user_manager.groups.add(Group.objects.get(name=USER_MANAGER_GROUP))
+
+        self.client.force_login(user_manager)
+        response = self.client.get('/admin/', follow=False)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('website:user_manager_dashboard'))
