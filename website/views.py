@@ -21,10 +21,10 @@ from django.core.mail import send_mail
 from django.urls import reverse
 from django.views.generic import TemplateView
 from .models import (
-    Event, Testimony, Leader, Ministry, Eteam, 
+    Event, Testimony, Leader, Ministry, Eteam,
     Image, Contact, Class, Notification, Exec, SpecialCommittee,
-    SemesterTheme
-    
+    SemesterTheme, BibleStudySemester, BibleStudyEnrollment
+
 )
 from .models import Devotion
 from django.contrib.auth import get_user_model
@@ -75,6 +75,14 @@ def build_complete_registration_link(request, user):
     return build_absolute_url(
         request,
         reverse('website:complete_registration_token', kwargs={'uidb64': uidb64, 'token': token}),
+    )
+
+
+def get_active_bible_study_semester():
+    return (
+        BibleStudySemester.objects.filter(is_active=True, registration_open=True)
+        .order_by('-start_date')
+        .first()
     )
 
 
@@ -647,7 +655,22 @@ class EditProfileView(LoginRequiredWithMessageMixin, TemplateView):
             user.full_name = request.POST.get('full_name', user.full_name)
             user.email = request.POST.get('email', user.email)
             user.phone = request.POST.get('phone', user.phone)
-            user.homeCounty = request.POST.get('homeCounty', user.homeCounty)
+            
+            # Update personal information
+            user.gender = request.POST.get('gender', user.gender) or None
+            user.country = request.POST.get('country', user.country) or None
+            user.homeCounty = request.POST.get('homeCounty', user.homeCounty) or None
+            
+            # Update academic information
+            user.registrationNumber = request.POST.get('registrationNumber', user.registrationNumber) or None
+            year_of_study = request.POST.get('yearOfStudy', '')
+            if year_of_study:
+                user.yearOfStudy = int(year_of_study)
+            
+            # Update residency information
+            user.residencyType = request.POST.get('residencyType', user.residencyType) or None
+            user.hallOfResidence = request.POST.get('hallOfResidence', user.hallOfResidence) or None
+            user.offCampusArea = request.POST.get('offCampusArea', user.offCampusArea) or None
             
             # Handle profile picture
             if 'profile_picture' in request.FILES:
@@ -666,6 +689,11 @@ class ProfileView(LoginRequiredWithMessageMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+        active_semester = get_active_bible_study_semester()
+        has_bible_study_enrollment = bool(
+            active_semester and BibleStudyEnrollment.objects.filter(user=user, semester=active_semester).exists()
+        )
+
         context.update({
             'full_name': user.full_name,
             'email': user.email,
@@ -673,6 +701,9 @@ class ProfileView(LoginRequiredWithMessageMixin, TemplateView):
             'phone': user.phone,
             'homeCounty': user.homeCounty,
             'change_password_form': kwargs.get('change_password_form') or ChangePasswordForm(user=user),
+            'bible_study_active': bool(active_semester),
+            'bible_study_semester': active_semester,
+            'has_bible_study_enrollment': has_bible_study_enrollment,
         })
         return context
 
@@ -688,6 +719,29 @@ class ProfileView(LoginRequiredWithMessageMixin, TemplateView):
         context = self.get_context_data(**kwargs)
         context['change_password_form'] = form
         return render(request, self.template_name, context)
+
+
+@login_required
+def enroll_for_bible_study(request):
+    active_semester = get_active_bible_study_semester()
+
+    if not active_semester:
+        messages.info(request, 'Bible Study enrollment is not open right now.')
+        return redirect('website:profile')
+
+    enrollment, created = BibleStudyEnrollment.objects.get_or_create(
+        user=request.user,
+        semester=active_semester,
+    )
+
+    if created:
+        enrollment.status = 'confirmed'
+        enrollment.save(update_fields=['status'])
+        messages.success(request, f'You have been enrolled for {active_semester.name}.')
+    else:
+        messages.info(request, f'You are already enrolled for {active_semester.name}.')
+
+    return redirect('website:profile')
 
 
 class UserNotificationsView(LoginRequiredWithMessageMixin,TemplateView):
@@ -714,7 +768,8 @@ class UserManagerDashboardView(UserManagerMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         search_query = self.request.GET.get('q', '').strip()
 
-        pending_users = User.objects.filter(completed=False).order_by('-date_joined')
+        # Show only users created by the current user manager
+        pending_users = User.objects.filter(created_by=self.request.user, completed=False).order_by('-date_joined')
         if search_query:
             pending_users = pending_users.filter(
                 Q(full_name__icontains=search_query) |
@@ -738,9 +793,9 @@ class UserManagerDashboardView(UserManagerMixin, TemplateView):
         context.update({
             'page_obj': page_obj,
             'search_query': search_query,
-            'total_users': User.objects.count(),
-            'new_this_month': User.objects.filter(date_joined__gte=first_of_month, completed=False).count(),
-            'incomplete_profiles': pending_users.count() if not search_query else User.objects.filter(completed=False).count(),
+            'total_users': User.objects.filter(created_by=self.request.user).count(),
+            'new_this_month': User.objects.filter(created_by=self.request.user, date_joined__gte=first_of_month, completed=False).count(),
+            'incomplete_profiles': pending_users.count() if not search_query else User.objects.filter(created_by=self.request.user, completed=False).count(),
             'create_form': OnboardUserForm(),
         })
         return context
@@ -774,6 +829,7 @@ class CreateUserView(UserManagerMixin, TemplateView):
             completed=False,
             must_change_password=True,
             send_welcome_email=False,
+            created_by=request.user,  # Track who registered this user
         )
 
         # Send onboarding email with credentials and instructions.
@@ -854,6 +910,7 @@ class BulkCreateUsersView(UserManagerMixin, TemplateView):
                     completed=False,
                     must_change_password=True,
                     send_welcome_email=False,
+                    created_by=request.user,  # Track who registered this user
                 )
                 try:
                     send_html_email(
@@ -949,9 +1006,13 @@ class CompleteRegistrationView(TemplateView):
         # Update profile fields.
         user.phone = data.get('phone') or user.phone
         user.homeCounty = data.get('homeCounty') or user.homeCounty
+        user.residencyType = data.get('residencyType') or user.residencyType
+        user.hallOfResidence = data.get('hallOfResidence') or user.hallOfResidence
+        user.offCampusArea = data.get('offCampusArea') or user.offCampusArea
+        user.gender = data.get('gender') or user.gender
+        user.country = data.get('country') or user.country
         user.userType = data.get('userType', user.userType)
         user.currentOccupation = data.get('currentOccupation') or user.currentOccupation
-        user.workplace = data.get('workplace') or user.workplace
 
         year_of_study = data.get('yearOfStudy')
         if year_of_study:
@@ -959,10 +1020,6 @@ class CompleteRegistrationView(TemplateView):
                 user.yearOfStudy = int(year_of_study)
             except (ValueError, TypeError):
                 pass
-
-        graduation_year = data.get('graduationYear')
-        if graduation_year:
-            user.graduationYear = graduation_year
 
         if 'profile_picture' in request.FILES:
             user.profile_picture = request.FILES['profile_picture']

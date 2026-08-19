@@ -663,10 +663,68 @@
                 </div>
 
                 <div class="cr-form-group">
+                  <label class="cr-form-label" for="{{ form.gender.id_for_label }}">{{ form.gender.label }}</label>
+                  {{ form.gender }}
+                  {% if form.gender.errors %}
+                    {% for e in form.gender.errors %}
+                      <div class="cr-field-error">{{ e }}</div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+
+                <div class="cr-form-group">
+                  <label class="cr-form-label" for="{{ form.country.id_for_label }}">{{ form.country.label }} <span class="req">*</span></label>
+                  {{ form.country }}
+                  {% if form.country.errors %}
+                    {% for e in form.country.errors %}
+                      <div class="cr-field-error">{{ e }}</div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+
+                <div class="cr-form-group">
                   <label class="cr-form-label" for="{{ form.homeCounty.id_for_label }}">{{ form.homeCounty.label }}</label>
                   {{ form.homeCounty }}
                   {% if form.homeCounty.errors %}
                     {% for e in form.homeCounty.errors %}
+                      <div class="cr-field-error">{{ e }}</div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+
+                <!-- Residency Information Section -->
+                <div class="cr-form-group cr-span-2">
+                  <label class="cr-form-label">{{ form.residencyType.label }}</label>
+                  <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    {% for value, label in form.residencyType.field.choices %}
+                      <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 0; cursor: pointer;">
+                        <input type="radio" name="{{ form.residencyType.name }}" value="{{ value }}" {% if form.residencyType.value == value %}checked{% endif %} required>
+                        <span>{{ label }}</span>
+                      </label>
+                    {% endfor %}
+                  </div>
+                  {% if form.residencyType.errors %}
+                    {% for e in form.residencyType.errors %}
+                      <div class="cr-field-error">{{ e }}</div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+
+                <div class="cr-form-group" id="hallGroup" style="display: none;">
+                  <label class="cr-form-label" for="{{ form.hallOfResidence.id_for_label }}">{{ form.hallOfResidence.label }}</label>
+                  {{ form.hallOfResidence }}
+                  {% if form.hallOfResidence.errors %}
+                    {% for e in form.hallOfResidence.errors %}
+                      <div class="cr-field-error">{{ e }}</div>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+
+                <div class="cr-form-group" id="areaGroup" style="display: none;">
+                  <label class="cr-form-label" for="{{ form.offCampusArea.id_for_label }}">{{ form.offCampusArea.label }}</label>
+                  {{ form.offCampusArea }}
+                  {% if form.offCampusArea.errors %}
+                    {% for e in form.offCampusArea.errors %}
                       <div class="cr-field-error">{{ e }}</div>
                     {% endfor %}
                   {% endif %}
@@ -684,7 +742,7 @@
 
                 <!-- Student field -->
                 <div class="cr-form-group" id="yearGroup">
-                  <label class="cr-form-label" for="{{ form.yearOfStudy.id_for_label }}">{{ form.yearOfStudy.label }}</label>
+                  <label class="cr-form-label" for="{{ form.yearOfStudy.id_for_label }}">{{ form.yearOfStudy.label }} <span class="req">*</span></label>
                   {{ form.yearOfStudy }}
                   {% if form.yearOfStudy.errors %}
                     {% for e in form.yearOfStudy.errors %}
@@ -820,6 +878,37 @@
     typeSelect.addEventListener('change', toggleFields);
     toggleFields();
   }
+
+  // ── Toggle residency hall vs area fields ──
+  var residencyRadios = document.querySelectorAll('input[name="residencyType"]');
+  var hallGroup = document.getElementById('hallGroup');
+  var areaGroup = document.getElementById('areaGroup');
+
+  function updateResidencyFields() {
+    var selected = document.querySelector('input[name="residencyType"]:checked');
+    if (selected) {
+      if (selected.value === 'on-campus') {
+        hallGroup.style.display = 'block';
+        areaGroup.style.display = 'none';
+        // Clear off-campus area when switching to on-campus
+        var areaSelect = document.getElementById('id_offCampusArea');
+        if (areaSelect) areaSelect.value = '';
+      } else if (selected.value === 'off-campus') {
+        hallGroup.style.display = 'none';
+        areaGroup.style.display = 'block';
+        // Clear hall when switching to off-campus
+        var hallSelect = document.getElementById('id_hallOfResidence');
+        if (hallSelect) hallSelect.value = '';
+      }
+    }
+  }
+
+  residencyRadios.forEach(function(radio) {
+    radio.addEventListener('change', updateResidencyFields);
+  });
+
+  // Initial visibility check
+  updateResidencyFields();
 
   // ── Photo label update ──
   var photoInput = document.getElementById('id_profile_picture');

@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "rugged-plane-446614-c0",
+  "private_key_id": "bec4c6ec67775af2aef0ed7efa1e024eae07e657",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDBrNrO/0/sUwPK\nT0GVVoxaz/G3GAG3qdFoU8tWvzyTPRV8mVrQPspO9/WSuWYojNQwGJW4kVVtta9P\nb9f42OaYfAWKnpOEWS3ApGP8vTK3n0D/oZU3jh+gDzkGtXKAVDwHZg7Hv61inm1P\nQqyh6KrYyTdZj0LM4snZ+J2PfQmDfZZs2tKWQZbMKL09BbNoK2YHrK4GtAuHIrX5\nGHptk5uigHqeuN12RdSy+Eazec2LsUxs4Yco3QTvkALTBKGaQrKVfHYq7OfKcec3\ns43KL2wPUbnnA/OME5ARZUVdLFyXz6F0O0wbp23tjzjtWJ1Yi0a11OGazaphJZWA\nWtynBC2BAgMBAAECggEAHWTZHqJ0JFdjE2DdAMfObHfz5QhxNklBPXa+PS+wB161\ndKAnvsRQ2xRaAoc94HijOZt5mbYBA7IX5dQBMMTmloz4IFY56FPKlFq+zByA5op2\niHWjGnfpB9dXndOLCbv/ElZkdt959qY5y9ZAMiCIUXeUfXS3PDZNUVYgv6bH+1sg\nCDgkPJ55haVd5/B14VxTY7QA5j5Da/TM6HwtYOEp5+atK1QRGiSov7l3HpOBVNsR\nURErXsgg8ExZJkB3ltN3NZDomfMffSO8cDOkTxa/7bMWnofTFNgJYqD3QXZuLO8P\nvQNDx4VT/sTy+i1iqGSq6nzaW/R6DmyrMHsUq/6q+QKBgQDms0LQ0vevyW6mtvLe\nVclo4Hm22I0P930ZV72er6G2lH7mVt2D9YNK4xF7cvMTtWoxf9fg8Fp6RBiCb/Tg\nG49d8M873NqnJWSDjjkX0Wh4kNn7hl4bff50p+iBZ6gHhKHRPznLeNXZqdipc9u1\nPtoaqdJGNzHtxf0Rny+roPOPZQKBgQDW6iS6l2aE4fCf9IR4CN4NDusXI+D1gdHv\nhiks3aB971m3VdbVnhtmh1q1KwTrlCW4DRTcFABDwF8NUvJeE1WUhf6KrLCut9XE\npK0cwk1DS4hMM7lgQSsybh+9UhCcsYy+DBU1xUQMEitj751XI3N/H8upM8q7xavQ\nJj3i0Vhp7QKBgQDdf6GYM+YhvgniQWc/9yfQ7S2PU61kdh+DVI23rTNbxIluiFpY\nl0G+hfNEDqK5+oWCDxfrXXnRSE4r9mgrP+rPrCScejjpIGq4MLY6WxGuKI1SBLmY\nNck4ofoHPMnEpiBjcgwAgvz35i4izB1XkIgB76j3R4lFnMGUyL0RURBoTQKBgAxN\ny1yDXnMtHEGMFilpGI1W1U611yM3E3XLEIBpD88l7NT6LRp9usPb6+2DUPzLtn0b\nAp625mz6jnaM0SNhp/ygzznROSxHig2AAAktdo7rvBngvDQuhvKUK20DTcAqygv3\nVR+G86ZdQ+6swS1D8lDM2TQOqwSlBHkeN1zM72rhAoGAOrCGrM7gfLNYj+7DqOLw\naxmERuZxeDwCUga7nEYMMZdYVna5C1ACKM5T5/2RYA4z5Xsm3MWx0/h0dffbWLpv\neODEIqSuGIGxDoAEwkceFkq/9go5OB/8UCO9qWAaQp7hCTklS6D0yw0gQZ8421w+\n/L58EKRcDetjsJLi6KahZuo=\n-----END PRIVATE KEY-----\n",
+  "client_email": "eunccu-backups@rugged-plane-446614-c0.iam.gserviceaccount.com",
+  "client_id": "116468027563963230658",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/eunccu-backups%40rugged-plane-446614-c0.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

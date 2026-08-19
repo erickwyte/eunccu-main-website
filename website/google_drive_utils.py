@@ -26,7 +26,7 @@ def _resolve_service_account_file(path):
     return path
 
 
-def get_google_drive_service():
+def get_google_drive_service(readonly=True, use_backup_account=False, auth_method=None):
     """
     Initialize and return a Google Drive API service instance.
     """
@@ -43,28 +43,141 @@ def get_google_drive_service():
         logger.warning("Google Drive integration is disabled")
         return None
 
-    folder_id = getattr(settings, 'GOOGLE_DRIVE_FOLDER_ID', '')
-    if not folder_id:
-        raise ImproperlyConfigured("GOOGLE_DRIVE_FOLDER_ID is not set")
-
-    service_account_file = getattr(settings, 'GOOGLE_SERVICE_ACCOUNT_FILE', '')
-    service_account_file = _resolve_service_account_file(service_account_file)
-
-    if not service_account_file or not os.path.exists(service_account_file):
-        raise ImproperlyConfigured(
-            f"Service account key file not found at {service_account_file}"
-        )
+    auth_method = auth_method or getattr(settings, 'GOOGLE_BACKUP_DRIVE_AUTH_METHOD' if use_backup_account else 'GOOGLE_DRIVE_AUTH_METHOD', 'service_account')
 
     try:
-        credentials = service_account.Credentials.from_service_account_file(
-            service_account_file,
-            scopes=['https://www.googleapis.com/auth/drive.readonly']
-        )
+        scopes = ['https://www.googleapis.com/auth/drive.readonly'] if readonly else ['https://www.googleapis.com/auth/drive']
+
+        if auth_method == 'service_account':
+            service_account_file = getattr(settings, 'GOOGLE_BACKUP_SERVICE_ACCOUNT_FILE' if use_backup_account else 'GOOGLE_SERVICE_ACCOUNT_FILE', '')
+            service_account_file = _resolve_service_account_file(service_account_file)
+
+            if not service_account_file or not os.path.exists(service_account_file):
+                raise ImproperlyConfigured(
+                    f"Service account key file not found at {service_account_file}"
+                )
+
+            credentials = service_account.Credentials.from_service_account_file(
+                service_account_file,
+                scopes=scopes
+            )
+        elif auth_method == 'oauth':
+            oauth_client_secrets = getattr(settings, 'GOOGLE_BACKUP_OAUTH_CLIENT_SECRETS_FILE' if use_backup_account else 'GOOGLE_DRIVE_OAUTH_CLIENT_SECRETS_FILE', '')
+            oauth_token_file = getattr(settings, 'GOOGLE_BACKUP_OAUTH_TOKEN_FILE' if use_backup_account else 'GOOGLE_DRIVE_OAUTH_TOKEN_FILE', '')
+            oauth_client_secrets = _resolve_service_account_file(oauth_client_secrets)
+            oauth_token_file = _resolve_service_account_file(oauth_token_file)
+
+            if not oauth_client_secrets or not os.path.exists(oauth_client_secrets):
+                raise ImproperlyConfigured(
+                    f"OAuth client secrets file not found at {oauth_client_secrets}"
+                )
+
+            credentials = _get_oauth_credentials(oauth_client_secrets, oauth_token_file, scopes)
+        else:
+            raise ImproperlyConfigured(
+                f"Unsupported Google Drive auth method: {auth_method}. Use 'service_account' or 'oauth'"
+            )
+
         service = build('drive', 'v3', credentials=credentials)
         return service
     except Exception as e:
         logger.error(f"Failed to initialize Google Drive service: {str(e)}")
         raise ImproperlyConfigured(f"Google Drive authentication failed: {str(e)}")
+
+
+def _folder_is_in_shared_drive(service, folder_id):
+    """Return True if a folder belongs to a Shared Drive."""
+    if not folder_id or not service:
+        return False
+
+    try:
+        metadata = service.files().get(
+            fileId=folder_id,
+            supportsAllDrives=True,
+            fields='driveId',
+        ).execute()
+        return bool(metadata.get('driveId'))
+    except Exception as e:
+        logger.debug(f"Unable to resolve folder shared drive metadata: {str(e)}")
+        return False
+
+
+def _get_oauth_credentials(client_secrets_file, token_file, scopes):
+    """Load or create OAuth credentials from client secrets."""
+    try:
+        from google.auth.transport.requests import Request
+        from google.oauth2.credentials import Credentials
+        from google_auth_oauthlib.flow import InstalledAppFlow
+    except ImportError:
+        raise ImproperlyConfigured(
+            "Google OAuth libraries not installed. "
+            "Run: pip install google-auth-oauthlib google-auth google-auth-httplib2"
+        )
+
+    credentials = None
+    if token_file and os.path.exists(token_file):
+        credentials = Credentials.from_authorized_user_file(token_file, scopes=scopes)
+
+    if credentials and credentials.valid:
+        return credentials
+
+    if credentials and credentials.expired and credentials.refresh_token:
+        credentials.refresh(Request())
+        if token_file:
+            with open(token_file, 'w') as token:
+                token.write(credentials.to_json())
+        return credentials
+
+    flow = InstalledAppFlow.from_client_secrets_file(client_secrets_file, scopes=scopes)
+    credentials = flow.run_local_server(port=0)
+
+    if token_file:
+        with open(token_file, 'w') as token:
+            token.write(credentials.to_json())
+
+    return credentials
+
+
+def upload_file_to_drive(file_path, file_name=None, folder_id=None, mime_type=None, use_backup_account=False, auth_method=None):
+    """Upload a local file to Google Drive."""
+    service = get_google_drive_service(readonly=False, use_backup_account=use_backup_account, auth_method=auth_method)
+    if not service:
+        return None
+
+    if not folder_id:
+        folder_id = getattr(settings, 'GOOGLE_DRIVE_FOLDER_ID', '') if not use_backup_account else getattr(settings, 'GOOGLE_DRIVE_BACKUP_FOLDER_ID', '')
+
+    if not folder_id:
+        raise ImproperlyConfigured("Google Drive folder ID is not set")
+
+    if not file_name:
+        file_name = os.path.basename(file_path)
+
+    media_body = None
+    try:
+        from googleapiclient.http import MediaFileUpload
+        media_body = MediaFileUpload(file_path, mimetype=mime_type, resumable=True)
+    except ImportError:
+        raise ImproperlyConfigured(
+            "Google API client not installed. "
+            "Run: pip install google-api-python-client google-auth google-auth-httplib2"
+        )
+
+    body = {'name': file_name, 'parents': [folder_id]}
+    if mime_type:
+        body['mimeType'] = mime_type
+
+    try:
+        supports_all_drives = _folder_is_in_shared_drive(service, folder_id)
+        create_kwargs = {'body': body, 'media_body': media_body, 'fields': 'id, name'}
+        if supports_all_drives:
+            create_kwargs['supportsAllDrives'] = True
+
+        file = service.files().create(**create_kwargs).execute()
+        return file
+    except Exception as e:
+        logger.error(f"Error uploading file to Google Drive: {str(e)}")
+        return None
 
 
 def _collect_drive_folder_descendants(service, folder_id):

@@ -9,17 +9,245 @@ from .models import Contact, Testimony
 User = get_user_model()
 
 class ProfileForm(forms.ModelForm):
+    """Enhanced profile form with better widgets and validation"""
+    
+    GENDER_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+    ]
+
+    COUNTRY_CHOICES = [
+        ('Kenya', 'Kenya'),
+        ('International', 'International'),
+    ]
+
+    KENYA_COUNTIES = [
+        ('', '--- Select County ---'),
+        ('Mombasa', 'Mombasa'),
+        ('Kwale', 'Kwale'),
+        ('Kilifi', 'Kilifi'),
+        ('Tana River', 'Tana River'),
+        ('Lamu', 'Lamu'),
+        ('Taita–Taveta', 'Taita–Taveta'),
+        ('Garissa', 'Garissa'),
+        ('Wajir', 'Wajir'),
+        ('Mandera', 'Mandera'),
+        ('Marsabit', 'Marsabit'),
+        ('Isiolo', 'Isiolo'),
+        ('Meru', 'Meru'),
+        ('Tharaka-Nithi', 'Tharaka-Nithi'),
+        ('Embu', 'Embu'),
+        ('Kitui', 'Kitui'),
+        ('Machakos', 'Machakos'),
+        ('Makueni', 'Makueni'),
+        ('Nyandarua', 'Nyandarua'),
+        ('Nyeri', 'Nyeri'),
+        ('Kirinyaga', 'Kirinyaga'),
+        ('Murang\'a', 'Murang\'a'),
+        ('Kiambu', 'Kiambu'),
+        ('Turkana', 'Turkana'),
+        ('West Pokot', 'West Pokot'),
+        ('Samburu', 'Samburu'),
+        ('Trans Nzoia', 'Trans Nzoia'),
+        ('Uasin Gishu', 'Uasin Gishu'),
+        ('Elgeyo-Marakwet', 'Elgeyo-Marakwet'),
+        ('Nandi', 'Nandi'),
+        ('Baringo', 'Baringo'),
+        ('Laikipia', 'Laikipia'),
+        ('Nakuru', 'Nakuru'),
+        ('Narok', 'Narok'),
+        ('Kajiado', 'Kajiado'),
+        ('Kericho', 'Kericho'),
+        ('Bomet', 'Bomet'),
+        ('Kakamega', 'Kakamega'),
+        ('Vihiga', 'Vihiga'),
+        ('Bungoma', 'Bungoma'),
+        ('Busia', 'Busia'),
+        ('Siaya', 'Siaya'),
+        ('Kisumu', 'Kisumu'),
+        ('Homa Bay', 'Homa Bay'),
+        ('Migori', 'Migori'),
+        ('Kisii', 'Kisii'),
+        ('Nyamira', 'Nyamira'),
+        ('Nairobi City', 'Nairobi City'),
+    ]
+
+    RESIDENCY_TYPE_CHOICES = [
+        ('on-campus', 'On-Campus Resident (Living in University Hostels/Residence)'),
+        ('off-campus', 'Off-Campus Resident (Living in private residences around campus)'),
+    ]
+
+    HALL_OF_RESIDENCE_CHOICES = [
+        ('', '--- Select Hall ---'),
+        ('Old Hall', 'Old Hall'),
+        ('Tatton', 'Tatton'),
+        ('Buruburu/Hollywood', 'Buruburu/Hollywood'),
+        ('Riverview/Riverside', 'Riverview/Riverside'),
+        ('UpSchool-CBD, Ruwenzori, Baringo, Mama-Ngina, Taifa, Uganda, Barret', 'UpSchool-CBD, Ruwenzori, Baringo, Mama-Ngina, Taifa, Uganda, Barret'),
+    ]
+
+    OFF_CAMPUS_AREA_CHOICES = [
+        ('', '--- Select Area ---'),
+        ('Main Gate', 'Main Gate'),
+        ('Njokerio', 'Njokerio'),
+        ('Ng\'ondu', 'Ng\'ondu'),
+        ('Ahero', 'Ahero'),
+    ]
+    
     class Meta:
         model = User
-        fields = ['profile_picture', 'username', 'full_name', 'email', 'phone', 'homeCounty']
+        fields = ['profile_picture', 'username', 'full_name', 'email', 'phone', 'gender', 'country', 'homeCounty', 'residencyType', 'hallOfResidence', 'offCampusArea', 'registrationNumber', 'yearOfStudy']
         widgets = {
-            'profile_picture': forms.FileInput(attrs={'class': 'form-control'}),
-            'username': forms.TextInput(attrs={'class': 'form-control'}),
-            'full_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'homeCounty': forms.TextInput(attrs={'class': 'form-control'}),
+            'profile_picture': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*',
+            }),
+            'username': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter a unique username (3-50 characters)',
+                'minlength': '3',
+                'maxlength': '50',
+            }),
+            'full_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your full name',
+                'minlength': '2',
+                'maxlength': '100',
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'your.email@example.com',
+            }),
+            'phone': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '+254 7XX XXX XXX',
+                'pattern': r'[0-9\+\-\s]+',
+                'maxlength': '20',
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'country': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'homeCounty': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'residencyType': forms.RadioSelect(attrs={
+                'class': 'form-check-input',
+                'id': 'id_residencyType',
+            }),
+            'hallOfResidence': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id_hallOfResidence',
+                'style': 'display:none;',
+            }),
+            'offCampusArea': forms.Select(attrs={
+                'class': 'form-control',
+                'id': 'id_offCampusArea',
+                'style': 'display:none;',
+            }),
+            'registrationNumber': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Your registration/student number',
+                'maxlength': '20',
+            }),
+            'yearOfStudy': forms.Select(attrs={
+                'class': 'form-control',
+            }),
         }
+        help_texts = {
+            'profile_picture': 'Upload a JPG, PNG, WebP or GIF image (Max 5MB)',
+            'username': 'Used for login. Cannot be changed frequently.',
+            'email': 'Used for account recovery and notifications',
+            'phone': 'Optional: For community communication',
+            'gender': 'Optional: Your gender',
+            'country': 'Optional: Your country',
+            'homeCounty': 'Optional: Your home county (for Kenya)',
+            'residencyType': 'Optional: Where you live',
+            'hallOfResidence': 'Optional: Your hall of residence',
+            'offCampusArea': 'Optional: Your off-campus area',
+            'yearOfStudy': 'Optional: Your current year of study',
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set gender choices
+        self.fields['gender'] = forms.ChoiceField(
+            choices=[('', '--- Select ---')] + self.GENDER_CHOICES,
+            required=False,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+        )
+        # Set country choices
+        self.fields['country'] = forms.ChoiceField(
+            choices=self.COUNTRY_CHOICES,
+            required=False,
+            initial='Kenya',
+            widget=forms.Select(attrs={'class': 'form-control'}),
+        )
+        # Set county choices
+        self.fields['homeCounty'] = forms.ChoiceField(
+            choices=self.KENYA_COUNTIES,
+            required=False,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+        )
+        # Set residency type choices
+        self.fields['residencyType'] = forms.ChoiceField(
+            choices=self.RESIDENCY_TYPE_CHOICES,
+            required=False,
+            widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
+        )
+        # Set hall of residence choices
+        self.fields['hallOfResidence'] = forms.ChoiceField(
+            choices=self.HALL_OF_RESIDENCE_CHOICES,
+            required=False,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+        )
+        # Set off-campus area choices
+        self.fields['offCampusArea'] = forms.ChoiceField(
+            choices=self.OFF_CAMPUS_AREA_CHOICES,
+            required=False,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+        )
+        # Set year of study choices
+        year_choices = [('', '--- Select Year ---')] + list(User.YEAR_OF_STUDY_CHOICES)
+        self.fields['yearOfStudy'] = forms.ChoiceField(
+            choices=year_choices,
+            required=True,
+            widget=forms.Select(attrs={'class': 'form-control'}),
+        )
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').lower().strip()
+        # Check if email is already taken by another user
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise ValidationError('This email address is already registered. Please use another email.')
+        return email
+    
+    def clean_username(self):
+        username = self.cleaned_data.get('username', '').strip()
+        # Check if username is already taken by another user
+        if User.objects.filter(username=username).exclude(pk=self.instance.pk).exists():
+            raise ValidationError('This username is already taken. Please choose another one.')
+        return username
+    
+    def clean_full_name(self):
+        full_name = self.cleaned_data.get('full_name', '').strip()
+        if len(full_name) < 2:
+            raise ValidationError('Full name must be at least 2 characters long.')
+        return full_name
+    
+    def clean_profile_picture(self):
+        profile_picture = self.cleaned_data.get('profile_picture')
+        if profile_picture:
+            # Validate file size (5MB max)
+            if profile_picture.size > 5 * 1024 * 1024:
+                raise ValidationError('File size must not exceed 5MB.')
+            # Validate file type
+            allowed_formats = ['jpg', 'jpeg', 'png', 'gif', 'webp']
+            if not profile_picture.name.lower().split('.')[-1] in allowed_formats:
+                raise ValidationError('Only JPG, PNG, GIF, and WebP files are allowed.')
+        return profile_picture
 
 
 class ChangePasswordForm(forms.Form):
@@ -271,19 +499,141 @@ class CompleteRegistrationForm(forms.Form):
         ('alumnus', 'Alumnus'),
     ]
 
-    # --- Identity ---
+    GENDER_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+    ]
+
+    COUNTRY_CHOICES = [
+        ('Kenya', 'Kenya'),
+        ('International', 'International'),
+    ]
+
+    RESIDENCY_TYPE_CHOICES = [
+        ('on-campus', 'On-Campus Resident (Living in University Hostels/Residence)'),
+        ('off-campus', 'Off-Campus Resident (Living in private residences around campus)'),
+    ]
+
+    HALL_OF_RESIDENCE_CHOICES = [
+        ('', '--- Select Hall ---'),
+        ('Old Hall', 'Old Hall'),
+        ('Tatton', 'Tatton'),
+        ('Buruburu/Hollywood', 'Buruburu/Hollywood'),
+        ('Riverview/Riverside', 'Riverview/Riverside'),
+        ('UpSchool-CBD, Ruwenzori, Baringo, Mama-Ngina, Taifa, Uganda, Barret', 'UpSchool-CBD, Ruwenzori, Baringo, Mama-Ngina, Taifa, Uganda, Barret'),
+    ]
+
+    OFF_CAMPUS_AREA_CHOICES = [
+        ('', '--- Select Area ---'),
+        ('Main Gate', 'Main Gate'),
+        ('Njokerio', 'Njokerio'),
+        ("Ng'ondu", "Ng'ondu"),
+        ('Ahero', 'Ahero'),
+    ]
+
+    KENYA_COUNTIES = [
+        ('', '--- Select County ---'),
+        ('Mombasa', 'Mombasa'),
+        ('Kwale', 'Kwale'),
+        ('Kilifi', 'Kilifi'),
+        ('Tana River', 'Tana River'),
+        ('Lamu', 'Lamu'),
+        ('Taita�Taveta', 'Taita�Taveta'),
+        ('Garissa', 'Garissa'),
+        ('Wajir', 'Wajir'),
+        ('Mandera', 'Mandera'),
+        ('Marsabit', 'Marsabit'),
+        ('Isiolo', 'Isiolo'),
+        ('Meru', 'Meru'),
+        ('Tharaka-Nithi', 'Tharaka-Nithi'),
+        ('Embu', 'Embu'),
+        ('Kitui', 'Kitui'),
+        ('Machakos', 'Machakos'),
+        ('Makueni', 'Makueni'),
+        ('Nyandarua', 'Nyandarua'),
+        ('Nyeri', 'Nyeri'),
+        ('Kirinyaga', 'Kirinyaga'),
+        ('Murang\'a', 'Murang\'a'),
+        ('Kiambu', 'Kiambu'),
+        ('Turkana', 'Turkana'),
+        ('West Pokot', 'West Pokot'),
+        ('Samburu', 'Samburu'),
+        ('Trans Nzoia', 'Trans Nzoia'),
+        ('Uasin Gishu', 'Uasin Gishu'),
+        ('Elgeyo-Marakwet', 'Elgeyo-Marakwet'),
+        ('Nandi', 'Nandi'),
+        ('Baringo', 'Baringo'),
+        ('Laikipia', 'Laikipia'),
+        ('Nakuru', 'Nakuru'),
+        ('Narok', 'Narok'),
+        ('Kajiado', 'Kajiado'),
+        ('Kericho', 'Kericho'),
+        ('Bomet', 'Bomet'),
+        ('Kakamega', 'Kakamega'),
+        ('Vihiga', 'Vihiga'),
+        ('Bungoma', 'Bungoma'),
+        ('Busia', 'Busia'),
+        ('Siaya', 'Siaya'),
+        ('Kisumu', 'Kisumu'),
+        ('Homa Bay', 'Homa Bay'),
+        ('Migori', 'Migori'),
+        ('Kisii', 'Kisii'),
+        ('Nyamira', 'Nyamira'),
+        ('Nairobi City', 'Nairobi City'),
+    ]
+
+
+    # --- Personal Information ---
+    gender = forms.ChoiceField(
+        choices=GENDER_CHOICES,
+        label='Gender',
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+    )
+    
     phone = forms.CharField(
         max_length=20,
         label='Phone Number',
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+254 7XX XXX XXX'}),
     )
-    homeCounty = forms.CharField(
-        max_length=50,
-        label='Home County',
+    
+    country = forms.ChoiceField(
+        choices=COUNTRY_CHOICES,
+        label='Country',
         required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Nakuru'}),
+        initial='Kenya',
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_country'}),
     )
+    
+    homeCounty = forms.ChoiceField(
+        choices=KENYA_COUNTIES,
+        label='County (Kenya)',
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_homeCounty'}),
+    )
+    
+    residencyType = forms.ChoiceField(
+        choices=RESIDENCY_TYPE_CHOICES,
+        label='Residency Type',
+        required=False,
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input', 'id': 'id_residencyType'}),
+    )
+    
+    hallOfResidence = forms.ChoiceField(
+        choices=HALL_OF_RESIDENCE_CHOICES,
+        label='Hall of Residence',
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_hallOfResidence', 'style': 'display:none;'}),
+    )
+    
+    offCampusArea = forms.ChoiceField(
+        choices=OFF_CAMPUS_AREA_CHOICES,
+        label='Off-Campus Area',
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'id_offCampusArea', 'style': 'display:none;'}),
+    )
+    
     userType = forms.ChoiceField(
         choices=USER_TYPE_CHOICES,
         label='Member Type',
@@ -292,25 +642,14 @@ class CompleteRegistrationForm(forms.Form):
     yearOfStudy = forms.ChoiceField(
         choices=[('', '--- Select ---')] + YEAR_CHOICES,
         label='Year of Study',
-        required=False,
+        required=True,
         widget=forms.Select(attrs={'class': 'form-control'}),
-    )
-    graduationYear = forms.IntegerField(
-        label='Graduation Year',
-        required=False,
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'e.g. 2022'}),
     )
     currentOccupation = forms.CharField(
         max_length=100,
         label='Current Occupation',
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Software Engineer'}),
-    )
-    workplace = forms.CharField(
-        max_length=100,
-        label='Workplace / Institution',
-        required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Egerton University'}),
     )
     profile_picture = forms.ImageField(
         label='Profile Photo',

@@ -162,7 +162,7 @@
                             {% if event.event_image %}
                             <img src="{{ event.event_image.url }}" class="event-img" alt="{{ event.event_name }}">
                             {% else %}
-                            <img src="{% static 'img/default-event.jpg' %}" class="event-img" alt="Event">
+                            <img src="{% static 'img/event.jpg' %}" class="event-img" alt="Event">
                             {% endif %}
                             {% if event.is_ongoing %}
                             <span class="event-badge badge-ongoing">Ongoing</span>

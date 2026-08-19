@@ -123,6 +123,29 @@ class CustomUser(AbstractUser):
     graduationYear = models.IntegerField(null=True, blank=True)
     currentOccupation = models.CharField(max_length=100, null=True, blank=True)
     workplace = models.CharField(max_length=100, null=True, blank=True)
+    
+    # --- New Profile Fields ---
+    gender = models.CharField(
+        max_length=20,
+        choices=[
+            ('male', 'Male'),
+            ('female', 'Female'),
+        ],
+        null=True,
+        blank=True
+    )
+    country = models.CharField(max_length=100, default='Kenya', null=True, blank=True)
+    residencyType = models.CharField(
+        max_length=20,
+        choices=[
+            ('on-campus', 'On-Campus Resident'),
+            ('off-campus', 'Off-Campus Resident'),
+        ],
+        null=True,
+        blank=True
+    )
+    hallOfResidence = models.CharField(max_length=100, null=True, blank=True)
+    offCampusArea = models.CharField(max_length=100, null=True, blank=True)
 
 #-----------------------
 #Onboad logic
@@ -132,6 +155,14 @@ class CustomUser(AbstractUser):
     completed = models.BooleanField(default=False)
     # Forces a password change on the complete-registration page.
     must_change_password = models.BooleanField(default=True)
+    # Track which user manager registered this user
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='users_registered'
+    )
     
     objects = CustomUserManager()
 
@@ -161,6 +192,64 @@ class CustomUser(AbstractUser):
 
     class Meta:
         swappable = 'AUTH_USER_MODEL'
+
+
+# --------------------------
+# Bible Study shared tables
+# --------------------------
+class BibleStudySemester(models.Model):
+    """One semester intake for Bible Study. This is the activation point used by the main site."""
+    name = models.CharField(max_length=150)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_active = models.BooleanField(default=False)
+    registration_open = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-start_date']
+        verbose_name = 'Bible Study Semester'
+        verbose_name_plural = 'Bible Study Semesters'
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if self.is_active:
+            BibleStudySemester.objects.exclude(pk=self.pk).update(is_active=False)
+        super().save(*args, **kwargs)
+
+
+class BibleStudyEnrollment(models.Model):
+    """A user-enrollment record for a specific Bible Study semester.
+
+    This keeps the user profile and auth in one place while allowing future Bible Study grouping,
+    leader allocation, and reporting by semester without duplicating the user account.
+    """
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('waitlisted', 'Waitlisted'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bible_study_enrollments')
+    semester = models.ForeignKey(BibleStudySemester, on_delete=models.CASCADE, related_name='enrollments')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    assigned_group = models.CharField(max_length=100, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
+    enrolled_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'semester')
+        ordering = ['-enrolled_at']
+        verbose_name = 'Bible Study Enrollment'
+        verbose_name_plural = 'Bible Study Enrollments'
+
+    def __str__(self):
+        return f"{self.user.email} -> {self.semester.name}"
 
 
 # --------------------------

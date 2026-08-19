@@ -6,6 +6,11 @@ import sys
 
 def main():
     """Run administrative tasks."""
+    # Set development defaults for local testing
+    os.environ.setdefault('ENVIRONMENT', 'development')
+    os.environ.setdefault('DATABASE_ENGINE', 'sqlite')
+    os.environ.setdefault('DEBUG', 'True')
+    os.environ.setdefault('SECURE_SSL_REDIRECT', 'False')
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'union.settings')
     try:
         from django.core.management import execute_from_command_line

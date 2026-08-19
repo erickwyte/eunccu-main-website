@@ -677,6 +677,13 @@
     position: relative;
     overflow: hidden;
   }
+
+  .slider-wrapper {
+    position: relative;
+    height: min(85vh, 780px);
+    min-height: 480px;
+    background: var(--black);
+  }
   
   /* Modern Dark Overlay for text legibility */
   .slider-wrapper::after {
@@ -689,7 +696,9 @@
   }
 
   .nivoSlider {
-    height: 85vh !important;
+    position: absolute;
+    inset: 0;
+    height: 100% !important;
     box-shadow: none;
     background: var(--black);
   }
@@ -698,19 +707,40 @@
     height: 100% !important;
     width: 100% !important;
     object-fit: cover;
-    /* Subtle Ken Burns effect */
-    animation: hero-ken-burns 20s infinite alternate;
+    opacity: 0;
+    transform: scale(1.01);
+    transition: opacity 800ms ease-in-out;
+    will-change: opacity, transform;
+  }
+
+  .nivoSlider img.is-active {
+    opacity: 1;
+    animation: hero-ken-burns 7s ease-in-out forwards;
   }
 
   @keyframes hero-ken-burns {
-    from { transform: scale(1); }
-    to { transform: scale(1.1); }
+    from { transform: scale(1.01); }
+    to { transform: scale(1.055); }
   }
 
-  .slider-caption {
+  .nivo-html-caption.slider-caption {
+    display: block;
+    position: absolute;
+    inset: 0;
     z-index: 10;
     background: transparent !important;
     width: 100%;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 500ms ease-out, transform 500ms ease-out, visibility 0s linear 500ms;
+  }
+
+  .nivo-html-caption.slider-caption.is-active {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 180ms, 180ms, 0s;
   }
 
   .slider-text h3 {
@@ -720,6 +750,7 @@
     line-height: 1.1;
     margin-bottom: 20px;
     text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    color: #ffffff;
   }
 
   .slider-text h3 em {
@@ -730,9 +761,35 @@
   .slider-text h4 {
     font-family: 'poppins', sans-serif;
     font-size: 1.2rem !important;
-    color: rgba(255,255,255,0.9);
+    color: #ffffff;
     max-width: 650px;
     margin: 0 auto 30px;
+  }
+
+  @media (max-width: 575px) {
+    .slider-wrapper {
+      min-height: 420px;
+      height: 68vh;
+    }
+
+    .slider-text h3 {
+      font-size: clamp(2.2rem, 11vw, 3.25rem) !important;
+    }
+
+    .slider-text h4 {
+      font-size: 1rem !important;
+      padding: 0 12px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nivoSlider img,
+    .nivoSlider img.is-active,
+    .nivo-html-caption.slider-caption {
+      animation: none;
+      transition: none;
+      transform: none;
+    }
   }
 
   /* ============================================================
@@ -835,11 +892,11 @@
 <section class="slider-section">
   <div class="slider-wrapper">
     <div id="main-slider" class="nivoSlider">
-      <img src="{% static 'img/Slider1.webp' %}" alt="" title="#slider-caption-1" />
-      <img src="{% static 'img/Slider2.webp' %}" alt="" title="#slider-caption-2" />
+      <img class="is-active" src="{% static 'img/Slider1.webp' %}" alt="Students worshipping together" title="#slider-caption-1" />
+      <img src="{% static 'img/Slider2.webp' %}" alt="Christian Union community gathering" title="#slider-caption-2" />
     </div>
 
-    <div id="slider-caption-1" class="nivo-html-caption slider-caption">
+    <div id="slider-caption-1" class="nivo-html-caption slider-caption is-active">
       <div class="container h-100 d-flex align-items-center justify-content-center">
         <div class="slider-text u-center">
           <h3 class="wow fadeInDown" data-wow-delay="0.2s">This is where. <br/><em>You Belong.</em></h3>
@@ -1056,7 +1113,7 @@
         {% for devotion in slider_devotions %}
         <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="6000">
           <div class="overlay"></div>
-          <img src="{{ devotion.image.url|default:'/static/img/default-devotion.jpg' }}" class="d-block w-100 h-100" style="object-fit: cover;" alt="{{ devotion.title }}">
+          <img src="{% if devotion.image %}{{ devotion.image.url }}{% else %}{% static 'img/header-image.webp' %}{% endif %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="{{ devotion.title }}">
           
           <div class="carousel-caption d-md-block u-center" style="z-index: 2; bottom: 12%;">
             <span class="scripture-tag">{{ devotion.scripture_reference }}</span>

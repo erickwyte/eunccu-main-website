@@ -710,10 +710,24 @@ class SpecialCommitteeAdmin(admin.ModelAdmin):
 
 class SemesterThemeAdmin(admin.ModelAdmin):
     list_display = ( 'title', 'spiritual_year', 'semester_number')
-    
-    
+
+
+class BibleStudySemesterAdmin(admin.ModelAdmin):
+    list_display = ('name', 'start_date', 'end_date', 'is_active', 'registration_open')
+    list_filter = ('is_active', 'registration_open')
+    search_fields = ('name',)
+
+
+class BibleStudyEnrollmentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'semester', 'status', 'assigned_group', 'enrolled_at')
+    list_filter = ('status', 'semester', 'assigned_group')
+    search_fields = ('user__email', 'user__full_name', 'assigned_group')
+
+
 # Register all admin classes
 admin.site.register(SemesterTheme, SemesterThemeAdmin)
+admin.site.register(BibleStudySemester, BibleStudySemesterAdmin)
+admin.site.register(BibleStudyEnrollment, BibleStudyEnrollmentAdmin)
 admin.site.register(Contact, ContactAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(Ministry)

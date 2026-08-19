@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/photos/', views.api_photos, name='api_photos'),
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('profile/edit/', views.EditProfileView.as_view(), name='edit_profile'),
+    path('profile/enroll-bible-study/', views.enroll_for_bible_study, name='bible_study_enroll'),
     path('notifications/', views.UserNotificationsView.as_view(), name='user_notifications'),
     path('testimonies/submit/', views.submit_testimony, name='submit_testimony'),
     path('devotions/', views.devotion_list, name='devotion_list'),

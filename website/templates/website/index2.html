@@ -948,7 +948,7 @@
           />
           {% else %}
           <img
-            src="{% static 'img/default-devotion.jpg' %}"
+            src="{% static 'img/header-image.webp' %}"
             class="d-block w-100"
             alt="Default devotion image"
             style="height: 500px; object-fit: cover"
@@ -1629,7 +1629,7 @@
         {% for devotion in slider_devotions %}
         <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="6000">
           <div class="overlay"></div>
-          <img src="{{ devotion.image.url|default:'/static/img/default-devotion.jpg' }}" class="d-block w-100 h-100" style="object-fit: cover;" alt="{{ devotion.title }}">
+          <img src="{% if devotion.image %}{{ devotion.image.url }}{% else %}{% static 'img/header-image.webp' %}{% endif %}" class="d-block w-100 h-100" style="object-fit: cover;" alt="{{ devotion.title }}">
           
           <div class="carousel-caption d-md-block u-center" style="z-index: 2; bottom: 12%;">
             <span class="scripture-tag">{{ devotion.scripture_reference }}</span>

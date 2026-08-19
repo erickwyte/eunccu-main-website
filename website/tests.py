@@ -12,7 +12,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 from website.admin import TestimonyAdmin
-from website.models import Notification, Testimony
+from website.models import Notification, Testimony, BibleStudySemester, BibleStudyEnrollment
 from website.permissions import USER_MANAGER_GROUP
 
 
@@ -44,6 +44,7 @@ class TestimonyWorkflowTests(TestCase):
             password='secret123',
             full_name='Test Member',
             phone=987654321,
+            completed=True,
         )
 
     @patch('website.views.get_latest_youtube_video', return_value=(None, None))
@@ -171,6 +172,45 @@ class TestimonyWorkflowTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Complete Your Registration')
+
+    def test_profile_shows_bible_study_enroll_button_when_active(self):
+        BibleStudySemester.objects.create(
+            name='Semester 1 2026',
+            start_date='2026-01-05',
+            end_date='2026-05-30',
+            is_active=True,
+            registration_open=True,
+        )
+
+        self.client.force_login(self.member_user)
+        response = self.client.get(reverse('website:profile'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Enroll for Bible Study')
+        self.assertContains(response, reverse('website:bible_study_enroll'))
+
+    def test_active_bible_study_enrollment_creates_record(self):
+        semester = BibleStudySemester.objects.create(
+            name='Semester 1 2026',
+            start_date='2026-01-05',
+            end_date='2026-05-30',
+            is_active=True,
+            registration_open=True,
+        )
+
+        self.member_user.completed = True
+        self.member_user.save(update_fields=['completed'])
+
+        self.client.force_login(self.member_user)
+        response = self.client.post(reverse('website:bible_study_enroll'))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(
+            BibleStudyEnrollment.objects.filter(
+                user=self.member_user,
+                semester=semester,
+            ).exists()
+        )
 
     def test_user_manager_users_are_redirected_from_admin(self):
         user_manager = User.objects.create_user(

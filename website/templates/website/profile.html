@@ -8,30 +8,361 @@
 :root {
     --primary-green: #2c8e22;
     --secondary-red: #ff0019;
-    --dark-text: #000000;
-    --light-text: #333333;
-    --border-color: #cccccc;
+    --warning-yellow: #ffc107;
+    --success-blue: #0d6efd;
+    --dark-text: #1a1a1a;
+    --light-text: #6c757d;
+    --border-color: #e9ecef;
+    --surface: #ffffff;
+    --surface-alt: #f8f9fa;
 }
 
-.content-container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
-.profile-header { background: linear-gradient(135deg, var(--primary-green) 0%, rgba(26, 92, 42, 0.95) 100%); color: white; padding: 3rem 0; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(26, 92, 42, 0.25); }
-.profile-header h1 { margin: 0; font-size: 2.5rem; }
-.profile-header p { margin-top: 0.5rem; opacity: 0.95; }
-.main-profile-section { background: white; border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); overflow: hidden; margin-bottom: 2rem; }
-.profile-top { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; padding: 2.5rem; align-items: start; }
-.profile-picture-section { text-align: center; }
-.profile-avatar, .default-avatar { width: 200px; height: 200px; margin: 0 auto 1.5rem; border-radius: 12px; border: 4px solid var(--primary-green); box-shadow: 0 4px 12px rgba(44, 142, 34, 0.2); }
-.default-avatar { display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, var(--primary-green), rgba(26,92,42,0.7)); font-size: 4rem; }
-.btn-edit-profile, .btn-user-manager { background-color: var(--primary-green); color: white; border:none; padding:0.75rem 2rem; border-radius:8px; font-size:1rem; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; }
-.btn-edit-profile:hover, .btn-user-manager:hover { background-color: var(--secondary-red); }
-.info-group { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
-.info-item { display:flex; flex-direction:column; }
-.info-label { font-size:0.85rem; font-weight:600; color: var(--light-text); text-transform:uppercase; margin-bottom:0.5rem; }
-.info-value { font-size:1.1rem; font-weight:500; color: var(--dark-text); word-break:break-all; }
-.info-value.highlight { color: var(--primary-green); font-weight:600; }
-.divider { height:1px; background-color: var(--border-color); margin:1.5rem 0; }
-.profile-footer { padding:2rem 2.5rem; background:white; border-top:1px solid var(--border-color); display:flex; gap:1rem; justify-content:flex-end; }
-@media (max-width:768px) { .profile-top { grid-template-columns:1fr; padding:1.5rem; } .info-group { grid-template-columns:1fr; } .profile-footer { flex-direction:column; align-items:stretch; } }
+* { box-sizing: border-box; }
+
+.content-container { max-width: 1200px; margin: 0 auto; padding: 0 20px 50px; }
+
+/* Header Section */
+.profile-header { 
+    background: linear-gradient(135deg, var(--primary-green) 0%, #1f6b1a 100%);
+    background-attachment: fixed;
+    color: white; 
+    padding: 4rem 2rem;
+    margin-bottom: 2.5rem; 
+    border-radius: 20px; 
+    box-shadow: 0 20px 50px rgba(44, 142, 34, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(20px); } }
+
+.profile-header-content { position: relative; z-index: 1; }
+.profile-header h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.2rem); letter-spacing: -0.02em; font-weight: 700; }
+.profile-header p { margin-top: 0.75rem; font-size: 1.05rem; opacity: 0.95; max-width: 700px; line-height: 1.5; }
+
+/* Main Profile Container */
+.main-profile-section { 
+    background: var(--surface); 
+    border-radius: 20px; 
+    box-shadow: 0 15px 50px rgba(0,0,0,0.1); 
+    overflow: hidden; 
+    border: 1px solid var(--border-color);
+}
+
+/* Profile Completion Progress */
+.profile-completion-section {
+    background: linear-gradient(90deg, rgba(44, 142, 34, 0.05) 0%, transparent 100%);
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.completion-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.completion-title { font-weight: 600; color: var(--dark-text); font-size: 0.95rem; }
+.completion-percent { font-size: 1.2rem; font-weight: 700; color: var(--primary-green); }
+
+.progress-bar-container { height: 8px; background: rgba(0, 0, 0, 0.08); border-radius: 10px; overflow: hidden; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary-green) 0%, #51d84b 100%); border-radius: 10px; transition: width 0.3s ease; }
+
+/* Top Profile Section */
+.profile-top { 
+    display: grid; 
+    grid-template-columns: 350px 1fr; 
+    gap: 2.5rem; 
+    padding: 2.5rem;
+    align-items: start;
+}
+
+/* Profile Picture Section */
+.profile-picture-section { 
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-avatar-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.profile-avatar, .default-avatar { 
+    width: 240px; 
+    height: 240px; 
+    border-radius: 28px; 
+    border: 6px solid var(--primary-green);
+    box-shadow: 0 25px 60px rgba(44, 142, 34, 0.2);
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.profile-avatar:hover { transform: scale(1.02); }
+
+.default-avatar { 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-green), #1f6b1a);
+    font-size: 5rem;
+    color: white;
+}
+
+.profile-status-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--success-blue);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 4px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+}
+
+/* Personal Card */
+.profile-personal-card { 
+    text-align: center;
+    width: 100%;
+}
+
+.profile-personal-card h2 { 
+    margin: 0; 
+    font-size: 1.8rem; 
+    color: var(--dark-text);
+    font-weight: 700;
+}
+
+.profile-personal-card p { 
+    margin: 0.5rem 0 1.5rem; 
+    color: var(--light-text);
+    font-size: 1rem;
+}
+
+.badges-container { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin-bottom: 1.5rem; }
+
+.badge-pill { 
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    background: rgba(44, 142, 34, 0.1);
+    color: var(--primary-green);
+    font-weight: 600;
+    border: 1px solid rgba(44, 142, 34, 0.25);
+    transition: all 0.3s ease;
+}
+
+.badge-pill:hover { background: rgba(44, 142, 34, 0.2); transform: translateY(-2px); }
+
+.badge-pill.student { background: rgba(13, 110, 253, 0.1); color: var(--success-blue); border-color: rgba(13, 110, 253, 0.25); }
+.badge-pill.alumnus { background: rgba(255, 193, 7, 0.1); color: #ff9800; border-color: rgba(255, 193, 7, 0.25); }
+.badge-pill.leader { background: rgba(255, 0, 25, 0.1); color: var(--secondary-red); border-color: rgba(255, 0, 25, 0.25); }
+
+.profile-summary-grid { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.profile-summary-card { 
+    background: var(--surface-alt);
+    border: 2px solid var(--border-color);
+    border-radius: 16px; 
+    padding: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.profile-summary-card:hover { border-color: var(--primary-green); box-shadow: 0 8px 20px rgba(44, 142, 34, 0.1); }
+
+.profile-summary-card strong { 
+    display: block;
+    margin-bottom: 0.6rem;
+    color: var(--light-text);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.profile-summary-card span { 
+    display: block;
+    color: var(--dark-text);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* Details Section */
+.profile-details { 
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+.profile-section { 
+    background: var(--surface-alt);
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.profile-section:hover { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); }
+
+.profile-section h3 { 
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    color: var(--dark-text);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(44, 142, 34, 0.2);
+}
+
+.profile-section h3 i { color: var(--primary-green); font-size: 1.3rem; }
+
+.details-grid { 
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.detail-item { 
+    padding: 1.3rem;
+    border-radius: 12px;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item:hover { box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); transform: translateY(-2px); }
+
+.detail-label { 
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--light-text);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.1em;
+}
+
+.detail-value { 
+    font-size: 1.05rem;
+    color: var(--dark-text);
+    font-weight: 600;
+    word-break: break-word;
+    flex-grow: 1;
+}
+
+.detail-value.muted { 
+    color: var(--light-text);
+    font-weight: 500;
+    font-style: italic;
+}
+
+.detail-value-checkmark { color: var(--success-blue); font-weight: 700; }
+
+/* Profile Footer */
+.profile-footer { 
+    padding: 1.75rem 2rem;
+    background: var(--surface-alt);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.btn-edit-profile,
+.btn-user-manager { 
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.btn-edit-profile {
+    background: var(--primary-green);
+    color: white;
+}
+
+.btn-edit-profile:hover {
+    background: #1f6b1a;
+    box-shadow: 0 10px 30px rgba(44, 142, 34, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-user-manager {
+    background: var(--success-blue);
+    color: white;
+}
+
+.btn-user-manager:hover {
+    background: #0a58ca;
+    box-shadow: 0 10px 30px rgba(13, 110, 253, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 1024px) { 
+    .profile-top { grid-template-columns: 1fr; gap: 2rem; } 
+    .details-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) { 
+    .profile-header { padding: 2.5rem 1.5rem; }
+    .profile-top { padding: 1.5rem; }
+    .profile-details { padding: 1.5rem; }
+    .profile-summary-grid { grid-template-columns: 1fr; }
+    .profile-footer { justify-content: center; }
+    .btn-edit-profile, .btn-user-manager { flex: 1; justify-content: center; min-width: 150px; }
+    .profile-avatar, .default-avatar { width: 200px; height: 200px; }
+    .default-avatar { font-size: 4rem; }
+}
+
+@media (max-width: 640px) { 
+    .profile-header { padding: 2rem 1rem; margin-bottom: 1.5rem; }
+    .profile-header h1 { font-size: 1.75rem; }
+    .main-profile-section { border-radius: 16px; }
+    .profile-top { grid-template-columns: 1fr; padding: 1.25rem; gap: 1.5rem; }
+    .profile-details { padding: 1.25rem; gap: 1.5rem; }
+    .profile-section { padding: 1.5rem; }
+    .details-grid { gap: 1rem; }
+    .detail-item { padding: 1rem; }
+    .profile-avatar, .default-avatar { width: 180px; height: 180px; }
+}
 </style>
 {% endblock %}
 
@@ -39,70 +370,227 @@
 <div class="header-height"></div>
 <div class="content-container">
     <div class="profile-header">
-        <div>
+        <div class="profile-header-content">
             <h1>My Profile</h1>
-            <p>Manage and view your account information</p>
+            <p>Manage your EUNCCU account details, membership status, and connect with the community.</p>
         </div>
     </div>
 
     {% if request.user.is_authenticated %}
         <div class="main-profile-section">
+            <!-- Profile Completion Progress -->
+            <div class="profile-completion-section">
+                <div class="completion-header">
+                    <span class="completion-title">Profile Completion</span>
+                    <span class="completion-percent">
+                        {% widthratio request.user.registrationNumber|yesno:"1,0" 1 100 %}%
+                    </span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: {% widthratio request.user.registrationNumber|yesno:"1,0" 1 100 %}%"></div>
+                </div>
+            </div>
+
+            <!-- Top Section: Picture + Personal Info -->
             <div class="profile-top">
                 <div class="profile-picture-section">
-                    {% if request.user.profile_picture %}
-                        <img src="{{ request.user.profile_picture.url }}" alt="Profile Picture" class="profile-avatar">
-                    {% else %}
-                        <div class="default-avatar">👤</div>
-                    {% endif %}
-                    <a href="{% url 'website:edit_profile' %}" class="btn-edit-profile"><i class="fa fa-pencil"></i> Edit Profile</a>
+                    <div class="profile-avatar-wrapper">
+                        {% if request.user.profile_picture %}
+                            <img src="{{ request.user.profile_picture.url }}" alt="Profile Picture" class="profile-avatar">
+                        {% else %}
+                            <div class="default-avatar">👤</div>
+                        {% endif %}
+                        {% if request.user.completed %}
+                            <div class="profile-status-badge" title="Profile Complete">✓</div>
+                        {% endif %}
+                    </div>
+                    <div class="profile-personal-card">
+                        <h2>{{ request.user.get_full_name|default:request.user.username }}</h2>
+                        <p>{{ request.user.email }}</p>
+                        
+                        <div class="badges-container">
+                            <div class="badge-pill leader">
+                                <i class="fa fa-badge"></i> {{ request.user.role|default:"Member"|capfirst }}
+                            </div>
+                            <div class="badge-pill {% if request.user.userType == 'alumnus' %}alumnus{% else %}student{% endif %}">
+                                <i class="fa fa-graduation-cap"></i> {{ request.user.userType|default:"Student"|capfirst }}
+                            </div>
+                        </div>
+                        
+                        <div class="profile-summary-grid">
+                            <div class="profile-summary-card">
+                                <strong><i class="fa fa-calendar"></i> Registered</strong>
+                                <span>{{ request.user.date_joined|date:"M d, Y" }}</span>
+                            </div>
+                            <div class="profile-summary-card">
+                                <strong><i class="fa fa-clock-o"></i> Member Since</strong>
+                                <span>{{ request.user.date_joined|timesince }} ago</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <div class="info-group">
-                        <div class="info-item">
-                            <span class="info-label">Full Name</span>
-                            <span class="info-value highlight">{{ request.user.full_name|default:"Not Set" }}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Username</span>
-                            <span class="info-value">{{ request.user.username }}</span>
+
+                <!-- Right Column: Details Sections -->
+                <div class="profile-details">
+                    <!-- Account Details -->
+                    <div class="profile-section">
+                        <h3><i class="fa fa-lock"></i> Account Details</h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Username</span>
+                                <span class="detail-value">{{ request.user.username }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Email Address</span>
+                                <span class="detail-value">{{ request.user.email }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Account Status</span>
+                                <span class="detail-value">
+                                    {% if request.user.is_active %}
+                                        <span class="detail-value-checkmark">✓ Active</span>
+                                    {% else %}
+                                        <span style="color: var(--secondary-red);">Inactive</span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Registration Number</span>
+                                <span class="detail-value">{{ request.user.registrationNumber|default:"Not Set" }}</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="info-group">
-                        <div class="info-item">
-                            <span class="info-label">Email Address</span>
-                            <span class="info-value">{{ request.user.email }}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Phone Number</span>
-                            <span class="info-value">{{ request.user.phone|default:"Not Set" }}</span>
+
+                    <!-- Personal Information -->
+                    <div class="profile-section">
+                        <h3><i class="fa fa-user"></i> Personal Information</h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Full Name</span>
+                                <span class="detail-value">{{ request.user.full_name|default:request.user.get_full_name|default:"Not Set" }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Phone Number</span>
+                                <span class="detail-value">{{ request.user.phone|default:"Not Set" }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Gender</span>
+                                <span class="detail-value">{{ request.user.gender|default:"Not Set" }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Country</span>
+                                <span class="detail-value">{{ request.user.country|default:"Not Set" }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Home County</span>
+                                <span class="detail-value">{{ request.user.homeCounty|default:"Not Set" }}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Profile Status</span>
+                                <span class="detail-value">
+                                    {% if request.user.completed %}
+                                        <span class="detail-value-checkmark">✓ Complete</span>
+                                    {% else %}
+                                        <span style="color: var(--warning-yellow);">Incomplete</span>
+                                    {% endif %}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div class="divider"></div>
-                    <div class="info-group">
-                        <div class="info-item">
-                            <span class="info-label">Registration Number</span>
-                            <span class="info-value">{{ request.user.registrationNumber|default:"Not Set" }}</span>
+
+                    <!-- Academic & Career -->
+                    <div class="profile-section">
+                        <h3><i class="fa fa-graduation-cap"></i> Academic & Career</h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Year of Study</span>
+                                <span class="detail-value">
+                                    {% if request.user.yearOfStudy %}
+                                        Year {{ request.user.yearOfStudy }}
+                                    {% else %}
+                                        Not Set
+                                    {% endif %}
+                                </span>
+                            </div>
+                            {% if request.user.currentOccupation %}
+                                <div class="detail-item">
+                                    <span class="detail-label">Occupation</span>
+                                    <span class="detail-value">{{ request.user.currentOccupation }}</span>
+                                </div>
+                            {% endif %}
+                            {% if request.user.workplace %}
+                                <div class="detail-item">
+                                    <span class="detail-label">Workplace</span>
+                                    <span class="detail-value">{{ request.user.workplace }}</span>
+                                </div>
+                            {% endif %}
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">Home County</span>
-                            <span class="info-value">{{ request.user.homeCounty|default:"Not Set" }}</span>
+                    </div>
+
+                    <!-- Residency Information -->
+                    <div class="profile-section">
+                        <h3><i class="fa fa-home"></i> Residency Information</h3>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Residence Type</span>
+                                <span class="detail-value">
+                                    {% if request.user.residencyType == 'on-campus' %}
+                                        On-Campus Resident
+                                    {% elif request.user.residencyType == 'off-campus' %}
+                                        Off-Campus Resident
+                                    {% else %}
+                                        {{ request.user.residencyType|default:"Not Set" }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            {% if request.user.residencyType == 'on-campus' and request.user.hallOfResidence %}
+                            <div class="detail-item">
+                                <span class="detail-label">Hall of Residence</span>
+                                <span class="detail-value">{{ request.user.hallOfResidence }}</span>
+                            </div>
+                            {% endif %}
+                            {% if request.user.residencyType == 'off-campus' and request.user.offCampusArea %}
+                            <div class="detail-item">
+                                <span class="detail-label">Off-Campus Area</span>
+                                <span class="detail-value">{{ request.user.offCampusArea }}</span>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Footer with Action Buttons -->
             <div class="profile-footer">
                 {% for group in request.user.groups.all %}
                     {% if group.name == "User Manager" %}
-                        <a href="{% url 'website:user_manager_dashboard' %}" class="btn-user-manager"><i class="fa fa-users"></i> User Manager</a>
+                        <a href="{% url 'website:user_manager_dashboard' %}" class="btn-user-manager">
+                            <i class="fa fa-users"></i> User Manager
+                        </a>
                     {% endif %}
                 {% endfor %}
-                <a href="{% url 'website:edit_profile' %}" class="btn-edit-profile"><i class="fa fa-pencil"></i> Edit Profile</a>
+                {% if bible_study_active and not has_bible_study_enrollment %}
+                    <a href="{% url 'website:bible_study_enroll' %}" class="btn-edit-profile" style="background: var(--primary-green);">
+                        <i class="fa fa-book"></i> Enroll for Bible Study
+                    </a>
+                {% elif bible_study_active and has_bible_study_enrollment %}
+                    <a href="{% url 'website:profile' %}" class="btn-edit-profile" style="background: var(--primary-green); opacity: 0.9; cursor: default;">
+                        <i class="fa fa-check"></i> Enrolled for Bible Study
+                    </a>
+                {% endif %}
+                <a href="{% url 'website:edit_profile' %}" class="btn-edit-profile">
+                    <i class="fa fa-pencil"></i> Edit Profile
+                </a>
             </div>
         </div>
     {% else %}
-        <div style="background:#fff; border-radius:12px; padding:2rem; box-shadow:0 2px 16px rgba(0,0,0,0.08);">
-            <div style="color:#c70039; font-weight:700; margin-bottom:1rem;">You must be logged in to view your profile.</div>
-            <a href="{% url 'website:login' %}" style="color: var(--primary-green); font-weight:600; text-decoration:underline;">Click here to login</a>
+        <div style="background:var(--surface); border-radius:20px; padding:3rem; box-shadow:0 15px 50px rgba(0,0,0,0.1); text-align: center;">
+            <i class="fa fa-lock" style="font-size: 3rem; color: var(--secondary-red); margin-bottom: 1rem;"></i>
+            <h3 style="color: var(--secondary-red); font-weight: 700; margin: 1rem 0;">You must be logged in</h3>
+            <p style="color: var(--light-text); margin-bottom: 2rem;">Please log in to view and manage your profile.</p>
+            <a href="{% url 'website:login' %}" style="display: inline-block; background: var(--primary-green); color: white; padding: 0.875rem 2rem; border-radius: 12px; text-decoration: none; font-weight: 600; transition: all 0.3s ease;">
+                <i class="fa fa-sign-in"></i> Go to Login
+            </a>
         </div>
     {% endif %}
 </div>

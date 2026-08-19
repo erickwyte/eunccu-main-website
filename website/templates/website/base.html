@@ -12,9 +12,13 @@
         <title>{% block title %}Egerton University Njoro Campus Christian Union{% endblock %}</title>
 		<link rel="shortcut icon" type="image/x-icon" href="{% static 'img/logo2.png' %}">
 
-        <!-- Font Awesome Icons CSS -->
-<!-- Removed local font-awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!-- Font Preloading for Performance -->
+        <link rel="preload" href="{% static 'vendor/fontawesome-free/webfonts/fa-solid-900.woff2' %}" as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="{% static 'fonts/ElegantIcons.woff' %}" as="font" type="font/woff" crossorigin>
+
+        <!-- Font Awesome Icons CSS (Local - v5.9.0 with v4 shims) -->
+        <link rel="stylesheet" href="{% static 'vendor/fontawesome-free/css/all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'vendor/fontawesome-free/css/v4-shims.min.css' %}">
         <!-- Themify Icons CSS -->
         <link rel="stylesheet" href="{% static 'css/themify-icons.css' %}">
         <!-- Elegant Font Icons CSS -->
@@ -448,6 +452,32 @@
         opacity: 1;
         transform: translateY(-2px);
     }
+
+    /* Main content area spacing - fixes header overlap and large gaps */
+    .content-wrapper {
+        margin-top: 0;
+        padding-top: 0;
+        position: relative;
+        width: 100%;
+    }
+
+    /* Adjust header-height spacer for proper responsive spacing */
+    .header-height {
+        width: 100%;
+        height: 140px !important; /* Desktop: matches header height */
+    }
+
+    @media (max-width: 991px) {
+        .header-height {
+            height: 95px !important; /* Tablet: matches header height */
+        }
+    }
+
+    @media (max-width: 575px) {
+        .header-height {
+            height: 1rem !important; /* Mobile: minimal spacing - working well */
+        }
+    }
 </style>
 
 </head>
@@ -469,13 +499,13 @@
 
                             </ul>
                         </div>
-                        <div class="col-sm-4 d-none d-md-block">
+                        <div class="col-sm-4">
                             <ul class="right-info">
-                                <li><a href="https://www.facebook.com/egertoncu.org" target="_blank" rel="noopener no-referrer"><i class="fa fa-facebook"></i></a></li>
-                                <li><a href="https://x.com/egertoncu/" target="_blank" rel="noopener no-referrer"><i class="fa fa-twitter"></i></a></li>
-                                <li><a href="https://www.instagram.com/cu_egerton/" target="_blank" rel="noopener no-referrer"><i class="fa fa-instagram"></i></a></li>
-                                <li><a href="https://wa.me/254102186205" target="_blank" rel="noopener no-referrer"><i class="fa fa-whatsapp"></i></a></li>
-                                <li><a href="https://www.youtube.com/channel/UCs2HaesrSHiaVbi_UhiylgA" target="_blank" rel="noopener no-referrer"><i class="fa fa-youtube"></i></a></li>
+                                <li><a href="https://www.facebook.com/egertoncu.org" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                <li><a href="https://x.com/egertoncu/" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                <li><a href="https://www.instagram.com/cu_egerton/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                                <li><a href="https://wa.me/254102186205" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a></li>
+                                <li><a href="https://www.youtube.com/channel/UCs2HaesrSHiaVbi_UhiylgA" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fa fa-youtube" aria-hidden="true"></i></a></li>
                             </ul>
                         </div>
                     </div>
@@ -527,6 +557,13 @@
                                         <li><a href="{% url 'website:logout' %}">Logout</a></li>
                                 {% else %}
                                     <li><a href="{% url 'website:login' %}">Login</a></li>
+                                    
+                                
+                                {% endif %}
+                                
+                                
+                                {% if request.user.is_authenticated and request.user.is_staff %}
+                                <li><a href="{% url 'admin:index' %}">Admin Dashboard</a></li>
                                 {% endif %}
                                     </ul> 
                                 </li> 
@@ -538,7 +575,9 @@
             </div>
         </header><!-- /Header Section -->
 
-        {% block content %} {% endblock %}
+        <main class="content-wrapper">
+            {% block content %} {% endblock %}
+        </main>
 
        
 
@@ -619,37 +658,9 @@
         
         
         <!-- Before closing </body>: -->
-        <!-- jQuery Lib -->
-        <script defer src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
-        <!-- Bootstrap JS -->
-        <script defer src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
-        <!-- Tether JS -->
-        <script defer src="{% static 'js/vendor/tether.min.js' %}"></script>
-        <!-- Imagesloaded JS -->
-        <script defer src="{% static 'js/vendor/imagesloaded.pkgd.min.js' %}"></script>
-        <!-- OWL-Carousel JS -->
-        <script defer src="{% static 'js/vendor/owl.carousel.min.js' %}"></script>
-        <!-- isotope JS -->
-        <script defer src="{% static 'js/vendor/jquery.isotope.v3.0.2.js' %}"></script>
-        <!-- Smooth Scroll JS -->
-        <script defer src="{% static 'js/vendor/smooth-scroll.min.js' %}"></script>
-        <!-- venobox JS -->
-        <script defer src="{% static 'js/vendor/venobox.min.js' %}"></script>
-        <!-- ajaxchimp JS -->
-        <script defer src="{% static 'js/vendor/jquery.ajaxchimp.min.js' %}"></script>
-        <!-- Counterup JS -->
-        <script defer src="{% static 'js/vendor/jquery.counterup.min.js' %}"></script>
-        <!-- waypoints js -->
-        <script defer src="{% static 'js/vendor/jquery.waypoints.v2.0.3.min.js' %}"></script>
-        <!-- Slick Nav JS -->
-        <script defer src="{% static 'js/vendor/jquery.slicknav.min.js' %}"></script>
-        <!-- Nivo Slider JS -->
-        <script defer src="{% static 'js/vendor/jquery.nivo.slider.pack.js' %}"></script>
-        <!-- Letter Animation JS -->
-        <script defer src="{% static 'js/vendor/letteranimation.min.js' %}"></script>
-        <!-- Wow JS -->
-        <script defer src="{% static 'js/vendor/wow.min.js' %}"></script>
-        <!-- Main JS -->
+        <!-- Local JavaScript dependencies.  These files are present in static/. -->
+        <script defer src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+        <script defer src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
         <script defer src="{% static 'js/main.js' %}"></script>
 
 

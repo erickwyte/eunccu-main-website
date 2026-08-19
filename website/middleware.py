@@ -54,7 +54,8 @@ class ProfileCompletionMiddleware:
             # Check whether this path is exempt from the redirect.
             is_exempt = any(path.startswith(prefix) for prefix in self.EXEMPT_PREFIXES)
 
-            if path.startswith('/admin/') and is_user_manager(request.user):
+            # Redirect user managers (but not superusers) to their dashboard
+            if path.startswith('/admin/') and is_user_manager(request.user) and not request.user.is_superuser:
                 return redirect('website:user_manager_dashboard')
 
             if not is_exempt:
